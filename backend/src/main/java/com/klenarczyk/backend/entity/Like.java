@@ -1,6 +1,7 @@
 package com.klenarczyk.backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 
@@ -11,11 +12,13 @@ public class Like {
     @EmbeddedId
     private LikeId id;
 
+    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("postId")
     @JoinColumn(name = "post_id", nullable = false)

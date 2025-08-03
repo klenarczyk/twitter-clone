@@ -1,14 +1,15 @@
 package com.klenarczyk.backend.controller;
 
 import com.klenarczyk.backend.config.ApiPaths;
+import com.klenarczyk.backend.dto.user.CreateUserRequest;
+import com.klenarczyk.backend.dto.user.UserResponse;
 import com.klenarczyk.backend.entity.User;
+import com.klenarczyk.backend.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.service.FollowService;
 import com.klenarczyk.backend.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(ApiPaths.BASE_API + "/users")
@@ -24,8 +25,25 @@ public class UserController {
 
     // Request mapping methods will go here
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.createUser(user));
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest req) {
+        User created = userService.createUser(req);
+        UserResponse res = new UserResponse();
+        res.setId(created.getId());
+        res.setHandle(created.getHandle());
+        res.setFullName(created.getFullName());
+        res.setBio(created.getBio());
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        UserResponse res = new UserResponse();
+        res.setId(user.getId());
+        res.setHandle(user.getHandle());
+        res.setFullName(user.getFullName());
+        res.setBio(user.getBio());
+        return ResponseEntity.ok(res);
     }
 
 }
