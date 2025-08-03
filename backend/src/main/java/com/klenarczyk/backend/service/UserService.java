@@ -1,6 +1,6 @@
 package com.klenarczyk.backend.service;
 
-import com.klenarczyk.backend.dto.user.CreateUserRequest;
+import com.klenarczyk.backend.dto.auth.RegisterRequest;
 import com.klenarczyk.backend.entity.User;
 import com.klenarczyk.backend.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.UserRepository;
@@ -17,14 +17,13 @@ public class UserService {
     }
 
     // Methods
-    public User createUser(@Valid CreateUserRequest req) {
+    public User createUser(@Valid RegisterRequest req) {
         User created = new User();
 
         created.setHandle(req.getHandle());
         created.setEmail(req.getEmail());
         created.setPasswordHash(req.getPassword());
         created.setFullName(req.getFullName());
-        created.setBio(req.getBio());
 
         return userRepository.save(created);
     }

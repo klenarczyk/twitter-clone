@@ -1,10 +1,10 @@
-package com.klenarczyk.backend.dto.user;
+package com.klenarczyk.backend.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class CreateUserRequest {
+public class RegisterRequest {
 
     @NotBlank(message = "Handle is required")
     @Size(max = 50, message = "Handle must be at most 50 characters long")
@@ -22,8 +22,6 @@ public class CreateUserRequest {
     @Size(max = 100, message = "Full name must be at most 100 characters long")
     private String fullName;
 
-    private String bio;
-
     // Getters and Setters
     public String getHandle() { return handle; }
     public void setHandle(String handle) { this.handle = handle; }
@@ -36,8 +34,5 @@ public class CreateUserRequest {
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
-
-    public String getBio() { return bio; }
-    public void setBio(String bio) { this.bio = bio; }
 
 }

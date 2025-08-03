@@ -17,11 +17,19 @@ A Full-Stack Twitter Clone.
    - Update the database connection settings:
 
      ```properties
-     spring.datasource.url=jdbc:postgresql://localhost:5432/twitter_clone_db
-     spring.datasource.username=your_user
-     spring.datasource.password=your_password
+     # Database configuration
+     spring.datasource.url=jdbc:postgresql://localhost:5432/ twitter_clone_db
+     spring.datasource.username=<YOUR_DB_USERNAME>
+     spring.datasource.password=<YOUR_DB_PASSWORD>
      ```
 
-   - **Note:** `application.properties` is ignored by Git to protect sensitive data.
+   - Update the security settings:
+
+     ```properties
+     # Security configuration
+     jwt.secret=<YOUR_JWT_SECRET>
+     ```
+
+   > **Note:** `application.properties` is ignored by Git to protect sensitive data.
 
 ---

@@ -1,6 +1,6 @@
 package com.klenarczyk.backend.controller;
 
-import com.klenarczyk.backend.config.ApiPaths;
+import com.klenarczyk.backend.util.ApiPaths;
 import com.klenarczyk.backend.service.CommentService;
 import com.klenarczyk.backend.service.LikeService;
 import com.klenarczyk.backend.service.PostService;

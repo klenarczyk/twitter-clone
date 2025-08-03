@@ -1,10 +1,9 @@
 package com.klenarczyk.backend.controller;
 
-import com.klenarczyk.backend.config.ApiPaths;
-import com.klenarczyk.backend.dto.user.CreateUserRequest;
+import com.klenarczyk.backend.dto.auth.RegisterRequest;
+import com.klenarczyk.backend.util.ApiPaths;
 import com.klenarczyk.backend.dto.user.UserResponse;
 import com.klenarczyk.backend.entity.User;
-import com.klenarczyk.backend.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.service.FollowService;
 import com.klenarczyk.backend.service.UserService;
 import jakarta.validation.Valid;
@@ -25,7 +24,7 @@ public class UserController {
 
     // Request mapping methods will go here
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest req) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody RegisterRequest req) {
         User created = userService.createUser(req);
         UserResponse res = new UserResponse();
         res.setId(created.getId());
