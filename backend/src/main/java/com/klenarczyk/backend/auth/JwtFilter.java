@@ -1,6 +1,6 @@
 package com.klenarczyk.backend.auth;
 
-import com.klenarczyk.backend.service.UserDetailsServiceImpl;
+import com.klenarczyk.backend.service.impl.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

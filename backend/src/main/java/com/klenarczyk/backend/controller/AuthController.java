@@ -5,33 +5,29 @@ import com.klenarczyk.backend.dto.auth.AuthResponse;
 import com.klenarczyk.backend.dto.auth.LoginRequest;
 import com.klenarczyk.backend.dto.auth.RegisterRequest;
 import com.klenarczyk.backend.entity.User;
-import com.klenarczyk.backend.repository.UserRepository;
-import com.klenarczyk.backend.util.ApiPaths;
+import com.klenarczyk.backend.service.impl.UserServiceImpl;
+import com.klenarczyk.backend.util.Constants;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(ApiPaths.BASE_API + "/auth")
+@RequestMapping(Constants.BASE_API + "/auth")
 public class AuthController {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserServiceImpl userService;
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                          AuthenticationManager authManager, JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    public AuthController(UserServiceImpl userService, AuthenticationManager authManager, JwtUtil jwtUtil) {
+        this.userService = userService;
         this.authManager = authManager;
         this.jwtUtil = jwtUtil;
     }
@@ -39,14 +35,7 @@ public class AuthController {
     // Request mapping methods will go here
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req) {
-        User user = new User();
-
-        user.setHandle(req.getHandle());
-        user.setEmail(req.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(req.getPassword()));
-        user.setFullName(req.getFullName());
-
-        userRepository.save(user);
+        User newUser = userService.createUser(req);
         return ResponseEntity.ok("User registered successfully");
     }
 
@@ -57,10 +46,8 @@ public class AuthController {
         );
 
         String token = jwtUtil.generateToken((UserDetails) auth.getPrincipal());
-        AuthResponse res = new AuthResponse();
-        res.setToken(token);
 
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(AuthResponse.fromToken(token));
     }
 
 }

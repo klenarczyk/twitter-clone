@@ -1,23 +1,19 @@
 package com.klenarczyk.backend.dto.user;
 
-public class UserResponse {
+import com.klenarczyk.backend.entity.User;
 
-    private Long id;
-    private String handle;
-    private String fullName;
-    private String bio;
+import java.util.List;
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+public record UserResponse(Long id, String handle, String fullName, String bio) {
 
-    public String getHandle() { return handle; }
-    public void setHandle(String handle) { this.handle = handle; }
+    public static UserResponse fromUser(User user) {
+        return new UserResponse(user.getId(), user.getHandle(), user.getFullName(), user.getBio());
+    }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-
-    public String getBio() { return bio; }
-    public void setBio(String bio) { this.bio = bio; }
+    public static List<UserResponse> fromUsers(List<User> users) {
+        return users.stream()
+                .map(UserResponse::fromUser)
+                .toList();
+    }
 
 }

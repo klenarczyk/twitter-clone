@@ -1,36 +1,37 @@
 package com.klenarczyk.backend.service;
 
 import com.klenarczyk.backend.dto.auth.RegisterRequest;
+import com.klenarczyk.backend.dto.user.UpdateUserRequest;
+import com.klenarczyk.backend.entity.Follow;
 import com.klenarczyk.backend.entity.User;
-import com.klenarczyk.backend.exception.ResourceNotFoundException;
-import com.klenarczyk.backend.repository.UserRepository;
 import jakarta.validation.Valid;
-import org.springframework.stereotype.Service;
 
-@Service
-public class UserService {
+import java.util.List;
 
-    private final UserRepository userRepository;
+public interface UserService {
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    User createUser(@Valid RegisterRequest req);
 
-    // Methods
-    public User createUser(@Valid RegisterRequest req) {
-        User created = new User();
+    User updateUser(Long id, @Valid UpdateUserRequest req);
 
-        created.setHandle(req.getHandle());
-        created.setEmail(req.getEmail());
-        created.setPasswordHash(req.getPassword());
-        created.setFullName(req.getFullName());
+    User getUserById(Long id);
 
-        return userRepository.save(created);
-    }
+    User getUserByEmail(String email);
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id #" + id + " not found"));
-    }
+    User getUserByHandle(String handle);
+
+    List<User> getFollowers(Long userId);
+
+    List<User> getFollowing(Long userId);
+
+    Follow createFollow(Long followedId, Long followerId);
+
+    void deleteFollow(Long followedId, Long followerId);
+
+    boolean doesUserExist(Long id);
+
+    boolean isEmailTaken(String email);
+
+    boolean isHandleTaken(String handle);
 
 }

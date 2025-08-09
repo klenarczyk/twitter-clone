@@ -1,8 +1,7 @@
 package com.klenarczyk.backend.config;
 
 import com.klenarczyk.backend.auth.JwtFilter;
-import com.klenarczyk.backend.service.UserDetailsServiceImpl;
-import com.klenarczyk.backend.util.ApiPaths;
+import com.klenarczyk.backend.util.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,11 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
-    private final UserDetailsServiceImpl userDetailsService;
 
-    public SecurityConfig(JwtFilter jwtFilter, UserDetailsServiceImpl userDetailsService) {
+    public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
-        this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -31,7 +28,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(ApiPaths.BASE_API +"/auth/**").permitAll()
+//                                .anyRequest().permitAll() // TODO: Add auth restrictions
+                        .requestMatchers(Constants.BASE_API +"/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess

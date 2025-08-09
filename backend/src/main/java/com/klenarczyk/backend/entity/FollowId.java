@@ -2,10 +2,11 @@ package com.klenarczyk.backend.entity;
 
 import jakarta.persistence.Embeddable;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class FollowId {
+public class FollowId implements Serializable {
 
     private Long followerId;
     private Long followedId;

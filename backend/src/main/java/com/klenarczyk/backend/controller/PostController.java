@@ -1,26 +1,95 @@
 package com.klenarczyk.backend.controller;
 
-import com.klenarczyk.backend.util.ApiPaths;
-import com.klenarczyk.backend.service.CommentService;
-import com.klenarczyk.backend.service.LikeService;
-import com.klenarczyk.backend.service.PostService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.klenarczyk.backend.dto.post.CommentResponse;
+import com.klenarczyk.backend.dto.post.CreatePostRequest;
+import com.klenarczyk.backend.dto.post.PostResponse;
+import com.klenarczyk.backend.dto.post.LikeResponse;
+import com.klenarczyk.backend.entity.Comment;
+import com.klenarczyk.backend.entity.Like;
+import com.klenarczyk.backend.entity.Post;
+import com.klenarczyk.backend.service.impl.UserServiceImpl;
+import com.klenarczyk.backend.util.Constants;
+import com.klenarczyk.backend.service.impl.PostServiceImpl;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping(ApiPaths.BASE_API + "/posts")
+@RequestMapping(Constants.BASE_API + "/posts")
 public class PostController {
 
-    private final PostService postService;
-    private final LikeService likeService;
-    private final CommentService commentService;
+    private final PostServiceImpl postService;
+    private final UserServiceImpl userService;
 
-    public PostController(PostService postService, LikeService likeService, CommentService commentService) {
+    public PostController(PostServiceImpl postService, UserServiceImpl userService) {
         this.postService = postService;
-        this.likeService = likeService;
-        this.commentService = commentService;
+        this.userService = userService;
     }
 
     // Request mapping methods will go here
+    @GetMapping
+    public ResponseEntity<List<PostResponse>> getPosts(
+            @RequestParam(required = false) Long authorId
+    ) {
+        List<Post> posts;
+
+        if (authorId != null) {
+            posts = postService.getPostsByAuthor(authorId);
+        } else {
+            posts = postService.getAllPosts();
+        }
+
+        return ResponseEntity.ok(PostResponse.fromPosts(posts));
+    }
+
+    @PostMapping
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest req) {
+        Post newPost = postService.createPost(req);
+        return ResponseEntity.ok(PostResponse.fromPost(newPost));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
+        Post post = postService.getPostById(id);
+        return ResponseEntity.ok(PostResponse.fromPost(post));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+        postService.deletePost(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<LikeResponse> likePost(@PathVariable Long postId,
+                                                 @AuthenticationPrincipal UserDetails currentUser) {
+        Long currentUserId = userService.getUserByEmail(currentUser.getUsername()).getId();
+        Like like = postService.likePost(currentUserId, postId);
+        return ResponseEntity.ok(LikeResponse.fromLike(like));
+    }
+
+    @DeleteMapping("/{postId}/unlike")
+    public ResponseEntity<Void> unlikePost(@PathVariable Long postId,
+                                           @AuthenticationPrincipal UserDetails currentUser) {
+        Long currentUserId = userService.getUserByEmail(currentUser.getUsername()).getId();
+        postService.unlikePost(currentUserId, postId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{postId}/likes")
+    public ResponseEntity<List<LikeResponse>> getPostLikes(@PathVariable Long postId) {
+        List<Like> likes = postService.getPostLikes(postId);
+        return ResponseEntity.ok(LikeResponse.fromLikes(likes));
+    }
+
+    @GetMapping("/{postId}/replies")
+    public ResponseEntity<List<CommentResponse>> getPostReplies(@PathVariable Long postId) {
+        List<Comment> replies = postService.getPostReplies(postId);
+        return ResponseEntity.ok(CommentResponse.fromComments(replies));
+    }
 
 }

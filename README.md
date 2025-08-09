@@ -18,7 +18,7 @@ A Full-Stack Twitter Clone.
 
      ```properties
      # Database configuration
-     spring.datasource.url=jdbc:postgresql://localhost:5432/ twitter_clone_db
+     spring.datasource.url=jdbc:postgresql://localhost:5432/twitter_clone_db
      spring.datasource.username=<YOUR_DB_USERNAME>
      spring.datasource.password=<YOUR_DB_PASSWORD>
      ```

@@ -1,10 +1,9 @@
 package com.klenarczyk.backend.dto.auth;
 
-public class AuthResponse {
+public record AuthResponse(String token) {
 
-    private String token;
-
-    public String getToken() { return token; }
-    public void setToken(String token) { this.token = token; }
+    public static AuthResponse fromToken(String token) {
+        return new AuthResponse(token);
+    }
 
 }

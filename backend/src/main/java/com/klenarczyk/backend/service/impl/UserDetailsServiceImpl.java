@@ -1,4 +1,4 @@
-package com.klenarczyk.backend.service;
+package com.klenarczyk.backend.service.impl;
 
 import com.klenarczyk.backend.entity.User;
 import com.klenarczyk.backend.repository.UserRepository;

@@ -1,17 +1,29 @@
 package com.klenarczyk.backend.service;
 
-import com.klenarczyk.backend.repository.PostRepository;
-import org.springframework.stereotype.Service;
+import com.klenarczyk.backend.dto.post.CreatePostRequest;
+import com.klenarczyk.backend.entity.*;
+import jakarta.validation.Valid;
 
-@Service
-public class PostService {
+import java.util.List;
 
-    private final PostRepository postRepository;
+public interface PostService {
 
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    Post createPost(@Valid CreatePostRequest req);
 
-    // Methods
+    List<Post> getAllPosts();
+
+    Post getPostById(Long id);
+
+    List<Post> getPostsByAuthor(Long userId);
+
+    void deletePost(Long id);
+
+    Like likePost(Long userId, Long postId);
+
+    void unlikePost(Long userId, Long postId);
+
+    List<Like> getPostLikes(Long postId);
+
+    List<Comment> getPostReplies(Long postId);
 
 }
