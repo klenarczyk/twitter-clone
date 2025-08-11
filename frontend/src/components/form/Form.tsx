@@ -5,11 +5,11 @@ type FormProps = React.FormHTMLAttributes<HTMLFormElement> & {
     className?: string;
 };
 
-export default function Form({ children, className = '', ...props }: FormProps) {
+export default function Form({children, className = '', ...props}: FormProps) {
     return (
         <form
             {...props}
-            className={`bg-white p-6 rounded-lg shadow-md w-full max-w-md space-y-6 ${className}`}
+            className={`background-default p-6 rounded-lg shadow-md w-full max-w-md space-y-6 ${className}`}
         >
             {children}
         </form>

@@ -6,7 +6,7 @@ import FormItem from "@/components/form/FormItem";
 import InputField from "@/components/form/InputField";
 import Button from "@/components/ui/Button";
 import Form from "@/components/form/Form";
-import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/app/utils/validation";
+import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/utils/validation";
 import {EyeOffIcon} from "@/components/icons/EyeOffIcon";
 import {EyeIcon} from "@/components/icons/EyeIcon";
 
@@ -127,9 +127,9 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="flex flex-col gap-16 min-h-screen items-center justify-center bg-gray-100">
+        <div className="flex flex-col gap-16 min-h-screen items-center justify-center background-dark">
             <Form onSubmit={handleRegister} noValidate>
-                <h1 className="text-4xl font-bold">Register</h1>
+                <h1 className="text-4xl font-bold text-default">Register</h1>
 
                 <FormItem label="Handle" error={formErrors.handle}>
                     <InputField
@@ -164,7 +164,7 @@ export default function RegisterPage() {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="text-gray-500 focus:outline-none  cursor-pointer"
+                                className="text-default focus:outline-none  cursor-pointer"
                                 tabIndex={-1}
                             >
                                 {showPassword ? (
@@ -188,7 +188,7 @@ export default function RegisterPage() {
                             <button
                                 type="button"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                className="text-gray-500 focus:outline-none  cursor-pointer"
+                                className="text-default focus:outline-none  cursor-pointer"
                                 tabIndex={-1}
                             >
                                 {showConfirmPassword ? (

@@ -1,12 +1,67 @@
 @import "tailwindcss";
 
+@tailwind utilities;
+
 :root {
+    --color-bg-dark: hsl(0, 0%, 0%);
+    --color-bg: hsl(0, 0%, 5%);
+    --color-bg-light: hsl(0, 0%, 10%);
+    --color-text: hsl(0, 0%, 95%);
+    --color-text-muted: hsl(0, 0%, 70%);
 }
 
 body {
+    background-color: var(--color-bg-dark);
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+@layer utilities {
+    .text-scale-1 {
+        @apply text-sm font-normal;
+        color: var(--color-text-muted);
+    }
+
+    .text-scale-2 {
+        @apply text-base font-normal;
+        color: var(--color-text-muted);
+    }
+
+    .text-scale-3 {
+        @apply text-base font-normal;
+        color: var(--color-text);
+    }
+
+    .text-scale-4 {
+        @apply text-base font-bold;
+        color: var(--color-text);
+    }
+
+    .text-scale-5 {
+        @apply text-lg font-bold;
+        color: var(--color-text);
+    }
+
+    .background-dark {
+        background-color: var(--color-bg-dark);
+    }
+
+    .background-default {
+        background-color: var(--color-bg);
+    }
+
+    .background-light {
+        background-color: var(--color-bg-light);
+    }
+
+    .text-default {
+        color: var(--color-text);
+    }
+
+    .text-muted {
+        color: var(--color-text-muted);
+    }
 }
 
 @keyframes shake {

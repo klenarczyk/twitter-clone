@@ -10,7 +10,7 @@ type InputFieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
 export default function InputField({prefix, suffix, error, className = '', ...props}: InputFieldProps) {
     const errorClasses = error
         ? 'border-red-500 shake'
-        : 'border-gray-300';
+        : 'border-[var(--color-text-muted)]';
 
     return (
         <div
@@ -18,7 +18,7 @@ export default function InputField({prefix, suffix, error, className = '', ...pr
             focus-within:border-blue-500 focus-within:ring focus-within:ring-blue-500 ${className}`}
         >
             {prefix && (
-                <span className="bg-gray-100 text-gray-500 px-3 py-2 select-none">
+                <span className="background-light text-scale-2 px-3 py-2 select-none">
                     {prefix}
                 </span>
             )}
@@ -27,7 +27,7 @@ export default function InputField({prefix, suffix, error, className = '', ...pr
                 onChange={(e) => {
                     props.onChange?.(e);
                 }}
-                className={`flex-grow px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none 
+                className={`flex-grow px-3 py-2 text-scale-3 placeholder-[var(--color-text-muted)] focus:outline-none 
                 disabled:opacity-50 disabled:cursor-not-allowed`}
             />
             {suffix && (
