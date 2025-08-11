@@ -6,6 +6,7 @@ import com.klenarczyk.backend.entity.Follow;
 import com.klenarczyk.backend.entity.FollowId;
 import com.klenarczyk.backend.entity.User;
 import com.klenarczyk.backend.exception.BadRequestException;
+import com.klenarczyk.backend.exception.ResourceConflictException;
 import com.klenarczyk.backend.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.FollowRepository;
 import com.klenarczyk.backend.repository.UserRepository;
@@ -36,10 +37,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User createUser(@Valid RegisterRequest req) {
         if (isEmailTaken(req.getEmail())) {
-            throw new BadRequestException("Email '" + req.getEmail() + "' is already taken");
+            throw new ResourceConflictException("email", "Email '" + req.getEmail() + "' is already taken");
         }
         if (isHandleTaken(req.getHandle())) {
-            throw new BadRequestException("Handle '@" + req.getHandle() + "' is already taken");
+            throw new ResourceConflictException("handle", "Handle '@" + req.getHandle() + "' is already taken");
         }
 
         User newUser = new User();

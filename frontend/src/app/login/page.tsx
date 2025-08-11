@@ -1,0 +1,131 @@
+'use client'
+
+import React, {useState} from "react";
+import Form from "@/components/form/Form";
+import FormItem from "@/components/form/FormItem";
+import InputField from "@/components/form/InputField";
+import Button from "@/components/ui/Button";
+import {validateEmail} from "@/app/utils/validation";
+import {useRouter} from "next/navigation";
+import {EyeOffIcon} from "@/components/icons/EyeOffIcon";
+import {EyeIcon} from "@/components/icons/EyeIcon";
+
+export default function LoginPage() {
+    const router = useRouter();
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+
+    const [formErrors, setFormErrors] = useState({
+        email: '',
+        password: '',
+        submit: '',
+    });
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const [loading, setLoading] = useState(false);
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setFormErrors({email: '', password: '', submit: ''});
+
+        let valid = true;
+        const newErrors = {email: '', password: '', submit: ''};
+
+        const emailValidation = validateEmail(formData.email);
+        if (!emailValidation.isValid) {
+            newErrors.email = emailValidation.error;
+            valid = false;
+        }
+        if (!formData.password.trim()) {
+            newErrors.password = 'Please enter your password';
+            valid = false;
+        }
+
+        if (!valid) {
+            setFormErrors(newErrors);
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const res = await fetch((process.env.NEXT_PUBLIC_API_URL ?? '') + "/auth/login", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
+                body: JSON.stringify({email: formData.email.trim(), password: formData.password.trim()}),
+            });
+
+            if (res.ok) {
+                router.push('/');
+            } else {
+                const data = await res.json();
+                if (data.field === "credentials") {
+                    newErrors.email = "Invalid email or password";
+                }
+                newErrors.submit = data.message || 'Login failed';
+                setFormErrors(newErrors);
+            }
+        } catch {
+            setFormErrors(prev => ({...prev, submit: "Network error"}));
+        }
+
+        setLoading(false);
+    };
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.currentTarget;
+        setFormData(prev => ({...prev, [name]: value}));
+        setFormErrors(prev => ({...prev, [name]: '', submit: ''}));
+    };
+
+    return (
+        <div className="flex flex-col gap-16 min-h-screen items-center justify-center bg-gray-100">
+            <Form onSubmit={handleLogin} noValidate>
+                <h1 className="text-4xl font-bold">Login</h1>
+
+                <FormItem label="Email" error={formErrors.email}>
+                    <InputField
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={onChange}
+                        error={formErrors.email}
+                        required
+                    />
+                </FormItem>
+                <FormItem label="Password" error={formErrors.password}>
+                    <InputField
+                        name="password"
+                        type={`${showPassword ? 'text' : 'password'}`}
+                        value={formData.password}
+                        onChange={onChange}
+                        error={formErrors.password}
+                        required
+                        suffix={
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="text-gray-500 focus:outline-none  cursor-pointer"
+                                tabIndex={-1}
+                            >
+                                {showPassword ? (
+                                    <EyeOffIcon className="h-5 w-5"/>
+                                ) : (
+                                    <EyeIcon className="h-5 w-5"/>
+                                )}
+                            </button>
+                        }
+                    />
+                </FormItem>
+                <Button type="submit" disabled={loading}>
+                    {loading ? 'Logging in...' : 'Login'}
+                </Button>
+            </Form>
+        </div>
+    );
+}

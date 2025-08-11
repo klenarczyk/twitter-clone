@@ -1,9 +1,9 @@
 package com.klenarczyk.backend.dto.auth;
 
-public record AuthResponse(String token) {
+public record AuthResponse(String message) {
 
-    public static AuthResponse fromToken(String token) {
-        return new AuthResponse(token);
+    public static AuthResponse success() {
+        return new AuthResponse("Authentication successful");
     }
 
 }

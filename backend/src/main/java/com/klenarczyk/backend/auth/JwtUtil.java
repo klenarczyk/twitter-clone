@@ -1,5 +1,6 @@
 package com.klenarczyk.backend.auth;
 
+import com.klenarczyk.backend.util.Constants;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -14,13 +15,12 @@ public class JwtUtil {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
-    private final long jwtExpirationMs = 864000000; // 10 days
 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + Constants.JWT_EXPIRATION_MS))
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }

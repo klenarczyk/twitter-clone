@@ -28,7 +28,6 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-//                                .anyRequest().permitAll() // TODO: Add auth restrictions
                         .requestMatchers(Constants.BASE_API +"/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )

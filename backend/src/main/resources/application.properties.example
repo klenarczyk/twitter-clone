@@ -10,3 +10,4 @@ spring.jpa.show-sql=true
 
 # Security configuration
 jwt.secret=
+app.cookie.secure=false # Set to true if using HTTPS

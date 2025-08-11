@@ -7,7 +7,10 @@ import com.klenarczyk.backend.dto.auth.RegisterRequest;
 import com.klenarczyk.backend.entity.User;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;
 import com.klenarczyk.backend.util.Constants;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +29,9 @@ public class AuthController {
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
 
+    @Value("${app.cookie.secure}")
+    private boolean cookieSecure;
+
     public AuthController(UserServiceImpl userService, AuthenticationManager authManager, JwtUtil jwtUtil) {
         this.userService = userService;
         this.authManager = authManager;
@@ -40,14 +46,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest req) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest req, HttpServletResponse response) {
         Authentication auth = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
         );
 
         String token = jwtUtil.generateToken((UserDetails) auth.getPrincipal());
 
-        return ResponseEntity.ok(AuthResponse.fromToken(token));
+        Cookie cookie = new Cookie("jwt", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(cookieSecure);
+        cookie.setPath("/");
+        cookie.setMaxAge(Constants.COOKIE_MAX_AGE);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(AuthResponse.success());
     }
 
 }
