@@ -3,65 +3,57 @@
 @tailwind utilities;
 
 :root {
-    --color-bg-dark: hsl(0, 0%, 0%);
-    --color-bg: hsl(0, 0%, 5%);
-    --color-bg-light: hsl(0, 0%, 10%);
-    --color-text: hsl(0, 0%, 95%);
-    --color-text-muted: hsl(0, 0%, 70%);
+    /* Monochrome base hue + saturation */
+    --color-hue: 0;
+    --color-saturation: 0%;
+
+    /* Lightness scale (matches Tailwind-like naming) */
+    --color-50: hsl(var(--color-hue), var(--color-saturation), 95%);
+    --color-100: hsl(var(--color-hue), var(--color-saturation), 90%);
+    --color-200: hsl(var(--color-hue), var(--color-saturation), 80%);
+    --color-300: hsl(var(--color-hue), var(--color-saturation), 70%);
+    --color-400: hsl(var(--color-hue), var(--color-saturation), 60%);
+    --color-500: hsl(var(--color-hue), var(--color-saturation), 50%);
+    --color-600: hsl(var(--color-hue), var(--color-saturation), 40%);
+    --color-700: hsl(var(--color-hue), var(--color-saturation), 30%);
+    --color-800: hsl(var(--color-hue), var(--color-saturation), 20%);
+    --color-900: hsl(var(--color-hue), var(--color-saturation), 10%);
+    --color-950: hsl(var(--color-hue), var(--color-saturation), 5%);
 }
 
 body {
-    background-color: var(--color-bg-dark);
+    background-color: var(--color-950);
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 @layer utilities {
-    .text-scale-1 {
-        @apply text-sm font-normal;
-        color: var(--color-text-muted);
-    }
+    /* Text colors */
+    .text-mono-50 { color: var(--color-50); }
+    .text-mono-100 { color: var(--color-100); }
+    .text-mono-200 { color: var(--color-200); }
+    .text-mono-300 { color: var(--color-300); }
+    .text-mono-400 { color: var(--color-400); }
+    .text-mono-500 { color: var(--color-500); }
+    .text-mono-600 { color: var(--color-600); }
+    .text-mono-700 { color: var(--color-700); }
+    .text-mono-800 { color: var(--color-800); }
+    .text-mono-900 { color: var(--color-900); }
+    .text-mono-950 { color: var(--color-950); }
 
-    .text-scale-2 {
-        @apply text-base font-normal;
-        color: var(--color-text-muted);
-    }
-
-    .text-scale-3 {
-        @apply text-base font-normal;
-        color: var(--color-text);
-    }
-
-    .text-scale-4 {
-        @apply text-base font-bold;
-        color: var(--color-text);
-    }
-
-    .text-scale-5 {
-        @apply text-lg font-bold;
-        color: var(--color-text);
-    }
-
-    .background-dark {
-        background-color: var(--color-bg-dark);
-    }
-
-    .background-default {
-        background-color: var(--color-bg);
-    }
-
-    .background-light {
-        background-color: var(--color-bg-light);
-    }
-
-    .text-default {
-        color: var(--color-text);
-    }
-
-    .text-muted {
-        color: var(--color-text-muted);
-    }
+    /* Background colors */
+    .bg-mono-50 { background-color: var(--color-50); }
+    .bg-mono-100 { background-color: var(--color-100); }
+    .bg-mono-200 { background-color: var(--color-200); }
+    .bg-mono-300 { background-color: var(--color-300); }
+    .bg-mono-400 { background-color: var(--color-400); }
+    .bg-mono-500 { background-color: var(--color-500); }
+    .bg-mono-600 { background-color: var(--color-600); }
+    .bg-mono-700 { background-color: var(--color-700); }
+    .bg-mono-800 { background-color: var(--color-800); }
+    .bg-mono-900 { background-color: var(--color-900); }
+    .bg-mono-950 { background-color: var(--color-950); }
 }
 
 @keyframes shake {

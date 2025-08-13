@@ -129,7 +129,7 @@ export default function RegisterPage() {
     return (
         <div className="flex flex-col gap-16 min-h-screen items-center justify-center background-dark">
             <Form onSubmit={handleRegister} noValidate>
-                <h1 className="text-4xl font-bold text-default">Register</h1>
+                <h1 className="text-4xl font-bold text-mono-50">Register</h1>
 
                 <FormItem label="Handle" error={formErrors.handle}>
                     <InputField
@@ -164,7 +164,7 @@ export default function RegisterPage() {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="text-default focus:outline-none  cursor-pointer"
+                                className="text-mono-50 focus:outline-none cursor-pointer"
                                 tabIndex={-1}
                             >
                                 {showPassword ? (
@@ -188,7 +188,7 @@ export default function RegisterPage() {
                             <button
                                 type="button"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                className="text-default focus:outline-none  cursor-pointer"
+                                className="text-mono-50 focus:outline-none cursor-pointer"
                                 tabIndex={-1}
                             >
                                 {showConfirmPassword ? (

@@ -1,8 +1,14 @@
-import axios from "axios";
+interface UserSummary {
+    id: number;
+    fullName: string;
+    handle: string;
+}
 
-const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
-    withCredentials: true,
-})
+export async function fetchCurrentUser(): Promise<UserSummary | null> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+        credentials: "include",
+    });
 
-export default api;
+    if (!res.ok) return null;
+    return res.json();
+}

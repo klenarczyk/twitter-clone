@@ -84,9 +84,9 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex flex-col gap-16 min-h-screen items-center justify-center background-dark">
+        <div className="flex flex-col gap-16 min-h-screen items-center justify-center bg-mono-950">
             <Form onSubmit={handleLogin} noValidate>
-                <h1 className="text-4xl font-bold text-default">Login</h1>
+                <h1 className="text-4xl font-bold text-mono-50">Login</h1>
 
                 <FormItem label="Email" error={formErrors.email}>
                     <InputField
@@ -110,7 +110,7 @@ export default function LoginPage() {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="text-default focus:outline-none cursor-pointer"
+                                className="text-mono-50 focus:outline-none cursor-pointer"
                                 tabIndex={-1}
                             >
                                 {showPassword ? (

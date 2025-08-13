@@ -9,7 +9,7 @@ export default function Form({children, className = '', ...props}: FormProps) {
     return (
         <form
             {...props}
-            className={`background-default p-6 rounded-lg shadow-md w-full max-w-md space-y-6 ${className}`}
+            className={`bg-mono-900 p-6 rounded-lg shadow-md w-full max-w-md space-y-6 ${className}`}
         >
             {children}
         </form>
