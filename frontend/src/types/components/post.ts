@@ -8,4 +8,5 @@ export interface Post {
     id: number;
     author: Author;
     content: string;
+    createdAt: number;
 }

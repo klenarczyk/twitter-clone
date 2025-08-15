@@ -1,0 +1,61 @@
+'use client';
+
+import React, {useEffect, useRef} from 'react';
+import {useInfinitePosts} from '@/hooks/useInfinitePosts';
+import PostList from "@/components/post/PostList";
+
+export default function Feed({initialPageSize = 8}: { initialPageSize?: number }) {
+    const {posts, loadMore, hasMore} = useInfinitePosts(initialPageSize);
+    const [loading, setLoading] = React.useState(true);
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (!sentinelRef.current) return;
+        setLoading(true);
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && hasMore && !loading) {
+                        loadMore();
+                    }
+                });
+            },
+            {root: null, rootMargin: '300px', threshold: 0.1}
+        );
+
+        observer.observe(sentinelRef.current);
+        setLoading(false);
+        return () => observer.disconnect();
+    }, [loadMore, hasMore, loading]);
+
+    return (
+        <section className="space-y-4">
+            {loading && (
+                <div className="p-6 border rounded-lg">
+                    <div className="animate-pulse space-y-3">
+                        <div className="h-4 bg-mono-900 rounded w-3/4"/>
+                        <div className="h-4 bg-mono-900 rounded w-1/2"/>
+                        <div className="h-40 bg-mono-900 rounded"/>
+                    </div>
+                </div>
+            )}
+
+            <PostList posts={posts} loading={loading}/>
+
+            <div ref={sentinelRef}/>
+
+            <div className="flex items-center justify-center py-6">
+                {!hasMore ? (
+                    <div className="text-sm text-mono-300">You’re all caught up ✨</div>
+                ) : (
+                    <button
+                        onClick={() => loadMore()}
+                        className="px-4 py-2 rounded-full border hover:bg-[var(--color-500)]"
+                    >
+                        Load more
+                    </button>
+                )}
+            </div>
+        </section>
+    );
+}

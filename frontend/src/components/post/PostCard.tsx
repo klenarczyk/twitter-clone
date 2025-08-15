@@ -1,30 +1,52 @@
+'use client';
+
+import React from 'react';
+import {motion} from 'framer-motion';
 import {Post} from "@/types/components/post";
 import Image from "next/image";
 
 export default function PostCard({post}: { post: Post }) {
+    const timeAgo = Math.floor((Date.now() - post.createdAt) / (1000 * 60 * 60));
     return (
-        <div
-            className="border-b border-[var(--color-500)] p-4 bg-mono-950 shadow-sm w-full flex gap-3">
-            <div className="w-12 h-12 rounded-full overflow-hidden select-none relative">
-                <Image
-                    src="/images/default-user.jpg"
-                    alt="Profile picture"
-                    layout="fill"
-                    objectFit="cover"
-                    priority={true}
-                />
-            </div>
-
-            <div className="flex flex-col gap-1">
-                <div className="flex gap-1">
-                    <p className="text-base text-mono-100">{post.author.fullName}</p>
-                    <p className="text-base text-mono-500">@{post.author.handle}</p>
-                    <p className="text-base text-mono-500 mx-1">•</p>
-                    <p className="text-base text-mono-500">Sep 14</p>
+        <motion.article
+            initial={{opacity: 0, y: 6}}
+            animate={{opacity: 1, y: 0}}
+            transition={{duration: 0.18}}
+            className="bg-mono-950 border-b border-[var(--color-600)] p-4 shadow-sm"
+            aria-labelledby={post.id.toString()}
+        >
+            <div className="flex gap-3">
+                <div
+                    className="w-12 h-12 rounded-full bg-mono-100 flex items-center justify-center cursor-pointer">
+                    <Image src="/images/default-user.jpg" alt="Profile" height={50} width={50}
+                           className="rounded-full"/>
                 </div>
+                <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <div className="font-bold text-mono-100 cursor-pointer">{post.author.fullName}</div>
+                            <div className="text-mono-300 text-sm cursor-pointer">@{post.author.handle}</div>
+                            <div className="text-mono-300">·</div>
+                            <div className="text-mono-300 text-sm">{timeAgo}h</div>
+                        </div>
+                        <div className="text-mono-300 cursor-pointer">•••</div>
+                    </div>
 
-                <p className="text-base text-mono-50">{post.content}</p>
+                    <p id={post.id.toString()} className="mt-2 font-semibold text-sm text-mono-100 leading-6">
+                        {post.content}
+                    </p>
+
+                    <div className="mt-3 flex items-center gap-6 text-sm text-mono-500">
+                        <button className="flex items-center gap-2">
+                            <span className="cursor-pointer hover:text-[var(--color-700)]">Like</span>
+                            <span>12</span>
+                        </button>
+                        <button className="flex items-center gap-2">
+                            <span className="cursor-pointer hover:text-[var(--color-700)]">Comment</span>
+                            <span>3</span></button>
+                    </div>
+                </div>
             </div>
-        </div>
-    )
+        </motion.article>
+    );
 }
