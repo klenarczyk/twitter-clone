@@ -1,9 +1,6 @@
 package com.klenarczyk.backend.controller;
 
-import com.klenarczyk.backend.dto.post.CommentResponse;
-import com.klenarczyk.backend.dto.post.CreatePostRequest;
-import com.klenarczyk.backend.dto.post.PostResponse;
-import com.klenarczyk.backend.dto.post.LikeResponse;
+import com.klenarczyk.backend.dto.post.*;
 import com.klenarczyk.backend.entity.Comment;
 import com.klenarczyk.backend.entity.Like;
 import com.klenarczyk.backend.entity.Post;
@@ -11,6 +8,10 @@ import com.klenarczyk.backend.service.impl.UserServiceImpl;
 import com.klenarczyk.backend.util.Constants;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,23 +33,30 @@ public class PostController {
 
     // Request mapping methods will go here
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getPosts(
-            @RequestParam(required = false) Long authorId
+    public ResponseEntity<PagedPostResponse> getPosts(
+            @RequestParam(required = false) Long authorId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
     ) {
-        List<Post> posts;
+        Pageable pageable = PageRequest.of(page, limit, Sort.by("createdAt").descending());
+        Page<Post> postPage;
 
         if (authorId != null) {
-            posts = postService.getPostsByAuthor(authorId);
+            postPage = postService.getPostsByAuthor(authorId, pageable);
         } else {
-            posts = postService.getAllPosts();
+            postPage = postService.getAllPosts(pageable);
         }
 
-        return ResponseEntity.ok(PostResponse.fromPosts(posts));
+        List<PostResponse> postResponses = PostResponse.fromPosts(postPage.getContent());
+        boolean hasMore = postPage.hasNext();
+
+        return ResponseEntity.ok(new PagedPostResponse(postResponses, hasMore));
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest req) {
-        Post newPost = postService.createPost(req);
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest req,
+                                                   @AuthenticationPrincipal UserDetails currentUser) {
+        Post newPost = postService.createPost(req, currentUser);
         return ResponseEntity.ok(PostResponse.fromPost(newPost));
     }
 

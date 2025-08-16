@@ -8,6 +8,10 @@ import com.klenarczyk.backend.repository.LikeRepository;
 import com.klenarczyk.backend.repository.PostRepository;
 import com.klenarczyk.backend.service.PostService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +36,12 @@ public class PostServiceImpl implements PostService {
     // Methods
     @Override
     @Transactional
-    public Post createPost(@Valid CreatePostRequest req) {
+    public Post createPost(@Valid CreatePostRequest req,
+                           @AuthenticationPrincipal UserDetails currentUser) {
         Post newPost = new Post();
 
-        newPost.setUser(userService.getUserById(req.getUserId()));
+        User user = userService.getUserByEmail(currentUser.getUsername());
+        newPost.setUser(user);
         newPost.setContent(req.getContent());
 
         return postRepository.save(newPost);
@@ -43,8 +49,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public Page<Post> getAllPosts(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 
     @Override
@@ -58,6 +64,12 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public List<Post> getPostsByAuthor(Long userId) {
         return postRepository.findByUserId(userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Post> getPostsByAuthor(Long authorId, Pageable pageable) {
+        return postRepository.findByUserId(authorId, pageable);
     }
 
     @Override

@@ -3,18 +3,24 @@ package com.klenarczyk.backend.service;
 import com.klenarczyk.backend.dto.post.CreatePostRequest;
 import com.klenarczyk.backend.entity.*;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
 public interface PostService {
 
-    Post createPost(@Valid CreatePostRequest req);
+    Post createPost(@Valid CreatePostRequest req,
+                    @AuthenticationPrincipal UserDetails currentUser);
 
-    List<Post> getAllPosts();
+    Page<Post> getAllPosts(Pageable pageable);
 
     Post getPostById(Long id);
 
     List<Post> getPostsByAuthor(Long userId);
+    Page<Post> getPostsByAuthor(Long authorId, Pageable pageable);
 
     void deletePost(Long id);
 

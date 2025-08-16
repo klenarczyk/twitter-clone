@@ -7,8 +7,8 @@ export default function PostList({posts, loading}: { posts: Post[], loading?: bo
 
     return (
         <div className="flex flex-col w-full">
-            {posts.map((post) => (
-                <PostCard key={post.id} post={post}/>
+            {posts.map((post, key) => (
+                <PostCard key={key} post={post}/>
             ))}
         </div>
     )
