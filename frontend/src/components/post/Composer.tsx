@@ -1,13 +1,35 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from "next/image";
-import {createPost} from "@/lib/api";
+import {createPost, fetchCurrentUser} from "@/lib/api";
+import {UserSummary} from "@/types/User";
+import Link from "next/link";
+import {useRouter} from "next/navigation";
 
 export default function Composer() {
+    const router = useRouter();
     const [text, setText] = useState('');
+    const [currentUser, setCurrentUser] = useState<UserSummary | null>(null);
+
+    const pfpUrl = (currentUser && currentUser.profileImageUrl && currentUser.profileImageUrl.length > 0)
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${currentUser.profileImageUrl}`
+        : '/images/default-user.jpg';
 
     const canPost = text.trim().length > 0;
+
+    useEffect(() => {
+        async function loadCurrentUser() {
+            try {
+                const user = await fetchCurrentUser();
+                setCurrentUser(user);
+            } catch (error) {
+                console.error('Failed to fetch current user:', error);
+            }
+        }
+
+        loadCurrentUser();
+    }, [])
 
     async function handlePost() {
         if (!canPost) return;
@@ -17,16 +39,17 @@ export default function Composer() {
             console.log(e);
         } finally {
             setText('');
+            router.refresh();
         }
     }
 
     return (
         <div className="bg-mono-950 border-b border-[var(--color-500)] p-4 shadow-sm">
             <div className="flex gap-3">
-                <div className="w-12 h-12 rounded-full">
-                    <Image src="/images/default-user.jpg" alt="Profile" height={50} width={50}
+                <Link href={`/u/${currentUser?.handle}`} className="w-12 h-12 rounded-full">
+                    <Image src={pfpUrl} alt="Profile" height={50} width={50}
                            className="rounded-full cursor-pointer"/>
-                </div>
+                </Link>
                 <div className="flex-1">
                     <textarea
                         value={text}

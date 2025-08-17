@@ -1,13 +1,17 @@
 import {Post} from "@/types/components/post";
+import {User} from "@/types/User";
 
-interface UserSummary {
-    id: number;
-    fullName: string;
-    handle: string;
+export async function fetchCurrentUser(): Promise<User | null> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+        credentials: "include",
+    });
+
+    if (!res.ok) return null;
+    return res.json();
 }
 
-export async function fetchCurrentUser(): Promise<UserSummary | null> {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+export async function fetchUser(handle: string): Promise<User | null> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?handle=${handle}`, {
         credentials: "include",
     });
 

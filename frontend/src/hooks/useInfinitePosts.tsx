@@ -4,7 +4,11 @@ import {useEffect, useRef, useState} from 'react';
 import {Post} from "@/types/components/post";
 import {fetchPosts} from "@/lib/api";
 
-export function useInfinitePosts(initialPageSize = 8) {
+export function useInfinitePosts({userId = null, initialPageSize = 8}: {
+    userId?: number | null;
+    initialPageSize?: number
+}) {
+    // State to hold posts
     const [posts, setPosts] = useState<Post[]>([]);
     const [page, setPage] = useState(-1);
     const [hasMore, setHasMore] = useState(true);
@@ -16,7 +20,12 @@ export function useInfinitePosts(initialPageSize = 8) {
 
     async function loadMore() {
         if (!hasMore) return;
-        const res = await fetchPosts({page: page + 1, limit: pageSizeRef.current});
+        let res;
+        if (userId) {
+            res = await fetchPosts({page: page + 1, limit: pageSizeRef.current, authorId: userId});
+        } else {
+            res = await fetchPosts({page: page + 1, limit: pageSizeRef.current});
+        }
         setPosts((prev) => [...prev, ...res.items]);
         setPage(page + 1);
         setHasMore(res.hasMore);

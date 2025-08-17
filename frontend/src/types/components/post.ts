@@ -1,12 +1,8 @@
-export interface Author {
-    id: number;
-    handle: string;
-    fullName: string;
-}
+import {UserSummary} from "@/types/User";
 
 export interface Post {
     id: number;
-    author: Author;
+    author: UserSummary;
     content: string;
     createdAt: number;
 }

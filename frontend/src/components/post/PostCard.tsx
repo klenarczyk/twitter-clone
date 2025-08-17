@@ -4,9 +4,13 @@ import React from 'react';
 import {motion} from 'framer-motion';
 import {Post} from "@/types/components/post";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function PostCard({post}: { post: Post }) {
     const timeAgo = Math.floor((Date.now() - post.createdAt) / (1000 * 60 * 60));
+
+    const pfpUrl = post.author.profileImageUrl ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/${post.author.profileImageUrl}` : '/images/default-user.jpg';
+
     return (
         <motion.article
             initial={{opacity: 0, y: 6}}
@@ -16,16 +20,19 @@ export default function PostCard({post}: { post: Post }) {
             aria-labelledby={post.id.toString()}
         >
             <div className="flex gap-3">
-                <div
-                    className="w-12 h-12 rounded-full bg-mono-100 flex items-center justify-center cursor-pointer">
-                    <Image src="/images/default-user.jpg" alt="Profile" height={50} width={50}
+                <Link href={`/u/${post.author.handle}`}
+                      className="w-12 h-12 rounded-full bg-mono-100 flex items-center justify-center cursor-pointer">
+                    <Image src={pfpUrl} alt="Profile"
+                           height={50} width={50}
                            className="rounded-full"/>
-                </div>
+                </Link>
                 <div className="flex-1">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <div className="font-bold text-mono-100 cursor-pointer">{post.author.fullName}</div>
-                            <div className="text-mono-300 text-sm cursor-pointer">@{post.author.handle}</div>
+                            <Link href={`/u/${post.author.handle}`}
+                                  className="font-bold text-mono-100 cursor-pointer">{post.author.fullName}</Link>
+                            <Link href={`/u/${post.author.handle}`}
+                                  className="text-mono-300 text-sm cursor-pointer">@{post.author.handle}</Link>
                             <div className="text-mono-300">·</div>
                             <div className="text-mono-300 text-sm">{timeAgo}h</div>
                         </div>

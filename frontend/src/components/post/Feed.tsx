@@ -1,12 +1,16 @@
 'use client';
 
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useInfinitePosts} from '@/hooks/useInfinitePosts';
 import PostList from "@/components/post/PostList";
 
-export default function Feed({initialPageSize = 8}: { initialPageSize?: number }) {
-    const {posts, loadMore, hasMore} = useInfinitePosts(initialPageSize);
-    const [loading, setLoading] = React.useState(true);
+export default function Feed({userId, initialPageSize = 8, className}: {
+    userId?: number;
+    initialPageSize?: number;
+    className?: string
+}) {
+    const {posts, loadMore, hasMore} = useInfinitePosts({userId, initialPageSize});
+    const [loading, setLoading] = useState(true);
     const sentinelRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -29,7 +33,7 @@ export default function Feed({initialPageSize = 8}: { initialPageSize?: number }
     }, [loadMore, hasMore, loading]);
 
     return (
-        <section className="space-y-4">
+        <section className={`space-y-4 ${className}`}>
             {loading && (
                 <div className="p-6 border rounded-lg">
                     <div className="animate-pulse space-y-3">

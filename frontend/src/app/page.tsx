@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import Feed from '../components/post/Feed';
 import Suggested from '../components/post/Suggested';

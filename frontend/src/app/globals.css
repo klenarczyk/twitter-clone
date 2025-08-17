@@ -56,6 +56,9 @@ body {
     .bg-mono-800 { background-color: var(--color-800); }
     .bg-mono-900 { background-color: var(--color-900); }
     .bg-mono-950 { background-color: var(--color-950); }
+
+    /* Other utilities */
+    .w-clamped { width: min(42rem, 100vw); }
 }
 
 @keyframes shake {
