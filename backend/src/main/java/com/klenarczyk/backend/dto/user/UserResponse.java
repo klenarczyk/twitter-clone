@@ -4,10 +4,10 @@ import com.klenarczyk.backend.entity.User;
 
 import java.util.List;
 
-public record UserResponse(Long id, String handle, String fullName, String bio) {
+public record UserResponse(Long id, String handle, String profileImageUrl, String fullName, String bio) {
 
     public static UserResponse fromUser(User user) {
-        return new UserResponse(user.getId(), user.getHandle(), user.getFullName(), user.getBio());
+        return new UserResponse(user.getId(), user.getHandle(), user.getProfileImageUrl(), user.getFullName(), user.getBio());
     }
 
     public static List<UserResponse> fromUsers(List<User> users) {

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(Constants.BASE_API + "/search")
+@RequestMapping("${app.api.base}/search")
 public class SearchController {
 
     private final UserServiceImpl userService;

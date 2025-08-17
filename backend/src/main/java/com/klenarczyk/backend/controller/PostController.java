@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(Constants.BASE_API + "/posts")
+@RequestMapping("${app.api.base}/posts")
 public class PostController {
 
     private final PostServiceImpl postService;

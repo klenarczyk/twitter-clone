@@ -2,6 +2,7 @@ package com.klenarczyk.backend.config;
 
 import com.klenarczyk.backend.auth.JwtFilter;
 import com.klenarczyk.backend.util.Constants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,9 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
+    @Value("${app.api.base}")
+    private String apiBase;
+
     private final JwtFilter jwtFilter;
 
     public SecurityConfig(JwtFilter jwtFilter) {
@@ -35,7 +39,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(Constants.BASE_API +"/auth/**").permitAll()
+                        .requestMatchers(apiBase +"/auth/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess

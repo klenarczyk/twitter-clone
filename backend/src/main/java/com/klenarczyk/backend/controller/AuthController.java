@@ -4,6 +4,7 @@ import com.klenarczyk.backend.auth.JwtUtil;
 import com.klenarczyk.backend.dto.auth.AuthResponse;
 import com.klenarczyk.backend.dto.auth.LoginRequest;
 import com.klenarczyk.backend.dto.auth.RegisterRequest;
+import com.klenarczyk.backend.dto.user.UserSummary;
 import com.klenarczyk.backend.entity.User;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;
 import com.klenarczyk.backend.util.Constants;
@@ -15,14 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(Constants.BASE_API + "/auth")
+@RequestMapping("${app.api.base}/auth")
 public class AuthController {
 
     private final UserServiceImpl userService;
@@ -61,6 +60,12 @@ public class AuthController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok(AuthResponse.success());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserSummary> getCurrentUser(@AuthenticationPrincipal UserDetails currentUser) {
+        User user = userService.getUserByEmail(currentUser.getUsername());
+        return ResponseEntity.ok(UserSummary.fromUser(user));
     }
 
 }

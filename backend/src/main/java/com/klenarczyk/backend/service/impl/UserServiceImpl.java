@@ -5,7 +5,6 @@ import com.klenarczyk.backend.dto.user.UpdateUserRequest;
 import com.klenarczyk.backend.entity.Follow;
 import com.klenarczyk.backend.entity.FollowId;
 import com.klenarczyk.backend.entity.User;
-import com.klenarczyk.backend.exception.BadRequestException;
 import com.klenarczyk.backend.exception.ResourceConflictException;
 import com.klenarczyk.backend.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.FollowRepository;

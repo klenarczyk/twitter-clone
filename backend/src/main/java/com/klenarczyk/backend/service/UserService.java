@@ -5,6 +5,7 @@ import com.klenarczyk.backend.dto.user.UpdateUserRequest;
 import com.klenarczyk.backend.entity.Follow;
 import com.klenarczyk.backend.entity.User;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

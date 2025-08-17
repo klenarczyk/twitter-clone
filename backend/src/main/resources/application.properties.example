@@ -11,3 +11,13 @@ spring.jpa.show-sql=true
 # Security configuration
 jwt.secret=
 app.cookie.secure=false # Set to true if using HTTPS
+
+# API url
+app.api.base=/api/v1 # API version base path
+
+# Multipart limits
+spring.servlet.multipart.max-file-size=5MB
+spring.servlet.multipart.max-request-size=5MB
+
+# Base upload directory
+app.upload-dir=uploads/ # Default directory for file uploads

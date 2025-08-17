@@ -6,27 +6,30 @@ import com.klenarczyk.backend.dto.user.UpdateUserRequest;
 import com.klenarczyk.backend.entity.Follow;
 import com.klenarczyk.backend.entity.Post;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
-import com.klenarczyk.backend.util.Constants;
 import com.klenarczyk.backend.dto.user.UserResponse;
 import com.klenarczyk.backend.entity.User;
+import com.klenarczyk.backend.service.impl.StorageServiceImpl;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(Constants.BASE_API + "/users")
+@RequestMapping("${app.api.base}/users")
 public class UserController {
 
     private final UserServiceImpl userService;
     private final PostServiceImpl postService;
+    private final StorageServiceImpl storageService;
 
-    public UserController(UserServiceImpl userService, PostServiceImpl postService) {
+    public UserController(UserServiceImpl userService, PostServiceImpl postService, StorageServiceImpl storageService) {
         this.userService = userService;
         this.postService = postService;
+        this.storageService = storageService;
     }
 
     // Request mapping methods will go here
@@ -46,6 +49,14 @@ public class UserController {
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long userId, @RequestBody UpdateUserRequest req) {
         User updatedUser = userService.updateUser(userId, req);
         return ResponseEntity.ok(UserResponse.fromUser(updatedUser));
+    }
+
+    @PostMapping("/pfp")
+    public ResponseEntity<?> uploadProfileImage(@RequestParam("file") MultipartFile file,
+                                                     @AuthenticationPrincipal UserDetails currentUser) {
+        Long userId = userService.getUserByEmail(currentUser.getUsername()).getId();
+        String imageUrl = storageService.uploadProfileImage(file, userId);
+        return ResponseEntity.ok(imageUrl);
     }
 
     @GetMapping("/{authorId}/posts")
