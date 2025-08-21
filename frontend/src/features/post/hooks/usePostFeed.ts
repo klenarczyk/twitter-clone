@@ -1,10 +1,10 @@
 'use client';
 
 import {useEffect, useRef, useState} from 'react';
-import {Post} from "@/types/components/post";
+import {Post} from "@/features/post/types/post";
 import {fetchPosts} from "@/lib/api";
 
-export function useInfinitePosts({userId = null, initialPageSize = 8}: {
+export function usePostFeed({userId = null, initialPageSize = 8}: {
     userId?: number | null;
     initialPageSize?: number
 }) {

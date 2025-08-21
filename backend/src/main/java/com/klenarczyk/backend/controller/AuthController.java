@@ -4,6 +4,7 @@ import com.klenarczyk.backend.auth.JwtUtil;
 import com.klenarczyk.backend.dto.auth.AuthResponse;
 import com.klenarczyk.backend.dto.auth.LoginRequest;
 import com.klenarczyk.backend.dto.auth.RegisterRequest;
+import com.klenarczyk.backend.dto.user.UserResponse;
 import com.klenarczyk.backend.dto.user.UserSummary;
 import com.klenarczyk.backend.entity.User;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;
@@ -63,9 +64,9 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserSummary> getCurrentUser(@AuthenticationPrincipal UserDetails currentUser) {
+    public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal UserDetails currentUser) {
         User user = userService.getUserByEmail(currentUser.getUsername());
-        return ResponseEntity.ok(UserSummary.fromUser(user));
+        return ResponseEntity.ok(UserResponse.fromUser(user));
     }
 
 }
