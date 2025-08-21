@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@tailwind utilities;
+
+@layer utilities {
+    /* Text colors */
+    .text-mono-50 { color: var(--color-50); }
+    .text-mono-100 { color: var(--color-100); }
+    .text-mono-200 { color: var(--color-200); }
+    .text-mono-300 { color: var(--color-300); }
+    .text-mono-400 { color: var(--color-400); }
+    .text-mono-500 { color: var(--color-500); }
+    .text-mono-600 { color: var(--color-600); }
+    .text-mono-700 { color: var(--color-700); }
+    .text-mono-800 { color: var(--color-800); }
+    .text-mono-900 { color: var(--color-900); }
+    .text-mono-950 { color: var(--color-950); }
+
+    /* Background colors */
+    .bg-mono-50 { background-color: var(--color-50); }
+    .bg-mono-100 { background-color: var(--color-100); }
+    .bg-mono-200 { background-color: var(--color-200); }
+    .bg-mono-300 { background-color: var(--color-300); }
+    .bg-mono-400 { background-color: var(--color-400); }
+    .bg-mono-500 { background-color: var(--color-500); }
+    .bg-mono-600 { background-color: var(--color-600); }
+    .bg-mono-700 { background-color: var(--color-700); }
+    .bg-mono-800 { background-color: var(--color-800); }
+    .bg-mono-900 { background-color: var(--color-900); }
+    .bg-mono-950 { background-color: var(--color-950); }
+
+    /* Other utilities */
+    .w-clamped { width: min(42rem, 100vw); }
+}

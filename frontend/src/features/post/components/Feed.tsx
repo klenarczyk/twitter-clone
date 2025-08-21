@@ -1,15 +1,15 @@
 'use client';
 
 import React, {useEffect, useRef, useState} from 'react';
-import {useInfinitePosts} from '@/hooks/useInfinitePosts';
-import PostList from "@/components/post/PostList";
+import {usePostFeed} from '@/features/post/hooks/usePostFeed';
+import PostList from "@/features/post/components/PostList";
 
 export default function Feed({userId, initialPageSize = 8, className}: {
     userId?: number;
     initialPageSize?: number;
     className?: string
 }) {
-    const {posts, loadMore, hasMore} = useInfinitePosts({userId, initialPageSize});
+    const {posts, loadMore, hasMore} = usePostFeed({userId, initialPageSize});
     const [loading, setLoading] = useState(true);
     const sentinelRef = useRef<HTMLDivElement | null>(null);
 

@@ -3,9 +3,9 @@
 import {useParams} from "next/navigation";
 import {useEffect, useState} from "react";
 import {fetchUser} from "@/lib/api";
-import {User} from "@/types/User";
+import {User} from "@/features/profile/types/user";
 import Image from "next/image";
-import Feed from "@/components/post/Feed";
+import Feed from "@/features/post/components/Feed";
 
 export default function ProfilePage() {
     const params = useParams();

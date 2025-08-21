@@ -1,5 +1,5 @@
-import {Post} from "@/types/components/post";
-import {User} from "@/types/User";
+import {Post} from "@/features/post/types/post";
+import {User} from "@/features/profile/types/user";
 
 export async function fetchCurrentUser(): Promise<User | null> {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {

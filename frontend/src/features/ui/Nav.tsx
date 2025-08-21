@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import Image from "next/image";
-import {UserSummary} from "@/types/User";
+import {UserSummary} from "@/features/profile/types/user";
 import {fetchCurrentUser} from "@/lib/api";
 import Link from "next/link";
 
@@ -30,7 +30,7 @@ export default function Nav() {
         <nav className="h-screen border-r bg-mono-950 border-[var(--color-800)] backdrop-blur-sm">
             <div
                 className="container-center flex flex-col items-center justify-start gap-6 px-4 py-3 text-mono-100 h-full">
-                <Link href="/" className="font-semibold">Twitter Clone</Link>
+                <Link href="/public" className="font-semibold">Twitter Clone</Link>
 
                 <Link href={`/u/${currentUser?.handle}`}
                       className="flex justify-center items-center rounded-full w-9 h-9 overflow-hidden cursor-pointer hover:ring-6 ring-[var(--color-800)] transition-all duration-100">
