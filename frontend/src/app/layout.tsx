@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import './globals.css';
-import Nav from '../components/ui/Nav';
+import '@/styles/globals.css';
+import Nav from '@/features/ui/Nav';
 
 export default function RootLayout({children}: { children: React.ReactNode }) {
     return (

@@ -1,4 +1,4 @@
-import {UserSummary} from "@/types/User";
+import {UserSummary} from "@/features/profile/types/user";
 
 export interface Post {
     id: number;

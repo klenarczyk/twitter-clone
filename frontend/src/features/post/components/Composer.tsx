@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import Image from "next/image";
 import {createPost, fetchCurrentUser} from "@/lib/api";
-import {UserSummary} from "@/types/User";
+import {UserSummary} from "@/features/profile/types/user";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 

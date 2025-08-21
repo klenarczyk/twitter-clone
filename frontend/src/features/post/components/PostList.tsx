@@ -1,5 +1,5 @@
-import {Post} from "@/types/components/post";
-import PostCard from "@/components/post/PostCard";
+import {Post} from "@/features/post/types/post";
+import PostCard from "@/features/post/components/PostCard";
 
 export default function PostList({posts, loading}: { posts: Post[], loading?: boolean }) {
     if (loading) return null;

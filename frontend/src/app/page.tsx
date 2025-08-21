@@ -1,7 +1,7 @@
 import React from 'react';
-import Feed from '../components/post/Feed';
-import Suggested from '../components/post/Suggested';
-import Composer from '../components/post/Composer';
+import Feed from '../features/post/components/Feed';
+import Suggested from '../features/post/components/Suggested';
+import Composer from '../features/post/components/Composer';
 
 export default function HomePage() {
     return (

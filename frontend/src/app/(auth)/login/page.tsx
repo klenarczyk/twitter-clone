@@ -1,14 +1,14 @@
 'use client'
 
 import React, {useState} from "react";
-import Form from "@/components/form/Form";
-import FormItem from "@/components/form/FormItem";
-import InputField from "@/components/form/InputField";
-import Button from "@/components/ui/Button";
+import Form from "@/features/ui/form/Form";
+import FormItem from "@/features/ui/form/FormItem";
+import InputField from "@/features/ui/form/InputField";
+import Button from "@/features/ui/Button";
 import {validateEmail} from "@/utils/validation";
 import {useRouter} from "next/navigation";
-import {EyeOffIcon} from "@/components/icons/EyeOffIcon";
-import {EyeIcon} from "@/components/icons/EyeIcon";
+import {EyeOffIcon} from "@/features/ui/icons/EyeOffIcon";
+import {EyeIcon} from "@/features/ui/icons/EyeIcon";
 
 export default function LoginPage() {
     const router = useRouter();

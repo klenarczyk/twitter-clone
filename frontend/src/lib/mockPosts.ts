@@ -1,4 +1,4 @@
-import {Post} from "@/types/components/post";
+import {Post} from "@/features/post/types/post";
 
 const sampleAuthors = [
     {id: 1, handle: '@ava', fullName: 'Ava'},
