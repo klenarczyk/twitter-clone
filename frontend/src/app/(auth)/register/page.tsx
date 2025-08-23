@@ -1,14 +1,13 @@
 'use client';
 
-import React, {useState} from 'react';
+import {ChangeEvent, FormEvent, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import FormItem from "@/features/ui/form/FormItem";
 import InputField from "@/features/ui/form/InputField";
 import Button from "@/features/ui/Button";
 import Form from "@/features/ui/form/Form";
 import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/utils/validation";
-import {EyeOffIcon} from "@/features/ui/icons/EyeOffIcon";
-import {EyeIcon} from "@/features/ui/icons/EyeIcon";
+import {Eye, EyeOff} from "lucide-react";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -35,7 +34,7 @@ export default function RegisterPage() {
 
     const [loading, setLoading] = useState(false);
 
-    async function handleRegister(e: React.FormEvent) {
+    async function handleRegister(e: FormEvent) {
         e.preventDefault();
         setLoading(true);
         setFormErrors({
@@ -120,7 +119,7 @@ export default function RegisterPage() {
         setLoading(false);
     }
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.currentTarget;
         setFormData(prev => ({...prev, [name]: value}));
         setFormErrors(prev => ({...prev, [name]: '', submit: ''}));
@@ -168,9 +167,9 @@ export default function RegisterPage() {
                                 tabIndex={-1}
                             >
                                 {showPassword ? (
-                                    <EyeOffIcon className="h-5 w-5"/>
+                                    <EyeOff className="h-5 w-5"/>
                                 ) : (
-                                    <EyeIcon className="h-5 w-5"/>
+                                    <Eye className="h-5 w-5"/>
                                 )}
                             </button>
                         }
@@ -192,9 +191,9 @@ export default function RegisterPage() {
                                 tabIndex={-1}
                             >
                                 {showConfirmPassword ? (
-                                    <EyeOffIcon className="h-5 w-5"/>
+                                    <EyeOff className="h-5 w-5"/>
                                 ) : (
-                                    <EyeIcon className="h-5 w-5"/>
+                                    <Eye className="h-5 w-5"/>
                                 )}
                             </button>
                         }

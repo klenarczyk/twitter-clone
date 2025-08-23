@@ -26,7 +26,7 @@ export default function ProfilePage() {
             }
         }
 
-        loadData();
+        loadData().then();
     }, [handle]);
 
     if (!user) return <div>Loading...</div>;
