@@ -1,19 +1,16 @@
 'use client';
 
-import React from 'react';
+import {ReactNode} from 'react';
 import '@/styles/globals.css';
-import Nav from '@/features/ui/Nav';
+import {AuthProvider} from "@/features/auth/providers/AuthProvider";
 
-export default function RootLayout({children}: { children: React.ReactNode }) {
+export default function RootLayout({children}: { children: ReactNode }) {
     return (
         <html lang="en">
         <body className="antialiased">
-        <div className="min-h-screen flex">
-            <Nav/>
-            <div className="flex-1 container-center px-4 sm:px-6 lg:px-8 py-6">
-                {children}
-            </div>
-        </div>
+        <AuthProvider>
+            {children}
+        </AuthProvider>
         </body>
         </html>
     );
