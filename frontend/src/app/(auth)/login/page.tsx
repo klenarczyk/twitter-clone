@@ -1,16 +1,17 @@
 'use client'
 
-import React, {useState} from "react";
+import {ChangeEvent, FormEvent, useState} from "react";
 import Form from "@/features/ui/form/Form";
 import FormItem from "@/features/ui/form/FormItem";
 import InputField from "@/features/ui/form/InputField";
 import Button from "@/features/ui/Button";
 import {validateEmail} from "@/utils/validation";
 import {useRouter} from "next/navigation";
-import {EyeOffIcon} from "@/features/ui/icons/EyeOffIcon";
-import {EyeIcon} from "@/features/ui/icons/EyeIcon";
+import {useAuth} from "@/features/auth/hooks/useAuth";
+import {Eye, EyeOff} from "lucide-react";
 
 export default function LoginPage() {
+    const {login} = useAuth();
     const router = useRouter();
 
     const [formData, setFormData] = useState({
@@ -21,24 +22,24 @@ export default function LoginPage() {
     const [formErrors, setFormErrors] = useState({
         email: '',
         password: '',
-        submit: '',
+        global: '',
     });
 
     const [showPassword, setShowPassword] = useState(false);
 
     const [loading, setLoading] = useState(false);
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setFormErrors({email: '', password: '', submit: ''});
+        setFormErrors({email: '', password: '', global: ''});
 
         let valid = true;
-        const newErrors = {email: '', password: '', submit: ''};
+        const newErrors = {email: '', password: '', global: ''};
 
-        const emailValidation = validateEmail(formData.email);
-        if (!emailValidation.isValid) {
-            newErrors.email = emailValidation.error;
+        const email = validateEmail(formData.email);
+        if (!email.isValid) {
+            newErrors.email = email.error;
             valid = false;
         }
         if (!formData.password.trim()) {
@@ -57,30 +58,43 @@ export default function LoginPage() {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'include',
-                body: JSON.stringify({email: formData.email.trim(), password: formData.password.trim()}),
+                body: JSON.stringify({
+                    email: formData.email.trim(), password: formData.password.trim()
+                }),
             });
 
             if (res.ok) {
-                router.push('/');
+                const userRes = await fetch((process.env.NEXT_PUBLIC_API_URL ?? '') + "/auth/me", {
+                    credentials: 'include'
+                });
+
+                if (userRes.ok) {
+                    const {user} = await userRes.json();
+                    login(user);
+                    router.push('/');
+                } else {
+                    newErrors.global = "Failed to fetch user after login";
+                    setFormErrors(newErrors);
+                }
             } else {
                 const data = await res.json();
                 if (data.field === "credentials") {
                     newErrors.email = "Invalid email or password";
                 }
-                newErrors.submit = data.message || 'Login failed';
+                newErrors.global = data.message || 'Login failed';
                 setFormErrors(newErrors);
             }
         } catch {
-            setFormErrors(prev => ({...prev, submit: "Network error"}));
+            setFormErrors(prev => ({...prev, global: "Network error"}));
         }
 
         setLoading(false);
     };
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.currentTarget;
         setFormData(prev => ({...prev, [name]: value}));
-        setFormErrors(prev => ({...prev, [name]: '', submit: ''}));
+        setFormErrors(prev => ({...prev, [name]: '', global: ''}));
     };
 
     return (
@@ -114,9 +128,9 @@ export default function LoginPage() {
                                 tabIndex={-1}
                             >
                                 {showPassword ? (
-                                    <EyeOffIcon className="h-5 w-5"/>
+                                    <EyeOff className="h-5 w-5"/>
                                 ) : (
-                                    <EyeIcon className="h-5 w-5"/>
+                                    <Eye className="h-5 w-5"/>
                                 )}
                             </button>
                         }

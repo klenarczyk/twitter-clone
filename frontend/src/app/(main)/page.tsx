@@ -1,7 +1,6 @@
-import React from 'react';
-import Feed from '../features/post/components/Feed';
-import Suggested from '../features/post/components/Suggested';
-import Composer from '../features/post/components/Composer';
+import Feed from '../../features/post/components/Feed';
+import Suggested from '../../features/post/components/Suggested';
+import Composer from '../../features/post/components/Composer';
 
 export default function HomePage() {
     return (
