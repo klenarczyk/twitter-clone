@@ -1,5 +1,6 @@
 import {Post} from "@/features/post/types/post";
-import {User} from "@/features/profile/types/user";
+import {Profile} from "@/features/profile/types/user";
+import {User} from "@/features/auth/types/auth";
 
 export async function fetchCurrentUser(): Promise<User | null> {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
@@ -10,7 +11,7 @@ export async function fetchCurrentUser(): Promise<User | null> {
     return res.json();
 }
 
-export async function fetchUser(handle: string): Promise<User | null> {
+export async function fetchUserByHandle(handle: string): Promise<Profile | null> {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?handle=${handle}`, {
         credentials: "include",
     });

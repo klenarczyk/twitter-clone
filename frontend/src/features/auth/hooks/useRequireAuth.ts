@@ -5,14 +5,14 @@ import {useRouter} from "next/navigation";
 import {useEffect} from "react";
 
 export const useRequireAuth = () => {
-    const {user} = useAuth();
+    const {user, loading} = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (!user) {
+        if (!loading && !user) {
             router.push("/login");
         }
-    }, [user, router]);
+    }, [user, loading, router]);
 
-    return user;
+    return {user, loading};
 }

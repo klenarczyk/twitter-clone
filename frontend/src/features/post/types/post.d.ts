@@ -1,8 +1,8 @@
-import {UserSummary} from "@/features/profile/types/user";
+import {ProfileSummary} from "@/features/profile/types/user";
 
 export interface Post {
     id: number;
-    author: UserSummary;
+    author: ProfileSummary;
     content: string;
     createdAt: number;
 }
