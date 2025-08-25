@@ -1,7 +1,9 @@
+"use client";
+
 import {ReactNode} from "react";
 import Nav from "@/features/ui/Nav";
 
-export default function RootLayout({children}: { children: ReactNode }) {
+export default function MainLayout({children}: { children: ReactNode }) {
     return (
         <div className="min-h-screen flex">
             <Nav/>

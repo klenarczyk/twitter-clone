@@ -1,5 +1,3 @@
-'use client';
-
 import {ReactNode} from 'react';
 import '@/styles/globals.css';
 import {AuthProvider} from "@/features/auth/providers/AuthProvider";

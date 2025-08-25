@@ -1,13 +1,15 @@
-export interface CurrentUser {
-    id: number;
-    fullName: string;
-    imageUrl?: string;
-    handle: string;
-    bio?: string;
+export type User = {
+    id: number
+    email: string
+    handle: string
+    imageUrl?: string
+    fullName: string
+    bio: string
 }
 
 export type AuthContextType = {
-    user: CurrentUser | null;
-    login: (user: CurrentUser) => void;
-    logout: () => void;
+    user: User | null
+    loading: boolean
+    login: (user: User) => void
+    logout: () => void
 }

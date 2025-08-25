@@ -1,5 +1,3 @@
-'use client';
-
 import {useEffect, useRef, useState} from 'react';
 import {Post} from "@/features/post/types/post";
 import {fetchPosts} from "@/lib/api";
