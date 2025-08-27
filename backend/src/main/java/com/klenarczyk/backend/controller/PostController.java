@@ -47,7 +47,7 @@ public class PostController {
             postPage = postService.getAllPosts(pageable);
         }
 
-        List<PostResponse> postResponses = PostResponse.fromPosts(postPage.getContent());
+        List<PostResponse> postResponses = PostResponse.fromEntities(postPage.getContent());
         boolean hasMore = postPage.hasNext();
 
         return ResponseEntity.ok(new PagedPostResponse(postResponses, hasMore));
@@ -57,13 +57,13 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest req,
                                                    @AuthenticationPrincipal UserDetails currentUser) {
         Post newPost = postService.createPost(req, currentUser);
-        return ResponseEntity.ok(PostResponse.fromPost(newPost));
+        return ResponseEntity.ok(PostResponse.fromEntity(newPost));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
         Post post = postService.getPostById(id);
-        return ResponseEntity.ok(PostResponse.fromPost(post));
+        return ResponseEntity.ok(PostResponse.fromEntity(post));
     }
 
     @DeleteMapping("/{id}")
@@ -77,7 +77,7 @@ public class PostController {
                                                  @AuthenticationPrincipal UserDetails currentUser) {
         Long currentUserId = userService.getUserByEmail(currentUser.getUsername()).getId();
         Like like = postService.likePost(currentUserId, postId);
-        return ResponseEntity.ok(LikeResponse.fromLike(like));
+        return ResponseEntity.ok(LikeResponse.fromEntity(like));
     }
 
     @DeleteMapping("/{postId}/unlike")
@@ -91,13 +91,13 @@ public class PostController {
     @GetMapping("/{postId}/likes")
     public ResponseEntity<List<LikeResponse>> getPostLikes(@PathVariable Long postId) {
         List<Like> likes = postService.getPostLikes(postId);
-        return ResponseEntity.ok(LikeResponse.fromLikes(likes));
+        return ResponseEntity.ok(LikeResponse.fromEntities(likes));
     }
 
     @GetMapping("/{postId}/replies")
     public ResponseEntity<List<CommentResponse>> getPostReplies(@PathVariable Long postId) {
         List<Comment> replies = postService.getPostReplies(postId);
-        return ResponseEntity.ok(CommentResponse.fromComments(replies));
+        return ResponseEntity.ok(CommentResponse.fromEntities(replies));
     }
 
 }

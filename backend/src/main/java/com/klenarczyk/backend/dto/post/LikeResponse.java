@@ -8,15 +8,15 @@ import java.util.List;
 
 public record LikeResponse(LikeId id, UserResponse user, PostResponse post) {
 
-    public static LikeResponse fromLike(Like like) {
+    public static LikeResponse fromEntity(Like like) {
         return new LikeResponse(like.getId(),
-                UserResponse.fromUser(like.getUser()),
-                PostResponse.fromPost(like.getPost()));
+                UserResponse.fromEntity(like.getUser()),
+                PostResponse.fromEntity(like.getPost()));
     }
 
-    public static List<LikeResponse> fromLikes(List<Like> likes) {
+    public static List<LikeResponse> fromEntities(List<Like> likes) {
         return likes.stream()
-                .map(LikeResponse::fromLike)
+                .map(LikeResponse::fromEntity)
                 .toList();
     }
 

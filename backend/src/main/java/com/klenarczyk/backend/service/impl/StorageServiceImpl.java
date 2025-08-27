@@ -41,16 +41,16 @@ public class StorageServiceImpl implements StorageService {
 
             User user = userService.getUserById(userId);
 
-            String existingImageUrl = user.getProfileImageUrl();
+            String existingImageUrl = user.getImageUrl();
             if (existingImageUrl != null && !existingImageUrl.isEmpty()) {
                 Path existingImagePath = Paths.get(existingImageUrl);
                 Files.deleteIfExists(existingImagePath);
             }
 
-            user.setProfileImageUrl(pathString);
+            user.setImageUrl(pathString);
             userRepository.save(user);
 
-            return user.getProfileImageUrl();
+            return user.getImageUrl();
 
         } catch (IOException e) {
             throw new RuntimeException("File upload failed", e);

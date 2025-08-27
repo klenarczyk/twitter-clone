@@ -66,7 +66,7 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal UserDetails currentUser) {
         User user = userService.getUserByEmail(currentUser.getUsername());
-        return ResponseEntity.ok(UserResponse.fromUser(user));
+        return ResponseEntity.ok(UserResponse.fromEntity(user));
     }
 
 }
