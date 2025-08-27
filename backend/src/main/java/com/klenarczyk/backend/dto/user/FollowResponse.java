@@ -7,7 +7,7 @@ public record FollowResponse(FollowId id, UserResponse follower, UserResponse fo
 
     public static FollowResponse fromFollow(Follow follow) {
         return new FollowResponse(follow.getId(),
-                UserResponse.fromUser(follow.getFollower()),
-                UserResponse.fromUser(follow.getFollowed()));
+                UserResponse.fromEntity(follow.getFollower()),
+                UserResponse.fromEntity(follow.getFollowed()));
     }
 }

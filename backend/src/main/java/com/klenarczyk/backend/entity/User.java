@@ -25,7 +25,7 @@ public class User {
     private String passwordHash;
 
     @Column(name = "profile_image_url", length = 255)
-    private String profileImageUrl;
+    private String imageUrl;
 
     @Column(name = "full_name", length = 100)
     private String fullName;
@@ -52,10 +52,11 @@ public class User {
     // Constructors
     public User() {}
 
-    public User(String handle, String email, String passwordHash, String fullName, String bio) {
+    public User(String handle, String email, String passwordHash, String imageUrl, String fullName, String bio) {
         this.handle = handle;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.imageUrl = imageUrl;
         this.fullName = fullName;
         this.bio = bio;
     }
@@ -72,8 +73,8 @@ public class User {
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 
-    public String getProfileImageUrl() { return profileImageUrl; }
-    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }

@@ -4,15 +4,15 @@ import com.klenarczyk.backend.entity.User;
 
 import java.util.List;
 
-public record UserResponse(Long id, String handle, String profileImageUrl, String fullName, String bio) {
+public record UserResponse(Long id, String handle, String imageUrl, String fullName, String bio) {
 
-    public static UserResponse fromUser(User user) {
-        return new UserResponse(user.getId(), user.getHandle(), user.getProfileImageUrl(), user.getFullName(), user.getBio());
+    public static UserResponse fromEntity(User user) {
+        return new UserResponse(user.getId(), user.getHandle(), user.getImageUrl(), user.getFullName(), user.getBio());
     }
 
-    public static List<UserResponse> fromUsers(List<User> users) {
+    public static List<UserResponse> fromEntities(List<User> users) {
         return users.stream()
-                .map(UserResponse::fromUser)
+                .map(UserResponse::fromEntity)
                 .toList();
     }
 

@@ -36,19 +36,19 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
         User user = userService.getUserById(id);
-        return ResponseEntity.ok(UserResponse.fromUser(user));
+        return ResponseEntity.ok(UserResponse.fromEntity(user));
     }
 
     @GetMapping
     public ResponseEntity<UserResponse> getUser(@RequestParam(required = false) String handle) {
         User user = userService.getUserByHandle(handle);
-        return ResponseEntity.ok(UserResponse.fromUser(user));
+        return ResponseEntity.ok(UserResponse.fromEntity(user));
     }
 
     @PatchMapping("/{userId}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long userId, @RequestBody UpdateUserRequest req) {
         User updatedUser = userService.updateUser(userId, req);
-        return ResponseEntity.ok(UserResponse.fromUser(updatedUser));
+        return ResponseEntity.ok(UserResponse.fromEntity(updatedUser));
     }
 
     @PostMapping("/pfp")
@@ -62,19 +62,19 @@ public class UserController {
     @GetMapping("/{authorId}/posts")
     public ResponseEntity<List<PostResponse>> getUserPosts(@PathVariable Long authorId) {
         List<Post> posts = postService.getPostsByAuthor(authorId);
-        return ResponseEntity.ok(PostResponse.fromPosts(posts));
+        return ResponseEntity.ok(PostResponse.fromEntities(posts));
     }
 
     @GetMapping("/{userId}/followers")
     public ResponseEntity<List<UserResponse>> getUserFollowers(@PathVariable Long userId) {
         List<User> followers = userService.getFollowers(userId);
-        return ResponseEntity.ok(UserResponse.fromUsers(followers));
+        return ResponseEntity.ok(UserResponse.fromEntities(followers));
     }
 
     @GetMapping("/{userId}/following")
     public ResponseEntity<List<UserResponse>> getUserFollowing(@PathVariable Long userId) {
         List<User> following = userService.getFollowing(userId);
-        return ResponseEntity.ok(UserResponse.fromUsers(following));
+        return ResponseEntity.ok(UserResponse.fromEntities(following));
     }
 
     @PostMapping("/{userId}/follow")

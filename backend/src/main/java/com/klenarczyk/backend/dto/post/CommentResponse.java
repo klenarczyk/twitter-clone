@@ -7,18 +7,18 @@ import java.util.List;
 
 public record CommentResponse(Long id, UserResponse user, PostResponse post, String content) {
 
-    public static CommentResponse fromComment(Comment comment) {
+    public static CommentResponse fromEntity(Comment comment) {
         return new CommentResponse(
                 comment.getId(),
-                UserResponse.fromUser(comment.getUser()),
-                PostResponse.fromPost(comment.getPost()),
+                UserResponse.fromEntity(comment.getUser()),
+                PostResponse.fromEntity(comment.getPost()),
                 comment.getContent()
         );
     }
 
-    public static List<CommentResponse> fromComments(List<Comment> comments) {
+    public static List<CommentResponse> fromEntities(List<Comment> comments) {
         return comments.stream()
-                .map(CommentResponse::fromComment)
+                .map(CommentResponse::fromEntity)
                 .toList();
     }
 

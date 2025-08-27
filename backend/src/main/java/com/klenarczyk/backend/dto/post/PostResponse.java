@@ -7,13 +7,13 @@ import java.util.List;
 
 public record PostResponse(Long id, UserSummary author, String content) {
 
-    public static PostResponse fromPost(Post post) {
-        return new PostResponse(post.getId(), UserSummary.fromUser(post.getUser()), post.getContent());
+    public static PostResponse fromEntity(Post post) {
+        return new PostResponse(post.getId(), UserSummary.fromEntity(post.getUser()), post.getContent());
     }
 
-    public static List<PostResponse> fromPosts(List<Post> posts) {
+    public static List<PostResponse> fromEntities(List<Post> posts) {
         return posts.stream()
-                .map(PostResponse::fromPost)
+                .map(PostResponse::fromEntity)
                 .toList();
     }
 
