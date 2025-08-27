@@ -3,6 +3,8 @@ package com.klenarczyk.backend.exception.handler;
 import com.klenarczyk.backend.exception.BadRequestException;
 import com.klenarczyk.backend.exception.ResourceConflictException;
 import com.klenarczyk.backend.exception.ResourceNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -12,13 +14,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
+@Tag(name = "Global Exceptions")
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<FieldErrorResponse> handleAuthentication (AuthenticationException ex) {
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(new FieldErrorResponse("credentials", ex.getMessage()));
+    public ResponseEntity<FieldErrorResponse> handleAuthenticationException(AuthenticationException ex) {
+        FieldErrorResponse error = new FieldErrorResponse("credentials", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
     @ExceptionHandler(ResourceConflictException.class)
