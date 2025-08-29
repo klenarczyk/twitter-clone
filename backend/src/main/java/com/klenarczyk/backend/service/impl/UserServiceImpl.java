@@ -1,6 +1,6 @@
 package com.klenarczyk.backend.service.impl;
 
-import com.klenarczyk.backend.dto.auth.RegisterRequest;
+import com.klenarczyk.backend.security.auth.dto.RegisterRequest;
 import com.klenarczyk.backend.dto.users.UpdateUserRequest;
 import com.klenarczyk.backend.model.Follow;
 import com.klenarczyk.backend.model.FollowId;
@@ -12,9 +12,13 @@ import com.klenarczyk.backend.repository.UserRepository;
 import com.klenarczyk.backend.service.UserService;
 import com.klenarczyk.backend.common.util.Util;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,10 +29,14 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final FollowRepository followRepository;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, FollowRepository followRepository) {
+    private final StorageServiceImpl storageService;
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                           FollowRepository followRepository, StorageServiceImpl storageService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.followRepository = followRepository;
+        this.storageService = storageService;
     }
 
     // Methods
@@ -54,8 +62,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUser(Long id, @Valid UpdateUserRequest req) {
-        User user = getUserById(id);
+    public User updateUser(UserDetails currentUser, @Valid UpdateUserRequest req) {
+        User user = getUserByEmail(currentUser.getUsername());
         boolean changed = false;
 
         if (Util.isNotBlankAndDifferent(req.getHandle(), user.getHandle()) && !isHandleTaken(req.getHandle())) {
@@ -100,6 +108,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<User> searchUsers(String query, Pageable pageable) {
+        if (query == null || query.trim().isEmpty()) {
+            return Page.empty(pageable);
+        }
+        return userRepository.findByHandleContainingIgnoreCaseOrFullNameContainingIgnoreCase(
+                query, query, pageable
+        );
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<User> getFollowers(Long userId) {
         List<Follow> followers = followRepository.findFollowsByFollowedId(userId);
@@ -115,6 +133,16 @@ public class UserServiceImpl implements UserService {
         return following.stream()
                 .map(Follow::getFollowed)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public String uploadUserImage(UserDetails currentUser, MultipartFile file) {
+        User user = getUserByEmail(currentUser.getUsername());
+        String imageUrl = storageService.uploadProfileImage(file, user);
+
+        user.setImageUrl(imageUrl);
+        return userRepository.saveAndFlush(user).getImageUrl();
     }
 
     @Override

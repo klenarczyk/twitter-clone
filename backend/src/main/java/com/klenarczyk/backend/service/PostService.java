@@ -12,8 +12,8 @@ import java.util.List;
 
 public interface PostService {
 
-    Post createPost(@Valid CreatePostRequest req,
-                    @AuthenticationPrincipal UserDetails currentUser);
+    Post createPost(@AuthenticationPrincipal UserDetails currentUser,
+                    @Valid CreatePostRequest req);
 
     Page<Post> getAllPosts(Pageable pageable);
 
