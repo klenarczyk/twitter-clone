@@ -1,7 +1,7 @@
 package com.klenarczyk.backend.dto.post;
 
-import com.klenarczyk.backend.dto.user.UserResponse;
-import com.klenarczyk.backend.entity.Comment;
+import com.klenarczyk.backend.dto.users.UserResponse;
+import com.klenarczyk.backend.model.Comment;
 
 import java.util.List;
 

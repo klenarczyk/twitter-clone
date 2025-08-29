@@ -1,16 +1,16 @@
 package com.klenarczyk.backend.service.impl;
 
 import com.klenarczyk.backend.dto.auth.RegisterRequest;
-import com.klenarczyk.backend.dto.user.UpdateUserRequest;
-import com.klenarczyk.backend.entity.Follow;
-import com.klenarczyk.backend.entity.FollowId;
-import com.klenarczyk.backend.entity.User;
-import com.klenarczyk.backend.exception.ResourceConflictException;
-import com.klenarczyk.backend.exception.ResourceNotFoundException;
+import com.klenarczyk.backend.dto.users.UpdateUserRequest;
+import com.klenarczyk.backend.model.Follow;
+import com.klenarczyk.backend.model.FollowId;
+import com.klenarczyk.backend.model.User;
+import com.klenarczyk.backend.common.exception.ResourceConflictException;
+import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.FollowRepository;
 import com.klenarczyk.backend.repository.UserRepository;
 import com.klenarczyk.backend.service.UserService;
-import com.klenarczyk.backend.util.Util;
+import com.klenarczyk.backend.common.util.Util;
 import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

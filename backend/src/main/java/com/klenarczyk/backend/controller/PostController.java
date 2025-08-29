@@ -1,7 +1,7 @@
 package com.klenarczyk.backend.controller;
 
 import com.klenarczyk.backend.dto.post.*;
-import com.klenarczyk.backend.entity.Post;
+import com.klenarczyk.backend.model.Post;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

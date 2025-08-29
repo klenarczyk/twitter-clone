@@ -1,8 +1,8 @@
 package com.klenarczyk.backend.dto.post;
 
-import com.klenarczyk.backend.dto.user.UserResponse;
-import com.klenarczyk.backend.entity.Like;
-import com.klenarczyk.backend.entity.LikeId;
+import com.klenarczyk.backend.dto.users.UserResponse;
+import com.klenarczyk.backend.model.Like;
+import com.klenarczyk.backend.model.LikeId;
 
 import java.util.List;
 

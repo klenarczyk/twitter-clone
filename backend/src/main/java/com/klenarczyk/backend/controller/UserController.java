@@ -1,12 +1,12 @@
 package com.klenarczyk.backend.controller;
 
 import com.klenarczyk.backend.dto.post.PostResponse;
-import com.klenarczyk.backend.dto.user.ProfileImageResponse;
-import com.klenarczyk.backend.dto.user.UpdateUserRequest;
-import com.klenarczyk.backend.entity.Post;
+import com.klenarczyk.backend.dto.users.ProfileImageResponse;
+import com.klenarczyk.backend.dto.users.UpdateUserRequest;
+import com.klenarczyk.backend.model.Post;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
-import com.klenarczyk.backend.dto.user.UserResponse;
-import com.klenarczyk.backend.entity.User;
+import com.klenarczyk.backend.dto.users.UserResponse;
+import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.service.impl.StorageServiceImpl;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,6 +55,16 @@ public class UserController {
     })
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
         User user = userService.getUserById(id);
+        return ResponseEntity.ok(UserResponse.fromEntity(user));
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "Get current authenticated user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Current user fetched successfully")
+    })
+    public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal UserDetails currentUser) {
+        User user = userService.getUserByEmail(currentUser.getUsername());
         return ResponseEntity.ok(UserResponse.fromEntity(user));
     }
 

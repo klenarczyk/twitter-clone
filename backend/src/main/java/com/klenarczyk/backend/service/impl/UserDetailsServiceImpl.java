@@ -1,6 +1,6 @@
 package com.klenarczyk.backend.service.impl;
 
-import com.klenarczyk.backend.entity.User;
+import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

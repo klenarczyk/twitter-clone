@@ -1,7 +1,7 @@
 package com.klenarczyk.backend.dto.post;
 
-import com.klenarczyk.backend.dto.user.UserSummary;
-import com.klenarczyk.backend.entity.Post;
+import com.klenarczyk.backend.dto.users.UserSummary;
+import com.klenarczyk.backend.model.Post;
 
 import java.util.List;
 
