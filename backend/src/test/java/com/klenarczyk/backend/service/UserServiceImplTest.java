@@ -1,10 +1,10 @@
 package com.klenarczyk.backend.service;
 
 import com.klenarczyk.backend.dto.auth.RegisterRequest;
-import com.klenarczyk.backend.dto.user.UpdateUserRequest;
-import com.klenarczyk.backend.entity.User;
-import com.klenarczyk.backend.exception.BadRequestException;
-import com.klenarczyk.backend.exception.ResourceNotFoundException;
+import com.klenarczyk.backend.dto.users.UpdateUserRequest;
+import com.klenarczyk.backend.model.User;
+import com.klenarczyk.backend.common.exception.BadRequestException;
+import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.UserRepository;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;

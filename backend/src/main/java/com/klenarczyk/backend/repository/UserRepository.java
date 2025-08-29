@@ -1,6 +1,6 @@
 package com.klenarczyk.backend.repository;
 
-import com.klenarczyk.backend.entity.User;
+import com.klenarczyk.backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

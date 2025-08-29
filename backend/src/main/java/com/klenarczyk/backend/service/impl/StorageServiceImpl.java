@@ -1,6 +1,6 @@
 package com.klenarczyk.backend.service.impl;
 
-import com.klenarczyk.backend.entity.User;
+import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.repository.UserRepository;
 import com.klenarczyk.backend.service.StorageService;
 import org.springframework.beans.factory.annotation.Value;

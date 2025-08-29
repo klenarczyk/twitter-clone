@@ -1,8 +1,8 @@
 package com.klenarczyk.backend.service.impl;
 
 import com.klenarczyk.backend.dto.post.CreatePostRequest;
-import com.klenarczyk.backend.entity.*;
-import com.klenarczyk.backend.exception.ResourceNotFoundException;
+import com.klenarczyk.backend.model.*;
+import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.CommentRepository;
 import com.klenarczyk.backend.repository.LikeRepository;
 import com.klenarczyk.backend.repository.PostRepository;

@@ -1,7 +1,7 @@
 package com.klenarczyk.backend.service;
 
 import com.klenarczyk.backend.dto.post.CreatePostRequest;
-import com.klenarczyk.backend.entity.*;
+import com.klenarczyk.backend.model.*;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

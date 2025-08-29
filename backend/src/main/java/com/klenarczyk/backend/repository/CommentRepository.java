@@ -1,7 +1,6 @@
 package com.klenarczyk.backend.repository;
 
-import com.klenarczyk.backend.entity.Comment;
-import com.klenarczyk.backend.entity.Post;
+import com.klenarczyk.backend.model.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

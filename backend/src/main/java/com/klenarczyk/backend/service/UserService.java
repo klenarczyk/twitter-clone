@@ -1,11 +1,10 @@
 package com.klenarczyk.backend.service;
 
 import com.klenarczyk.backend.dto.auth.RegisterRequest;
-import com.klenarczyk.backend.dto.user.UpdateUserRequest;
-import com.klenarczyk.backend.entity.Follow;
-import com.klenarczyk.backend.entity.User;
+import com.klenarczyk.backend.dto.users.UpdateUserRequest;
+import com.klenarczyk.backend.model.Follow;
+import com.klenarczyk.backend.model.User;
 import jakarta.validation.Valid;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

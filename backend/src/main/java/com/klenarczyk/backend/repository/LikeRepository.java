@@ -1,7 +1,7 @@
 package com.klenarczyk.backend.repository;
 
-import com.klenarczyk.backend.entity.Like;
-import com.klenarczyk.backend.entity.LikeId;
+import com.klenarczyk.backend.model.Like;
+import com.klenarczyk.backend.model.LikeId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
