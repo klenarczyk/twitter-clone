@@ -1,18 +1,21 @@
 package com.klenarczyk.backend.controller;
 
 import com.klenarczyk.backend.dto.post.PostResponse;
+import com.klenarczyk.backend.dto.users.PagedUserResponse;
 import com.klenarczyk.backend.dto.users.ProfileImageResponse;
 import com.klenarczyk.backend.dto.users.UpdateUserRequest;
 import com.klenarczyk.backend.model.Post;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
 import com.klenarczyk.backend.dto.users.UserResponse;
 import com.klenarczyk.backend.model.User;
-import com.klenarczyk.backend.service.impl.StorageServiceImpl;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,38 +31,16 @@ public class UserController {
 
     private final UserServiceImpl userService;
     private final PostServiceImpl postService;
-    private final StorageServiceImpl storageService;
 
-    public UserController(UserServiceImpl userService, PostServiceImpl postService, StorageServiceImpl storageService) {
+    public UserController(UserServiceImpl userService, PostServiceImpl postService) {
         this.userService = userService;
         this.postService = postService;
-        this.storageService = storageService;
     }
 
     // Endpoints
 
-    @GetMapping
-    @Operation(summary = "Returns a user by handle or the current authenticated user if no handle is provided")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
-    })
-    public ResponseEntity<UserResponse> getUser(@RequestParam(required = false) String handle) {
-        User user = userService.getUserByHandle(handle);
-        return ResponseEntity.ok(UserResponse.fromEntity(user));
-    }
-
-    @GetMapping("/{id}")
-    @Operation(summary = "Returns a user by Id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
-    })
-    public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        return ResponseEntity.ok(UserResponse.fromEntity(user));
-    }
-
     @GetMapping("/me")
-    @Operation(summary = "Get current authenticated user")
+    @Operation(summary = "Returns the currently authenticated user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Current user fetched successfully")
     })
@@ -68,31 +49,68 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.fromEntity(user));
     }
 
-    @PatchMapping("/{id}")
-    @Operation(summary = "Update user details")
+    @GetMapping("/{id}")
+    @Operation(summary = "Returns a user by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
+    })
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(UserResponse.fromEntity(user));
+    }
+
+    @GetMapping("/handle/{handle}")
+    @Operation(summary = "Returns a user by handle")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
+    })
+    public ResponseEntity<UserResponse> getUserById(@PathVariable String handle) {
+        User user = userService.getUserByHandle(handle);
+        return ResponseEntity.ok(UserResponse.fromEntity(user));
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Searches users by query")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Users retrieved successfully"),
+    })
+    public ResponseEntity<PagedUserResponse> searchUsers(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<User> users = userService.searchUsers(query, pageable);
+
+        List<UserResponse> userResponses = UserResponse.fromEntities(users.getContent());
+        boolean hasMore = users.hasNext();
+
+        return ResponseEntity.ok(new PagedUserResponse(userResponses, hasMore));
+    }
+
+    @PatchMapping("/me")
+    @Operation(summary = "Updates user details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User updated successfully"),
     })
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest req) {
-        User updatedUser = userService.updateUser(id, req);
+    public ResponseEntity<UserResponse> updateUser(@AuthenticationPrincipal UserDetails currentUser, @RequestBody UpdateUserRequest req) {
+        User updatedUser = userService.updateUser(currentUser, req);
         return ResponseEntity.ok(UserResponse.fromEntity(updatedUser));
     }
 
-    @PostMapping("/pfp")
-    @Operation(summary = "Upload profile image")
+    @PostMapping("/me/profile-image")
+    @Operation(summary = "Uploads a profile image")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Profile image uploaded successfully"),
     })
-    public ResponseEntity<ProfileImageResponse> uploadProfileImage(@RequestParam("file") MultipartFile file,
-                                                                   @AuthenticationPrincipal UserDetails currentUser) {
-        Long userId = userService.getUserByEmail(currentUser.getUsername()).getId();
-        String imageUrl = storageService.uploadProfileImage(file, userId);
-
+    public ResponseEntity<ProfileImageResponse> uploadProfileImage(@AuthenticationPrincipal UserDetails currentUser,
+                                                                   @RequestParam("file") MultipartFile file) {
+        String imageUrl = userService.uploadUserImage(currentUser, file);
         return ResponseEntity.ok(new ProfileImageResponse(imageUrl));
     }
 
     @GetMapping("/{id}/posts")
-    @Operation(summary = "Get posts by a specific user")
+    @Operation(summary = "Returns posts by a specific user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Posts retrieved successfully"),
     })

@@ -20,17 +20,15 @@ public class StorageServiceImpl implements StorageService {
     @Value("${app.upload.dir}")
     private String uploadDir;
 
-    private final UserServiceImpl userService;
     private final UserRepository userRepository;
 
-    public StorageServiceImpl(UserServiceImpl userService, UserRepository userRepository) {
-        this.userService = userService;
+    public StorageServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     @Transactional
-    public String uploadProfileImage(MultipartFile file, Long userId) {
+    public String uploadProfileImage(MultipartFile file, User user) {
         String fileName = UUID.randomUUID() + ".jpg";
         Path path = Paths.get(uploadDir, "pfp/", fileName);
         String pathString = "uploads/pfp/" + fileName;
@@ -39,18 +37,13 @@ public class StorageServiceImpl implements StorageService {
             Files.createDirectories(path.getParent());
             file.transferTo(path);
 
-            User user = userService.getUserById(userId);
-
             String existingImageUrl = user.getImageUrl();
             if (existingImageUrl != null && !existingImageUrl.isEmpty()) {
                 Path existingImagePath = Paths.get(existingImageUrl);
                 Files.deleteIfExists(existingImagePath);
             }
 
-            user.setImageUrl(pathString);
-            userRepository.save(user);
-
-            return user.getImageUrl();
+            return pathString;
 
         } catch (IOException e) {
             throw new RuntimeException("File upload failed", e);
@@ -60,7 +53,6 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional
     public String uploadPostImage(MultipartFile file, Long postId) {
-        // Implementation for uploading post image
         return "post-image-url"; // Placeholder return value
     }
 

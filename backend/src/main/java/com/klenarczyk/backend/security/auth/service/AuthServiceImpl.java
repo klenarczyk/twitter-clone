@@ -1,8 +1,8 @@
-package com.klenarczyk.backend.security.auth;
+package com.klenarczyk.backend.security.auth.service;
 
 import com.klenarczyk.backend.common.util.Constants;
-import com.klenarczyk.backend.dto.auth.LoginRequest;
-import com.klenarczyk.backend.dto.auth.RegisterRequest;
+import com.klenarczyk.backend.security.auth.dto.LoginRequest;
+import com.klenarczyk.backend.security.auth.dto.RegisterRequest;
 import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.security.util.JwtUtil;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;

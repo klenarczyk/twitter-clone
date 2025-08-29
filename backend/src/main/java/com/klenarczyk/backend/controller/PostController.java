@@ -35,23 +35,16 @@ public class PostController {
     // Endpoints
 
     @GetMapping
-    @Operation(summary = "Get paginated list of posts, optionally filtered by authorId")
+    @Operation(summary = "Returns a paginated list of posts")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Posts retrieved successfully"),
     })
     public ResponseEntity<PagedPostResponse> getPosts(
-            @RequestParam(required = false) Long authorId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
     ) {
         Pageable pageable = PageRequest.of(page, limit, Sort.by("createdAt").descending());
-        Page<Post> postPage;
-
-        if (authorId != null) {
-            postPage = postService.getPostsByAuthor(authorId, pageable);
-        } else {
-            postPage = postService.getAllPosts(pageable);
-        }
+        Page<Post> postPage = postService.getAllPosts(pageable);
 
         List<PostResponse> postResponses = PostResponse.fromEntities(postPage.getContent());
         boolean hasMore = postPage.hasNext();
@@ -59,14 +52,24 @@ public class PostController {
         return ResponseEntity.ok(new PagedPostResponse(postResponses, hasMore));
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Returns a post by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Post retrieved successfully"),
+    })
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
+        Post post = postService.getPostById(id);
+        return ResponseEntity.ok(PostResponse.fromEntity(post));
+    }
+
     @PostMapping
-    @Operation(summary = "Create a new post")
+    @Operation(summary = "Creates a new post")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Post created successfully"),
     })
-    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest req,
-                                                   @AuthenticationPrincipal UserDetails currentUser) {
-        Post post = postService.createPost(req, currentUser);
+    public ResponseEntity<PostResponse> createPost(@AuthenticationPrincipal UserDetails currentUser,
+                                                   @Valid @RequestBody CreatePostRequest req) {
+        Post post = postService.createPost(currentUser, req);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -77,18 +80,8 @@ public class PostController {
         return ResponseEntity.created(location).body(PostResponse.fromEntity(post));
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Returns a post by Id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Post retrieved successfully"),
-    })
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
-        Post post = postService.getPostById(id);
-        return ResponseEntity.ok(PostResponse.fromEntity(post));
-    }
-
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a post by Id")
+    @Operation(summary = "Deletes a post by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Post deleted successfully"),
     })
