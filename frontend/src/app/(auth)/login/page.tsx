@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
 import {ChangeEvent, FormEvent, useState} from "react";
 import Form from "@/features/ui/form/Form";
 import FormItem from "@/features/ui/form/FormItem";
 import InputField from "@/features/ui/form/InputField";
 import Button from "@/features/ui/Button";
-import {validateEmail} from "@/utils/validation";
+import {validateEmail} from "@/lib/utils/validation";
 import {useRouter} from "next/navigation";
 import {useAuth} from "@/features/auth/hooks/useAuth";
 import {Eye, EyeOff} from "lucide-react";
