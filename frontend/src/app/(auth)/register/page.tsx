@@ -6,7 +6,7 @@ import FormItem from "@/features/ui/form/FormItem";
 import InputField from "@/features/ui/form/InputField";
 import Button from "@/features/ui/Button";
 import Form from "@/features/ui/form/Form";
-import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/utils/validation";
+import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/lib/utils/validation";
 import {Eye, EyeOff} from "lucide-react";
 
 export default function RegisterPage() {
