@@ -8,6 +8,8 @@ import Button from "@/features/ui/Button";
 import Form from "@/features/ui/form/Form";
 import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/lib/utils/validation";
 import {Eye, EyeOff} from "lucide-react";
+import {fetchRegister} from "@/features/auth/api/authApi";
+import {ApiError} from "@/lib/apiClient";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -26,7 +28,7 @@ export default function RegisterPage() {
         password: '',
         confirmPassword: '',
         fullName: '',
-        submit: '',
+        global: '',
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +45,7 @@ export default function RegisterPage() {
             password: '',
             confirmPassword: '',
             fullName: '',
-            submit: '',
+            global: '',
         });
 
         let valid = true;
@@ -53,7 +55,7 @@ export default function RegisterPage() {
             password: '',
             confirmPassword: '',
             fullName: '',
-            submit: '',
+            global: '',
         };
 
         const handleValidation = validateHandle(formData.handle);
@@ -88,41 +90,46 @@ export default function RegisterPage() {
         }
 
         try {
-            const res = await fetch((process.env.NEXT_PUBLIC_API_URL ?? '') + "/auth/register", {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    handle: formData.handle,
-                    email: formData.email,
-                    password: formData.password,
-                    fullName: formData.fullName,
-                }),
+            await fetchRegister({
+                handle: formData.handle,
+                email: formData.email,
+                password: formData.password,
+                fullName: formData.fullName,
             });
 
-            if (res.ok) {
-                router.push('/login');
+            router.push('/login');
+        } catch (err: unknown) {
+            if (err instanceof ApiError) {
+                switch (err.status) {
+                    case 409:
+                        if (err.data?.field === 'email') {
+                            newErrors.email = err.data.message;
+                        } else if (err.data?.field === 'handle') {
+                            newErrors.handle = err.data.message;
+                        } else {
+                            newErrors.global = err.data?.message || "Conflict error";
+                        }
+                        break;
+                    case 500:
+                        newErrors.global = "Server error. Please try again later.";
+                        break;
+                    default:
+                        newErrors.global = err.message || "Registration failed";
+                }
             } else {
-                const data = await res.json();
-                if (data.field === "email") {
-                    newErrors.email = "A user with this email already exists";
-                }
-                if (data.field === "handle") {
-                    newErrors.handle = "This handle is already taken";
-                }
-                newErrors.submit = data.message || 'Signup failed';
-                setFormErrors(newErrors);
+                newErrors.global = "An unexpected error occurred";
             }
-        } catch {
-            setFormErrors(prev => ({...prev, submit: 'Network error'}));
-        }
 
-        setLoading(false);
+            setFormErrors(newErrors);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.currentTarget;
         setFormData(prev => ({...prev, [name]: value}));
-        setFormErrors(prev => ({...prev, [name]: '', submit: ''}));
+        setFormErrors(prev => ({...prev, [name]: '', global: ''}));
     };
 
     return (

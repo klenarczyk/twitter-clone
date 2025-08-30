@@ -2,11 +2,12 @@
 
 import React, {useState} from 'react';
 import Image from "next/image";
-import {createPost} from "@/lib/api";
+import {createPost} from "@/features/post/api/postApi";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {useProfileImage} from "@/features/profile/hooks/useProfileImage";
 import {useAuth} from "@/features/auth/hooks/useAuth";
+import {ApiError} from "@/lib/apiClient";
 
 export default function Composer() {
     const router = useRouter();
@@ -20,8 +21,21 @@ export default function Composer() {
         if (!canPost) return;
         try {
             await createPost(text);
-        } catch (e: unknown) {
-            console.log(e);
+        } catch (err: unknown) {
+            if (err instanceof ApiError) {
+                switch (err.status) {
+                    case 401:
+                        console.warn("You must be logged in to post.");
+                        break;
+                    case 500:
+                        console.warn("Server error. Please try again later.");
+                        break;
+                    default:
+                        console.warn(`Failed to create post: ${err.message}`);
+                }
+            } else {
+                console.error("Unexpected error while creating post:", err);
+            }
         } finally {
             setText('');
             router.refresh();

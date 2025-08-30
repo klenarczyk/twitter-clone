@@ -2,7 +2,8 @@
 
 import {createContext, ReactNode, useEffect, useState} from "react";
 import {AuthContextType, User} from "@/features/auth/types/auth";
-import {fetchCurrentUser} from "@/lib/api";
+import {fetchCurrentUser} from "@/features/auth/api/authApi";
+import {ApiError} from "@/lib/apiClient";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -17,8 +18,13 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
             setLoading(true);
 
             try {
-                const currentUser: User | null = await fetchCurrentUser();
+                const currentUser: User = await fetchCurrentUser();
                 setUser(currentUser);
+            } catch (err: unknown) {
+                if (!(err instanceof ApiError)) {
+                    console.error("Unexpected error:", err);
+                }
+                setUser(null);
             } finally {
                 setLoading(false);
             }
