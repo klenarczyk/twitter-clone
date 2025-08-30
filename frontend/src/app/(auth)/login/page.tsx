@@ -9,6 +9,8 @@ import {validateEmail} from "@/lib/utils/validation";
 import {useRouter} from "next/navigation";
 import {useAuth} from "@/features/auth/hooks/useAuth";
 import {Eye, EyeOff} from "lucide-react";
+import {fetchCurrentUser, fetchLogin} from "@/features/auth/api/authApi";
+import {ApiError} from "@/lib/apiClient";
 
 export default function LoginPage() {
     const {login} = useAuth();
@@ -54,41 +56,37 @@ export default function LoginPage() {
         }
 
         try {
-            const res = await fetch((process.env.NEXT_PUBLIC_API_URL ?? '') + "/auth/login", {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include',
-                body: JSON.stringify({
-                    email: formData.email.trim(), password: formData.password.trim()
-                }),
+            await fetchLogin({
+                email: formData.email.trim(),
+                password: formData.password.trim(),
             });
 
-            if (res.ok) {
-                const userRes = await fetch((process.env.NEXT_PUBLIC_API_URL ?? '') + "/auth/me", {
-                    credentials: 'include'
-                });
+            const user = await fetchCurrentUser();
+            login(user);
+            router.push('/');
+        } catch (err: unknown) {
+            const newErrors = {email: '', password: '', global: ''};
 
-                if (userRes.ok) {
-                    const {user} = await userRes.json();
-                    login(user);
-                    router.push('/');
-                } else {
-                    newErrors.global = "Failed to fetch user after login";
-                    setFormErrors(newErrors);
+            if (err instanceof ApiError) {
+                switch (err.status) {
+                    case 401:
+                        newErrors.email = "Invalid email or password";
+                        break;
+                    case 500:
+                        newErrors.global = "Server error. Please try again later.";
+                        break;
+                    default:
+                        newErrors.global = err.message || "Login failed";
                 }
             } else {
-                const data = await res.json();
-                if (data.field === "credentials") {
-                    newErrors.email = "Invalid email or password";
-                }
-                newErrors.global = data.message || 'Login failed';
-                setFormErrors(newErrors);
+                newErrors.global = "An unexpected error occurred";
             }
-        } catch {
-            setFormErrors(prev => ({...prev, global: "Network error"}));
+
+            setFormErrors(newErrors);
+        } finally {
+            setLoading(false);
         }
 
-        setLoading(false);
     };
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -136,6 +134,9 @@ export default function LoginPage() {
                         }
                     />
                 </FormItem>
+                {formErrors.global && (
+                    <div className="text-red-500 text-sm mb-4">{formErrors.global}</div>
+                )}
                 <Button type="submit" disabled={loading}>
                     {loading ? 'Logging in...' : 'Login'}
                 </Button>

@@ -4,12 +4,18 @@ interface RequestOptions extends RequestInit {
     token?: string;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+export class ApiError extends Error {
+    status: number;
+    data: any;
 
-const getTokenFromCookie = (): string | null => {
-    const match = document.cookie.match(/(^|;)\\s*jwt=([^;]+)/);
-    return match ? match[2] : null;
+    constructor(status: number, message: string, data: any = {}) {
+        super(message);
+        this.status = status;
+        this.data = data;
+    }
 }
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function apiClient<T>(
     endpoint: string,
@@ -17,12 +23,8 @@ export async function apiClient<T>(
     body?: unknown,
     options: RequestOptions = {}
 ): Promise<T> {
-    const token = getTokenFromCookie();
     const headers = new Headers(options.headers);
     headers.set('Content-Type', 'application/json');
-
-    if (token) headers.set('Authorization', `Bearer ${token}`);
-
 
     const res = await fetch(`${BASE_URL}${endpoint}`, {
         method,
@@ -34,8 +36,12 @@ export async function apiClient<T>(
 
     if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw {status: res.status, ...errorData};
+        const message = errorData.message || res.statusText || 'Request failed';
+        throw new ApiError(res.status, message, errorData);
     }
 
-    return await res.json() as Promise<T>;
+    const text = await res.text();
+    if (!text) return undefined as unknown as T;
+
+    return JSON.parse(text) as T;
 }
