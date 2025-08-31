@@ -18,6 +18,8 @@ public interface UserService {
 
     User updateUser(UserDetails currentUser, @Valid UpdateUserRequest req);
 
+    User getAuthenticatedUser(UserDetails principal);
+
     User getUserById(Long id);
 
     User getUserByEmail(String email);

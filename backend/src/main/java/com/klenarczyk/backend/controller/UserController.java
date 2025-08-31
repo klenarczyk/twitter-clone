@@ -1,5 +1,8 @@
 package com.klenarczyk.backend.controller;
 
+import com.klenarczyk.backend.common.exception.handler.docs.annotation.InternalServerErrorResponse;
+import com.klenarczyk.backend.common.exception.handler.docs.annotation.NotFoundResponse;
+import com.klenarczyk.backend.common.exception.handler.docs.annotation.UnauthorizedResponse;
 import com.klenarczyk.backend.dto.post.PostResponse;
 import com.klenarczyk.backend.dto.users.PagedUserResponse;
 import com.klenarczyk.backend.dto.users.ProfileImageResponse;
@@ -41,19 +44,17 @@ public class UserController {
 
     @GetMapping("/me")
     @Operation(summary = "Returns the currently authenticated user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Current user fetched successfully")
-    })
+    @ApiResponse(responseCode = "200", description = "Current user fetched successfully")
+    @UnauthorizedResponse
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal UserDetails currentUser) {
-        User user = userService.getUserByEmail(currentUser.getUsername());
+        User user = userService.getAuthenticatedUser(currentUser);
         return ResponseEntity.ok(UserResponse.fromEntity(user));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Returns a user by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
-    })
+    @ApiResponse(responseCode = "200", description = "User retrieved successfully")
+    @NotFoundResponse
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(UserResponse.fromEntity(user));
@@ -61,9 +62,8 @@ public class UserController {
 
     @GetMapping("/handle/{handle}")
     @Operation(summary = "Returns a user by handle")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User retrieved successfully"),
-    })
+    @ApiResponse(responseCode = "200", description = "User retrieved successfully")
+    @NotFoundResponse
     public ResponseEntity<UserResponse> getUserById(@PathVariable String handle) {
         User user = userService.getUserByHandle(handle);
         return ResponseEntity.ok(UserResponse.fromEntity(user));
@@ -71,9 +71,7 @@ public class UserController {
 
     @GetMapping("/search")
     @Operation(summary = "Searches users by query")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Users retrieved successfully"),
-    })
+    @ApiResponse(responseCode = "200", description = "Users retrieved successfully")
     public ResponseEntity<PagedUserResponse> searchUsers(
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
@@ -90,9 +88,8 @@ public class UserController {
 
     @PatchMapping("/me")
     @Operation(summary = "Updates user details")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User updated successfully"),
-    })
+    @ApiResponse(responseCode = "200", description = "User updated successfully")
+    @UnauthorizedResponse
     public ResponseEntity<UserResponse> updateUser(@AuthenticationPrincipal UserDetails currentUser, @RequestBody UpdateUserRequest req) {
         User updatedUser = userService.updateUser(currentUser, req);
         return ResponseEntity.ok(UserResponse.fromEntity(updatedUser));
@@ -100,9 +97,8 @@ public class UserController {
 
     @PostMapping("/me/profile-image")
     @Operation(summary = "Uploads a profile image")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Profile image uploaded successfully"),
-    })
+    @ApiResponse(responseCode = "200", description = "Profile image uploaded successfully")
+    @UnauthorizedResponse
     public ResponseEntity<ProfileImageResponse> uploadProfileImage(@AuthenticationPrincipal UserDetails currentUser,
                                                                    @RequestParam("file") MultipartFile file) {
         String imageUrl = userService.uploadUserImage(currentUser, file);
@@ -111,9 +107,7 @@ public class UserController {
 
     @GetMapping("/{id}/posts")
     @Operation(summary = "Returns posts by a specific user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Posts retrieved successfully"),
-    })
+    @ApiResponse(responseCode = "200", description = "Posts retrieved successfully")
     public ResponseEntity<List<PostResponse>> getUserPosts(@PathVariable Long id) {
         List<Post> posts = postService.getPostsByAuthor(id);
         return ResponseEntity.ok(PostResponse.fromEntities(posts));

@@ -1,5 +1,7 @@
 package com.klenarczyk.backend.controller;
 
+import com.klenarczyk.backend.common.exception.handler.docs.annotation.NotFoundResponse;
+import com.klenarczyk.backend.common.exception.handler.docs.annotation.UnauthorizedResponse;
 import com.klenarczyk.backend.dto.post.*;
 import com.klenarczyk.backend.model.Post;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
@@ -36,9 +38,7 @@ public class PostController {
 
     @GetMapping
     @Operation(summary = "Returns a paginated list of posts")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Posts retrieved successfully"),
-    })
+    @ApiResponse(responseCode = "200", description = "Posts retrieved successfully")
     public ResponseEntity<PagedPostResponse> getPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
@@ -54,9 +54,8 @@ public class PostController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Returns a post by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Post retrieved successfully"),
-    })
+    @ApiResponse(responseCode = "200", description = "Post retrieved successfully")
+    @NotFoundResponse
     public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
         Post post = postService.getPostById(id);
         return ResponseEntity.ok(PostResponse.fromEntity(post));
@@ -64,9 +63,8 @@ public class PostController {
 
     @PostMapping
     @Operation(summary = "Creates a new post")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Post created successfully"),
-    })
+    @ApiResponse(responseCode = "201", description = "Post created successfully")
+    @UnauthorizedResponse
     public ResponseEntity<PostResponse> createPost(@AuthenticationPrincipal UserDetails currentUser,
                                                    @Valid @RequestBody CreatePostRequest req) {
         Post post = postService.createPost(currentUser, req);
@@ -82,9 +80,8 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletes a post by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Post deleted successfully"),
-    })
+    @ApiResponse(responseCode = "204", description = "Post deleted successfully")
+    @NotFoundResponse
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();

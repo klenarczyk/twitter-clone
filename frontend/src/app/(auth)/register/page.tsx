@@ -9,7 +9,7 @@ import Form from "@/features/ui/form/Form";
 import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/lib/utils/validation";
 import {Eye, EyeOff} from "lucide-react";
 import {fetchRegister} from "@/features/auth/api/authApi";
-import {ApiError} from "@/lib/apiClient";
+import {ApiError} from "@/lib/types/httpTypes";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -102,12 +102,12 @@ export default function RegisterPage() {
             if (err instanceof ApiError) {
                 switch (err.status) {
                     case 409:
-                        if (err.data?.field === 'email') {
-                            newErrors.email = err.data.message;
-                        } else if (err.data?.field === 'handle') {
-                            newErrors.handle = err.data.message;
+                        if (err.details?.field === 'email') {
+                            newErrors.email = err.details.issue;
+                        } else if (err.details?.field === 'handle') {
+                            newErrors.handle = err.details.issue;
                         } else {
-                            newErrors.global = err.data?.message || "Conflict error";
+                            newErrors.global = err.details?.issue || "Conflict error";
                         }
                         break;
                     case 500:

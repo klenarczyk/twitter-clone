@@ -1,4 +1,4 @@
-import {apiClient} from "@/lib/apiClient";
+import {apiClient} from "@/lib/api/apiClient";
 import {LoginRequest, RegisterRequest, User} from "@/features/auth/types/auth";
 
 export const fetchLogin = async (body: LoginRequest) => apiClient<void>(
@@ -6,6 +6,7 @@ export const fetchLogin = async (body: LoginRequest) => apiClient<void>(
     "POST",
     body
 );
+
 
 export const fetchRegister = async (body: RegisterRequest) => apiClient<void>(
     "/auth/register",

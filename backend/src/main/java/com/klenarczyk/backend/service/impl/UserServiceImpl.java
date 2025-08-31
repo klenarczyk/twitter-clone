@@ -5,7 +5,7 @@ import com.klenarczyk.backend.dto.users.UpdateUserRequest;
 import com.klenarczyk.backend.model.Follow;
 import com.klenarczyk.backend.model.FollowId;
 import com.klenarczyk.backend.model.User;
-import com.klenarczyk.backend.common.exception.ResourceConflictException;
+import com.klenarczyk.backend.common.exception.ConflictException;
 import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.FollowRepository;
 import com.klenarczyk.backend.repository.UserRepository;
@@ -14,6 +14,7 @@ import com.klenarczyk.backend.common.util.Util;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,10 +45,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User createUser(@Valid RegisterRequest req) {
         if (isEmailTaken(req.getEmail())) {
-            throw new ResourceConflictException("email", "Email '" + req.getEmail() + "' is already taken");
+            throw new ConflictException("email", "Email '" + req.getEmail() + "' is already in use");
         }
         if (isHandleTaken(req.getHandle())) {
-            throw new ResourceConflictException("handle", "Handle '@" + req.getHandle() + "' is already taken");
+            throw new ConflictException("handle", "Handle '@" + req.getHandle() + "' is already taken");
         }
 
         User newUser = new User();
@@ -63,7 +64,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User updateUser(UserDetails currentUser, @Valid UpdateUserRequest req) {
-        User user = getUserByEmail(currentUser.getUsername());
+        User user = getAuthenticatedUser(currentUser);
         boolean changed = false;
 
         if (Util.isNotBlankAndDifferent(req.getHandle(), user.getHandle()) && !isHandleTaken(req.getHandle())) {
@@ -84,6 +85,15 @@ public class UserServiceImpl implements UserService {
         }
 
         return changed ? userRepository.save(user) : user;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getAuthenticatedUser(UserDetails principal) {
+        return userRepository.findByEmail(principal.getUsername())
+                .orElseThrow(() -> new AuthenticationCredentialsNotFoundException(
+                        "Authenticated user not found"
+                ));
     }
 
     @Override
@@ -138,7 +148,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String uploadUserImage(UserDetails currentUser, MultipartFile file) {
-        User user = getUserByEmail(currentUser.getUsername());
+        User user = getAuthenticatedUser(currentUser);
         String imageUrl = storageService.uploadProfileImage(file, user);
 
         user.setImageUrl(imageUrl);

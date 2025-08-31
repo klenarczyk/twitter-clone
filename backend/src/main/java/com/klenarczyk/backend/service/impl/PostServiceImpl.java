@@ -38,9 +38,9 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public Post createPost(@AuthenticationPrincipal UserDetails currentUser,
                            @Valid CreatePostRequest req) {
-        Post newPost = new Post();
+        User user = userService.getAuthenticatedUser(currentUser);
 
-        User user = userService.getUserByEmail(currentUser.getUsername());
+        Post newPost = new Post();
         newPost.setUser(user);
         newPost.setContent(req.getContent());
 
