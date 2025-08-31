@@ -10,7 +10,7 @@ import {useRouter} from "next/navigation";
 import {useAuth} from "@/features/auth/hooks/useAuth";
 import {Eye, EyeOff} from "lucide-react";
 import {fetchCurrentUser, fetchLogin} from "@/features/auth/api/authApi";
-import {ApiError} from "@/lib/apiClient";
+import {ApiError} from "@/lib/types/httpTypes";
 
 export default function LoginPage() {
     const {login} = useAuth();
@@ -70,7 +70,7 @@ export default function LoginPage() {
             if (err instanceof ApiError) {
                 switch (err.status) {
                     case 401:
-                        newErrors.email = "Invalid email or password";
+                        newErrors.global = "Invalid email or password";
                         break;
                     case 500:
                         newErrors.global = "Server error. Please try again later.";

@@ -1,7 +1,7 @@
 import {Profile} from "@/features/profile/types/user";
 import {useEffect, useState} from "react";
 import {fetchUserByHandle} from "@/features/profile/api/profileApi";
-import {ApiError} from "@/lib/apiClient";
+import {ApiError} from "@/lib/types/httpTypes";
 
 export const useProfile = (handle?: string) => {
     const [profile, setProfile] = useState<Profile | null>(null);
