@@ -1,12 +1,13 @@
 package com.klenarczyk.backend.security.auth;
 
+import com.klenarczyk.backend.common.exception.handler.docs.annotation.ConflictResponse;
+import com.klenarczyk.backend.common.exception.handler.docs.annotation.UnauthorizedResponse;
 import com.klenarczyk.backend.security.auth.dto.LoginRequest;
 import com.klenarczyk.backend.security.auth.dto.RegisterRequest;
 import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.security.auth.service.AuthServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -33,9 +34,8 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Registers new user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User created successfully")
-    })
+    @ApiResponse(responseCode = "201", description = "User created successfully")
+    @ConflictResponse
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest req) {
         User user = authService.register(req);
 
@@ -49,15 +49,14 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Authenticates user and returns JWT cookie")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User authenticated successfully")
-    })
+    @ApiResponse(responseCode = "204", description = "User authenticated successfully")
+    @UnauthorizedResponse
     public ResponseEntity<Void> login(
             @Valid @RequestBody LoginRequest req,
             HttpServletResponse response
     ) {
         authService.login(req, response);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 }

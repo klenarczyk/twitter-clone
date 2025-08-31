@@ -4,11 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class ResourceConflictException extends RuntimeException {
+public class ConflictException extends RuntimeException {
 
     private final String field;
 
-    public ResourceConflictException(String field, String message) {
+    public ConflictException(String field, String message) {
         super(message);
         this.field = field;
     }
