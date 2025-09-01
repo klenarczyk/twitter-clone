@@ -10,7 +10,7 @@ import {useRouter} from "next/navigation";
 import {useAuth} from "@/features/auth/hooks/useAuth";
 import {Eye, EyeOff} from "lucide-react";
 import {fetchCurrentUser, fetchLogin} from "@/features/auth/api/authApi";
-import {ApiError} from "@/lib/types/httpTypes";
+import {ApiError} from "@/shared/api/httpTypes";
 
 export default function LoginPage() {
     const {login} = useAuth();

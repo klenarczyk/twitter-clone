@@ -9,7 +9,7 @@ import Form from "@/features/ui/form/Form";
 import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/lib/utils/validation";
 import {Eye, EyeOff} from "lucide-react";
 import {fetchRegister} from "@/features/auth/api/authApi";
-import {ApiError} from "@/lib/types/httpTypes";
+import {ApiError} from "@/shared/api/httpTypes";
 
 export default function RegisterPage() {
     const router = useRouter();

@@ -7,7 +7,7 @@ import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {useProfileImage} from "@/features/profile/hooks/useProfileImage";
 import {useAuth} from "@/features/auth/hooks/useAuth";
-import {ApiError} from "@/lib/types/httpTypes";
+import {ApiError} from "@/shared/api/httpTypes";
 
 export default function Composer() {
     const router = useRouter();

@@ -15,6 +15,7 @@
     .text-mono-800 { color: var(--color-800); }
     .text-mono-900 { color: var(--color-900); }
     .text-mono-950 { color: var(--color-950); }
+    .text-destructive-foreground { color: white; }
 
     /* Background colors */
     .bg-mono-50 { background-color: var(--color-50); }
@@ -28,7 +29,9 @@
     .bg-mono-800 { background-color: var(--color-800); }
     .bg-mono-900 { background-color: var(--color-900); }
     .bg-mono-950 { background-color: var(--color-950); }
+    .bg-destructive { background-color: #702721; }
 
     /* Other utilities */
     .w-clamped { width: min(42rem, 100vw); }
+    .border-destructive { border: 1px solid #702721; }
 }

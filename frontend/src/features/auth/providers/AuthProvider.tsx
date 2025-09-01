@@ -3,7 +3,7 @@
 import {createContext, ReactNode, useEffect, useState} from "react";
 import {AuthContextType, User} from "@/features/auth/types/auth";
 import {fetchCurrentUser} from "@/features/auth/api/authApi";
-import {ApiError} from "@/lib/types/httpTypes";
+import {ApiError} from "@/shared/api/httpTypes";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
