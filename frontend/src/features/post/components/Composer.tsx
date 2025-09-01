@@ -25,6 +25,10 @@ export default function Composer() {
         if (!canPost) return;
         try {
             await createPost(text);
+            addToast({
+                text: "Post created successfully!",
+                type: "success"
+            });
         } catch (err: unknown) {
             if (err instanceof ApiError) {
                 switch (err.status) {

@@ -100,6 +100,10 @@ export default function RegisterPage() {
             });
 
             router.push('/login');
+            addToast({
+                text: "Account created successfully! Please log in.",
+                type: "success"
+            });
         } catch (err: unknown) {
             if (err instanceof ApiError) {
                 switch (err.status) {
