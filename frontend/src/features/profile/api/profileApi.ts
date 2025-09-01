@@ -1,4 +1,4 @@
-import {apiClient} from "@/lib/api/apiClient";
+import {apiClient} from "@/shared/api/apiClient";
 import {Profile} from "@/features/profile/types/user";
 
 export const fetchUserByHandle = async (handle: string) => apiClient<Profile>(

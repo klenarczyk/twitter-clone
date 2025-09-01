@@ -1,4 +1,4 @@
-import {ApiError, HttpMethod, RequestOptions} from "@/lib/types/httpTypes";
+import {ApiError, HttpMethod, RequestOptions} from "@/shared/api/httpTypes";
 import {API_URL} from "@/lib/constants";
 
 export async function apiClient<T>(

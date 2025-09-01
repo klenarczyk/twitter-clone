@@ -7,6 +7,7 @@ import com.klenarczyk.backend.common.exception.handler.response.conflict.Conflic
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,7 +25,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             UnauthorizedException.class,
             AuthenticationException.class,
-            AuthenticationCredentialsNotFoundException.class
+            AuthenticationCredentialsNotFoundException.class,
+            AuthorizationDeniedException.class,
     })
     public ResponseEntity<ErrorResponse> handleUnauthorized(RuntimeException ex) {
         return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());

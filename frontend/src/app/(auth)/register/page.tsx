@@ -2,17 +2,19 @@
 
 import {ChangeEvent, FormEvent, useState} from 'react';
 import {useRouter} from 'next/navigation';
-import FormItem from "@/features/ui/form/FormItem";
-import InputField from "@/features/ui/form/InputField";
-import Button from "@/features/ui/Button";
-import Form from "@/features/ui/form/Form";
+import FormItem from "@/shared/ui/form/FormItem";
+import InputField from "@/shared/ui/form/InputField";
+import Button from "@/shared/ui/Button";
+import Form from "@/shared/ui/form/Form";
 import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/lib/utils/validation";
 import {Eye, EyeOff} from "lucide-react";
 import {fetchRegister} from "@/features/auth/api/authApi";
-import {ApiError} from "@/lib/types/httpTypes";
+import {ApiError} from "@/shared/api/httpTypes";
+import {useToast} from "@/shared/toast/useToast";
 
 export default function RegisterPage() {
     const router = useRouter();
+    const {addToast} = useToast();
 
     const [formData, setFormData] = useState({
         handle: '',
@@ -98,6 +100,10 @@ export default function RegisterPage() {
             });
 
             router.push('/login');
+            addToast({
+                text: "Account created successfully! Please log in.",
+                type: "success"
+            });
         } catch (err: unknown) {
             if (err instanceof ApiError) {
                 switch (err.status) {
@@ -107,17 +113,29 @@ export default function RegisterPage() {
                         } else if (err.details?.field === 'handle') {
                             newErrors.handle = err.details.issue;
                         } else {
-                            newErrors.global = err.details?.issue || "Conflict error";
+                            addToast({
+                                text: newErrors.global = err.details?.issue || "Conflict error",
+                                type: "error"
+                            });
                         }
                         break;
                     case 500:
-                        newErrors.global = "Server error. Please try again later.";
+                        addToast({
+                            text: "Server error. Please try again later.",
+                            type: "error"
+                        });
                         break;
                     default:
-                        newErrors.global = err.message || "Registration failed";
+                        addToast({
+                            text: newErrors.global = err.message || "Registration failed",
+                            type: "error"
+                        });
                 }
             } else {
-                newErrors.global = "An unexpected error occurred";
+                addToast({
+                    text: "An unexpected error occurred. Please try again.",
+                    type: "error"
+                });
             }
 
             setFormErrors(newErrors);
