@@ -52,7 +52,7 @@ export function ToastProvider({children}: { children: ReactNode }) {
     const addToast = (toast: Omit<Toast, "id">) => {
         const id = crypto.randomUUID()
         setToasts((prev) => [...prev, {id, ...toast}])
-        setTimeout(() => removeToast(id), 2000)
+        setTimeout(() => removeToast(id), 3000)
     }
 
     const removeToast = (id: string) => {
@@ -92,7 +92,7 @@ export function ToastProvider({children}: { children: ReactNode }) {
                                 className="absolute bottom-0 left-0 h-0.5 bg-white/50"
                                 initial={{width: "100%"}}
                                 animate={{width: 0}}
-                                transition={{duration: 2, ease: "linear"}}
+                                transition={{duration: 3, ease: "linear"}}
                             />
                         </motion.div>
                     ))}

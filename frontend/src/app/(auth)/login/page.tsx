@@ -1,20 +1,22 @@
 "use client";
 
 import {ChangeEvent, FormEvent, useState} from "react";
-import Form from "@/features/ui/form/Form";
-import FormItem from "@/features/ui/form/FormItem";
-import InputField from "@/features/ui/form/InputField";
-import Button from "@/features/ui/Button";
+import Form from "@/shared/ui/form/Form";
+import FormItem from "@/shared/ui/form/FormItem";
+import InputField from "@/shared/ui/form/InputField";
+import Button from "@/shared/ui/Button";
 import {validateEmail} from "@/lib/utils/validation";
 import {useRouter} from "next/navigation";
 import {useAuth} from "@/features/auth/hooks/useAuth";
 import {Eye, EyeOff} from "lucide-react";
 import {fetchCurrentUser, fetchLogin} from "@/features/auth/api/authApi";
 import {ApiError} from "@/shared/api/httpTypes";
+import {useToast} from "@/shared/toast/useToast";
 
 export default function LoginPage() {
     const {login} = useAuth();
     const router = useRouter();
+    const {addToast} = useToast();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -73,13 +75,22 @@ export default function LoginPage() {
                         newErrors.global = "Invalid email or password";
                         break;
                     case 500:
-                        newErrors.global = "Server error. Please try again later.";
+                        addToast({
+                            text: "Server error. Please try again later.",
+                            type: "error"
+                        });
                         break;
                     default:
-                        newErrors.global = err.message || "Login failed";
+                        addToast({
+                            text: newErrors.global = err.message || "Login failed",
+                            type: "error"
+                        });
                 }
             } else {
-                newErrors.global = "An unexpected error occurred";
+                addToast({
+                    text: "An unexpected error occurred. Please try again.",
+                    type: "error"
+                });
             }
 
             setFormErrors(newErrors);

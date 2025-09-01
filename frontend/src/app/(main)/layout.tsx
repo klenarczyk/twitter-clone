@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-import Nav from "@/features/ui/Nav";
+import Nav from "@/shared/ui/Nav";
 
 export default function MainLayout({children}: { children: ReactNode }) {
     return (

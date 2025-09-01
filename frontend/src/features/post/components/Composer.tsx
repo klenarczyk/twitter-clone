@@ -8,12 +8,16 @@ import {useRouter} from "next/navigation";
 import {useProfileImage} from "@/features/profile/hooks/useProfileImage";
 import {useAuth} from "@/features/auth/hooks/useAuth";
 import {ApiError} from "@/shared/api/httpTypes";
+import {useToast} from "@/shared/toast/useToast";
 
 export default function Composer() {
     const router = useRouter();
-    const [text, setText] = useState('');
+    const {addToast} = useToast();
+
     const {user, loading: loadingUser} = useAuth();
     const {imageUrl, loading: loadingImage} = useProfileImage(loadingUser ? undefined : user?.handle);
+
+    const [text, setText] = useState('');
 
     const canPost = text.trim().length > 0;
 
@@ -25,16 +29,28 @@ export default function Composer() {
             if (err instanceof ApiError) {
                 switch (err.status) {
                     case 401:
-                        console.warn("You must be logged in to post.");
+                        addToast({
+                            text: "Error: You must be logged in to post.",
+                            type: "error"
+                        });
                         break;
                     case 500:
-                        console.warn("Server error. Please try again later.");
+                        addToast({
+                            text: "Server error. Please try again later.",
+                            type: "error"
+                        });
                         break;
                     default:
-                        console.warn(`Failed to create post: ${err.message}`);
+                        addToast({
+                            text: `Failed to create post: ${err.message}`,
+                            type: "error"
+                        });
                 }
             } else {
-                console.error("Unexpected error while creating post:", err);
+                addToast({
+                    text: "An unexpected error occurred. Please try again.",
+                    type: "error"
+                });
             }
         } finally {
             setText('');
