@@ -1,6 +1,7 @@
+export type ToastType = "default" | "success" | "error" | "info";
+
 export type Toast = {
-    id: string
-    title: string
-    description?: string
-    type?: "default" | "success" | "error"
+    id: string;
+    text: string;
+    type?: ToastType;
 }

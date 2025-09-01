@@ -1,14 +1,47 @@
 "use client"
+
 import React, {createContext, ReactNode, useState} from "react"
 import {Toast} from "@/shared/toast/toast";
 import {AnimatePresence, motion} from "framer-motion";
-import Success from "@/shared/ui/icons/Success";
-import {X} from "lucide-react";
+import {CheckIcon, X} from "lucide-react";
+import ExclamationIcon from "@/shared/ui/icons/ExclamationIcon";
+import InfoIcon from "@/shared/ui/icons/InfoIcon";
 
 type ToastContextType = {
-    toasts: Toast[]
-    addToast: (toast: Omit<Toast, "id">) => void
-    removeToast: (id: string) => void
+    toasts: Toast[];
+    addToast: (toast: Omit<Toast, "id">) => void;
+    removeToast: (id: string) => void;
+}
+
+const ToastIcon = ({type, className}: { type?: string; className?: string }) => {
+    const iconClass = "text-black size-2/3";
+    const cn: string = `flex items-center justify-center size-5 rounded-full ${className}`;
+
+    switch (type) {
+        case "success":
+            return (
+                <div className={`${cn} bg-green-500`}
+                     style={{boxShadow: "0 0 20px 1px rgba(72, 187, 120, 0.75)"}}>
+                    <CheckIcon className={iconClass}/>
+                </div>
+            )
+        case "error":
+            return (
+                <div className={`${cn} bg-red-500`}
+                     style={{boxShadow: "0 0 20px 1px rgba(255, 72, 72, 0.75)"}}>
+                    <ExclamationIcon className={`${iconClass} text-white`}/>
+                </div>
+            )
+        case "info":
+            return (
+                <div className={`${cn} bg-gray-200`}
+                     style={{boxShadow: "0 0 20px 1px rgba(200, 200, 200, 0.75)"}}>
+                    <InfoIcon className={iconClass}/>
+                </div>
+            )
+        default:
+            return null
+    }
 }
 
 export const ToastContext = createContext<ToastContextType | undefined>(undefined)
@@ -46,34 +79,21 @@ export function ToastProvider({children}: { children: ReactNode }) {
                                 layout: {type: "spring", stiffness: 300, damping: 25},
                             }}
                             layout
-                            className={`pointer-events-auto relative flex w-full items-center justify-start overflow-hidden rounded-lg border px-4 py-6 shadow-lg ${
-                                t.type === "error"
-                                    ? "border-destructive bg-destructive text-destructive-foreground"
-                                    : t.type === "success"
-                                        ? "bg-green-500"
-                                        : "border bg-[#111111] text-foreground"
-                            }`}
+                            className={"pointer-events-auto relative flex w-full items-center justify-start" +
+                                " overflow-hidden rounded-lg border px-4 py-6 shadow-lg bg-[#111111] text-foreground"}
                         >
-                            <div className="flex items-center justify-center size-5 rounded-full bg-green-500"
-                                 style={{boxShadow: "0 0 20px 1px rgba(72, 187, 120, 0.75)"}}>
-                                <Success className="text-black size-2/3"/>
-                            </div>
+                            <ToastIcon type={t.type}/>
 
-
-                            <div className="flex-1 px-4">
-                                {/*<span className="font-bold text-white">{t.title}</span>*/}
-                                {t.description && <p className="text-sm text-white">{t.description}</p>}
-                            </div>
+                            <p className="flex-1 px-4 wrap text-sm text-white">{t.text}</p>
 
                             <X className="text-gray-300 size-5 cursor-pointer" onClick={() => removeToast(t.id)}/>
 
-                            {/* Timer */}
-                            {/*<motion.div*/}
-                            {/*    className="absolute bottom-0 left-0 h-0.5 bg-white/50"*/}
-                            {/*    initial={{width: "100%"}}*/}
-                            {/*    animate={{width: 0}}*/}
-                            {/*    transition={{duration: 2, ease: "linear"}}*/}
-                            {/*/>*/}
+                            <motion.div
+                                className="absolute bottom-0 left-0 h-0.5 bg-white/50"
+                                initial={{width: "100%"}}
+                                animate={{width: 0}}
+                                transition={{duration: 2, ease: "linear"}}
+                            />
                         </motion.div>
                     ))}
                 </AnimatePresence>
