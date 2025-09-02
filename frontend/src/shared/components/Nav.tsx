@@ -14,7 +14,12 @@ export default function Nav() {
         <nav className="h-screen border-r bg-mono-950 border-[var(--color-800)] backdrop-blur-sm">
             <div
                 className="container-center flex flex-col items-center justify-start gap-6 px-4 py-3 text-mono-100 h-full">
-                <Link href="/public" className="font-semibold">Twitter Clone</Link>
+                <Link href="/" className="relative size-8">
+                    <Image src="/images/logo.png" alt="Logo" width={2000} height={1070} className="invert"
+                    />
+                </Link>
+
+                <h1>Test</h1>
 
                 <Link href={user?.handle ? `/u/${user?.handle}` : "#"}
                       className="flex justify-center items-center rounded-full w-9 h-9 overflow-hidden cursor-pointer hover:ring-6 ring-[var(--color-800)] transition-all duration-100">
