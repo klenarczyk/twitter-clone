@@ -8,7 +8,7 @@ import {ApiError} from "@/lib/api/httpTypes";
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({children}: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | undefined>(undefined);
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -21,7 +21,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
                 const currentUser = await fetchCurrentUser();
                 setUser(currentUser);
             } catch (err: unknown) {
-                setUser(undefined);
+                setUser(null);
 
                 if (err instanceof ApiError) {
                     switch (err.status) {
@@ -42,7 +42,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     }, [user]);
 
     const login = (user: User) => setUser(user);
-    const logout = () => setUser(undefined);
+    const logout = () => setUser(null);
 
     return (
         <AuthContext.Provider value={{user, loading, login, logout}}>

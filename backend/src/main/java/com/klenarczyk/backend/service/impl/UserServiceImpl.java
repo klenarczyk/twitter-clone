@@ -56,7 +56,9 @@ public class UserServiceImpl implements UserService {
         newUser.setHandle(req.getHandle());
         newUser.setEmail(req.getEmail());
         newUser.setPasswordHash(passwordEncoder.encode(req.getPassword()));
+        newUser.setImageUrl("");
         newUser.setFullName(req.getFullName());
+        newUser.setBio("");
 
         return userRepository.save(newUser);
     }
