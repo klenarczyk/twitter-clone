@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {Post} from "@/features/post/types/post";
 import {fetchPosts} from "@/features/post/api/postApi";
-import {ApiError} from "@/shared/api/httpTypes";
+import {ApiError} from "@/lib/api/httpTypes";
 
 export function usePostFeed({userId = null, initialPageSize = 8}: {
     userId?: number | null;

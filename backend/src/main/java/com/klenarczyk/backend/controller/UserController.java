@@ -44,13 +44,12 @@ public class UserController {
     // Endpoints
 
     @GetMapping("/me")
-    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Returns the currently authenticated user")
     @ApiResponse(responseCode = "200", description = "Current user fetched successfully")
     @UnauthorizedResponse
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal UserDetails currentUser) {
         User user = userService.getAuthenticatedUser(currentUser);
-        return ResponseEntity.ok(UserResponse.fromEntity(user));
+        return ResponseEntity.ok(user == null ? null : UserResponse.fromEntity(user));
     }
 
     @GetMapping("/{id}")

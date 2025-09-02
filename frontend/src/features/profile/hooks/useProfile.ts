@@ -1,15 +1,15 @@
 import {Profile} from "@/features/profile/types/user";
 import {useEffect, useState} from "react";
 import {fetchUserByHandle} from "@/features/profile/api/profileApi";
-import {ApiError} from "@/shared/api/httpTypes";
+import {ApiError} from "@/lib/api/httpTypes";
 
 export const useProfile = (handle?: string) => {
-    const [profile, setProfile] = useState<Profile | null>(null);
+    const [profile, setProfile] = useState<Profile | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         if (!handle) {
-            setProfile(null);
+            setProfile(undefined);
             setLoading(false);
             return;
         }
@@ -20,7 +20,7 @@ export const useProfile = (handle?: string) => {
                 const fetchedUser = await fetchUserByHandle(handle);
                 setProfile(fetchedUser);
             } catch (err: unknown) {
-                setProfile(null);
+                setProfile(undefined);
 
                 if (err instanceof ApiError) {
                     switch (err.status) {

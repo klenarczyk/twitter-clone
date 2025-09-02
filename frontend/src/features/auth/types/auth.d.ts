@@ -20,7 +20,7 @@ export type User = {
 }
 
 export type AuthContextType = {
-    user: User | null;
+    user: User | undefined;
     loading: boolean;
     login: (user: User) => void;
     logout: () => void;

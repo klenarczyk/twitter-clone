@@ -1,4 +1,4 @@
-import {apiClient} from "@/shared/api/apiClient";
+import {apiClient} from "@/lib/api/apiClient";
 import {Post} from "@/features/post/types/post";
 
 export type FetchPostsParams = {
