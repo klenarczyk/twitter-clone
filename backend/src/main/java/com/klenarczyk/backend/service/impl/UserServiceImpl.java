@@ -90,6 +90,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User getAuthenticatedUser(UserDetails principal) {
+        if (principal == null) return null;
+
         return userRepository.findByEmail(principal.getUsername())
                 .orElseThrow(() -> new AuthenticationCredentialsNotFoundException(
                         "Authenticated user not found"

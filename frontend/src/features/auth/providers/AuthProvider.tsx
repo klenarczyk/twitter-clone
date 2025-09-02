@@ -3,12 +3,12 @@
 import {createContext, ReactNode, useEffect, useState} from "react";
 import {AuthContextType, User} from "@/features/auth/types/auth";
 import {fetchCurrentUser} from "@/features/auth/api/authApi";
-import {ApiError} from "@/shared/api/httpTypes";
+import {ApiError} from "@/lib/api/httpTypes";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({children}: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -18,13 +18,21 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
             setLoading(true);
 
             try {
-                const currentUser: User = await fetchCurrentUser();
+                const currentUser = await fetchCurrentUser();
                 setUser(currentUser);
             } catch (err: unknown) {
-                if (!(err instanceof ApiError)) {
+                setUser(undefined);
+
+                if (err instanceof ApiError) {
+                    switch (err.status) {
+                        case 401:
+                            break;
+                        default:
+                            console.error("API error:", err.message);
+                    }
+                } else {
                     console.error("Unexpected error:", err);
                 }
-                setUser(null);
             } finally {
                 setLoading(false);
             }
@@ -34,7 +42,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     }, [user]);
 
     const login = (user: User) => setUser(user);
-    const logout = () => setUser(null);
+    const logout = () => setUser(undefined);
 
     return (
         <AuthContext.Provider value={{user, loading, login, logout}}>

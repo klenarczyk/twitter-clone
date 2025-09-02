@@ -4,8 +4,8 @@ import React, {createContext, ReactNode, useState} from "react"
 import {Toast} from "@/shared/toast/toast";
 import {AnimatePresence, motion} from "framer-motion";
 import {CheckIcon, X} from "lucide-react";
-import ExclamationIcon from "@/shared/ui/icons/ExclamationIcon";
-import InfoIcon from "@/shared/ui/icons/InfoIcon";
+import ExclamationIcon from "@/shared/components/icons/ExclamationIcon";
+import InfoIcon from "@/shared/components/icons/InfoIcon";
 
 type ToastContextType = {
     toasts: Toast[];

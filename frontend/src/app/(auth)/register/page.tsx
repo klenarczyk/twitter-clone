@@ -2,14 +2,14 @@
 
 import {ChangeEvent, FormEvent, useState} from 'react';
 import {useRouter} from 'next/navigation';
-import FormItem from "@/shared/ui/form/FormItem";
-import InputField from "@/shared/ui/form/InputField";
-import Button from "@/shared/ui/Button";
-import Form from "@/shared/ui/form/Form";
-import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/lib/utils/validation";
+import FormItem from "@/shared/components/form/FormItem";
+import InputField from "@/shared/components/form/InputField";
+import Button from "@/shared/components/Button";
+import Form from "@/shared/components/form/Form";
+import {validateEmail, validateFullName, validateHandle, validatePassword} from "@/shared/utils/validation";
 import {Eye, EyeOff} from "lucide-react";
 import {fetchRegister} from "@/features/auth/api/authApi";
-import {ApiError} from "@/shared/api/httpTypes";
+import {ApiError} from "@/lib/api/httpTypes";
 import {useToast} from "@/shared/toast/useToast";
 
 export default function RegisterPage() {
