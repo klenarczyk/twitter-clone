@@ -1,17 +1,20 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {Post} from "@/features/post/types/post";
 import {fetchPosts} from "@/features/post/api/postApi";
-import {ApiError} from "@/lib/api/httpTypes";
 
-export function useInfinitePosts({userId = null, initialPageSize = 8}: {
+export function useInfinitePosts({
+                                     userId = null,
+                                     initialPageSize = 8,
+                                 }: {
     userId?: number | null;
-    initialPageSize?: number
+    initialPageSize?: number;
 }) {
     const [posts, setPosts] = useState<Post[]>([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const pageSizeRef = useRef(initialPageSize);
     const [loading, setLoading] = useState(false);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const pageSizeRef = useRef(initialPageSize);
 
     const loadMore = useCallback(async () => {
         if (!hasMore || loading) return;
@@ -28,34 +31,20 @@ export function useInfinitePosts({userId = null, initialPageSize = 8}: {
             setPage((prev) => prev + 1);
             setHasMore(res.hasMore);
         } catch (err: unknown) {
-            if (err instanceof ApiError) {
-                switch (err.status) {
-                    case 500:
-                        console.warn("Server error. Please try again later.");
-                        break;
-                    default:
-                        console.error("Failed to fetch posts:", err.message);
-                }
-            } else {
-                console.error("Unexpected error while fetching posts", err);
-            }
+            console.error(err);
         } finally {
             setLoading(false);
+            setIsInitialLoading(false);
         }
-    }, [hasMore, loading, page, userId]);
+    }, [hasMore, page, userId, loading]);
 
-    useEffect(() => {
-        loadMore();
-    }, [])
-
-    const reset = useCallback((newPageSize = initialPageSize) => {
+    function reset(newPageSize = initialPageSize) {
         pageSizeRef.current = newPageSize;
         setPosts([]);
         setPage(0);
         setHasMore(true);
-        setLoading(true);
-        loadMore();
-    }, [initialPageSize, loadMore]);
+        setIsInitialLoading(true);
+    }
 
-    return {posts, loadMore, hasMore, reset, loading};
+    return {posts, loadMore, hasMore, reset, loading, isInitialLoading};
 }

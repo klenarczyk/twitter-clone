@@ -2,7 +2,8 @@
 
 import React, {useEffect, useRef} from 'react';
 import {useInfinitePosts} from '@/features/post/hooks/useInfinitePosts';
-import PostList from "@/features/post/components/PostList";
+import PostCard from "@/features/post/components/PostCard";
+import {PostSkeleton} from "@/features/post/components/PostSkeleton";
 
 export default function InfinitePostList({
                                              userId,
@@ -13,59 +14,49 @@ export default function InfinitePostList({
     initialPageSize?: number;
     className?: string;
 }) {
-    const {posts, loadMore, hasMore, loading} = useInfinitePosts({userId, initialPageSize});
+    const {posts, loadMore, hasMore, loading, isInitialLoading} = useInfinitePosts({userId, initialPageSize});
     const sentinelRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        if (!sentinelRef.current) return;
+        if (isInitialLoading && hasMore) {
+            loadMore();
+        }
+    }, [isInitialLoading, hasMore, loadMore]);
+
+    useEffect(() => {
+        if (!sentinelRef.current || !hasMore || loading) return;
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting && hasMore && !loading) {
-                        loadMore();
-                    }
+                    if (entry.isIntersecting) loadMore();
                 });
             },
             {root: null, rootMargin: "300px", threshold: 0.1}
         );
+
         observer.observe(sentinelRef.current);
         return () => observer.disconnect();
-    }, [loadMore, hasMore, loading]);
-    
+    }, [hasMore, loadMore, loading]);
+
     return (
-        <section className={`space-y-4 ${className}`}>
-            {loading && posts.length === 0 ? (
-                <div className="p-6 border rounded-lg">
-                    <div className="animate-pulse space-y-3">
-                        <div className="h-4 bg-mono-900 rounded w-3/4"/>
-                        <div className="h-4 bg-mono-900 rounded w-1/2"/>
-                        <div className="h-40 bg-mono-900 rounded"/>
-                    </div>
-                </div>
-            ) : posts.length === 0 ? (
-                <div className="text-sm text-mono-300 p-6 border rounded-lg">
-                    No posts available
-                </div>
-            ) : (
-                <PostList posts={posts} loading={loading}/>
-            )}
+        <section className={`space-y-4 flex flex-col w-full ${className}`}>
+            {posts.map((post, key) => (
+                <PostCard key={key} post={post}/>
+            ))}
 
-            <div ref={sentinelRef}/>
-
-            <div className="flex items-center justify-center py-6">
-                {!hasMore ? (
-                    <div className="text-sm text-mono-300">You’re all caught up</div>
-                ) : (
-                    <button
-                        onClick={() => loadMore()}
-                        disabled={loading}
-                        className="px-4 py-2 rounded-full border hover:bg-[var(--color-500)]"
-                    >
-                        {loading ? "Loading..." : "Load more"}
-                    </button>
+            {(isInitialLoading || loading) &&
+                Array.from({length: initialPageSize}).map((_, i) =>
+                    <PostSkeleton key={i}/>
                 )}
-            </div>
+
+            {hasMore && !isInitialLoading && <div ref={sentinelRef}/>}
+
+            {!hasMore && (
+                <div className="flex items-center justify-center py-6 text-sm text-mono-300">
+                    You’re all caught up
+                </div>
+            )}
         </section>
     );
 }
-

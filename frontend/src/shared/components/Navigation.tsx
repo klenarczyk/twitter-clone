@@ -52,7 +52,7 @@ export default function Navigation({children}: { children: React.ReactNode }) {
 
             <main className="flex-1 md:ml-20 min-h-screen w-auto">
                 <div
-                    className="md:hidden fixed top-0 left-0 right-0 flex items-center justify-center py-4 border-b z-10 border-b-[var(--color-800)]">
+                    className="md:hidden fixed top-0 left-0 right-0 flex items-center justify-center py-4 bg-mono-950 border-b z-10 border-b-[var(--color-800)]">
                     <Link href="/">
                         <Image
                             src="/images/logo.png"
