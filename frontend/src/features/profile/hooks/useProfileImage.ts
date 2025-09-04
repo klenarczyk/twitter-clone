@@ -1,12 +1,13 @@
-import {useProfile} from "./useProfile";
 import {DEFAULT_PROFILE_IMAGE, MEDIA_STORAGE_URL} from "@/lib/constants";
+import {User} from "@/features/auth/types/auth";
+import {Profile} from "@/features/profile/types/user";
 
-export function useProfileImage(handle?: string) {
-    const {profile, loading} = useProfile(handle);
+type UserArgs = User | Profile | null;
 
-    const imageUrl = profile?.imageUrl?.trim()
-        ? `${MEDIA_STORAGE_URL}/${profile.imageUrl}`
+export function useProfileImage(user: UserArgs, loading?: boolean) {
+    if (loading) return undefined;
+
+    return user?.imageUrl?.trim()
+        ? `${MEDIA_STORAGE_URL}/${user.imageUrl}`
         : DEFAULT_PROFILE_IMAGE;
-
-    return {imageUrl, loading};
 }

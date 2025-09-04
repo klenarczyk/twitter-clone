@@ -4,12 +4,12 @@ import {fetchUserByHandle} from "@/features/profile/api/profileApi";
 import {ApiError} from "@/lib/api/httpTypes";
 
 export const useProfile = (handle?: string) => {
-    const [profile, setProfile] = useState<Profile | undefined>(undefined);
+    const [profile, setProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         if (!handle) {
-            setProfile(undefined);
+            setProfile(null);
             setLoading(false);
             return;
         }
@@ -20,7 +20,7 @@ export const useProfile = (handle?: string) => {
                 const fetchedUser = await fetchUserByHandle(handle);
                 setProfile(fetchedUser);
             } catch (err: unknown) {
-                setProfile(undefined);
+                setProfile(null);
 
                 if (err instanceof ApiError) {
                     switch (err.status) {

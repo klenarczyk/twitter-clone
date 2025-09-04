@@ -20,11 +20,7 @@ public class StorageServiceImpl implements StorageService {
     @Value("${app.upload.dir}")
     private String uploadDir;
 
-    private final UserRepository userRepository;
-
-    public StorageServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    public StorageServiceImpl() {}
 
     @Override
     @Transactional

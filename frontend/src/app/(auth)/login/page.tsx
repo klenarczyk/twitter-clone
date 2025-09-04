@@ -9,7 +9,7 @@ import {validateEmail} from "@/shared/utils/validation";
 import {useRouter} from "next/navigation";
 import {useAuth} from "@/features/auth/hooks/useAuth";
 import {Eye, EyeOff} from "lucide-react";
-import {fetchCurrentUser, fetchLogin} from "@/features/auth/api/authApi";
+import {fetchLogin} from "@/features/auth/api/authApi";
 import {ApiError} from "@/lib/api/httpTypes";
 import {useToast} from "@/shared/toast/useToast";
 
@@ -58,12 +58,11 @@ export default function LoginPage() {
         }
 
         try {
-            await fetchLogin({
+            const user = await fetchLogin({
                 email: formData.email.trim(),
                 password: formData.password.trim(),
             });
-
-            const user = await fetchCurrentUser();
+            
             login(user);
             router.push('/');
         } catch (err: unknown) {
