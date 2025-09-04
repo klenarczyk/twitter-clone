@@ -1,65 +1,11 @@
-'use client';
+import InfinitePostList from "@/features/post/components/InfinitePostList";
 
-import React, {useEffect, useRef, useState} from 'react';
-import {usePostFeed} from '@/features/post/hooks/usePostFeed';
-import PostList from "@/features/post/components/PostList";
-
-export default function Feed({userId, initialPageSize = 8, className}: {
-    userId?: number;
+export default function Feed({initialPageSize = 8}: {
     initialPageSize?: number;
-    className?: string
 }) {
-    const {posts, loadMore, hasMore} = usePostFeed({userId, initialPageSize});
-    const [loading, setLoading] = useState(true);
-    const sentinelRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        if (!sentinelRef.current) return;
-        setLoading(true);
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && hasMore && !loading) {
-                        loadMore();
-                    }
-                });
-            },
-            {root: null, rootMargin: '300px', threshold: 0.1}
-        );
-
-        observer.observe(sentinelRef.current);
-        setLoading(false);
-        return () => observer.disconnect();
-    }, [loadMore, hasMore, loading]);
-
     return (
-        <section className={`space-y-4 ${className}`}>
-            {loading && (
-                <div className="p-6 border rounded-lg">
-                    <div className="animate-pulse space-y-3">
-                        <div className="h-4 bg-mono-900 rounded w-3/4"/>
-                        <div className="h-4 bg-mono-900 rounded w-1/2"/>
-                        <div className="h-40 bg-mono-900 rounded"/>
-                    </div>
-                </div>
-            )}
-
-            <PostList posts={posts} loading={loading}/>
-
-            <div ref={sentinelRef}/>
-
-            <div className="flex items-center justify-center py-6">
-                {!hasMore ? (
-                    <div className="text-sm text-mono-300">You’re all caught up ✨</div>
-                ) : (
-                    <button
-                        onClick={() => loadMore()}
-                        className="px-4 py-2 rounded-full border hover:bg-[var(--color-500)]"
-                    >
-                        Load more
-                    </button>
-                )}
-            </div>
-        </section>
+        <main className="w-full max-w-2xl mx-auto">
+            <InfinitePostList initialPageSize={initialPageSize}/>
+        </main>
     );
 }

@@ -3,21 +3,23 @@ import {Post} from "@/features/post/types/post";
 import {fetchPosts} from "@/features/post/api/postApi";
 import {ApiError} from "@/lib/api/httpTypes";
 
-export function usePostFeed({userId = null, initialPageSize = 8}: {
+export function useInfinitePosts({userId = null, initialPageSize = 8}: {
     userId?: number | null;
     initialPageSize?: number
 }) {
     const [posts, setPosts] = useState<Post[]>([]);
-    const [page, setPage] = useState(-1);
+    const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const pageSizeRef = useRef(initialPageSize);
+    const [loading, setLoading] = useState(false);
 
     const loadMore = useCallback(async () => {
-        if (!hasMore) return;
+        if (!hasMore || loading) return;
+        setLoading(true);
 
         try {
             const res = await fetchPosts({
-                page: page + 1,
+                page,
                 limit: pageSizeRef.current,
                 ...(userId ? {authorId: userId} : {}),
             });
@@ -37,19 +39,23 @@ export function usePostFeed({userId = null, initialPageSize = 8}: {
             } else {
                 console.error("Unexpected error while fetching posts", err);
             }
+        } finally {
+            setLoading(false);
         }
-    }, [hasMore, page, userId]);
+    }, [hasMore, loading, page, userId]);
 
     useEffect(() => {
         loadMore();
-    }, [loadMore]);
+    }, [])
 
-    function reset(newPageSize = initialPageSize) {
+    const reset = useCallback((newPageSize = initialPageSize) => {
         pageSizeRef.current = newPageSize;
         setPosts([]);
         setPage(0);
         setHasMore(true);
-    }
+        setLoading(true);
+        loadMore();
+    }, [initialPageSize, loadMore]);
 
-    return {posts, loadMore, hasMore, reset};
+    return {posts, loadMore, hasMore, reset, loading};
 }

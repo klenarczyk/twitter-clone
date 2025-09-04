@@ -1,11 +1,11 @@
-import Feed from "@/features/post/components/Feed";
-import Composer from "@/features/post/components/Composer";
+import Feed from "@/features/post/components/InfinitePostList";
 
 export default function HomePage() {
     return (
-        <main className="lg:col-span-2 flex flex-col gap-6">
-            <Composer/>
-            <Feed initialPageSize={8}/>
-        </main>
+        <div className="lg:col-span-2 flex justify-center">
+            <main className="w-full max-w-2xl">
+                <Feed initialPageSize={8}/>
+            </main>
+        </div>
     );
 }

@@ -4,5 +4,5 @@ export interface Post {
     id: number;
     author: Profile;
     content: string;
-    createdAt: number;
+    createdAt: Date;
 }

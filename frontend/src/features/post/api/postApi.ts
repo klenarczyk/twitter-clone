@@ -15,9 +15,17 @@ export const fetchPosts = async ({
     const params = new URLSearchParams({page: String(page), limit: String(limit)});
     if (authorId) params.append('authorId', String(authorId));
 
-    return await apiClient<{ items: Post[]; hasMore: boolean }>(
+    const res = await apiClient<{ items: Post[]; hasMore: boolean }>(
         `/posts?${params.toString()}`
-    )
+    );
+    
+    return {
+        ...res,
+        items: res.items.map(post => ({
+            ...post,
+            createdAt: new Date(post.createdAt),
+        })),
+    } as { items: Post[]; hasMore: boolean };
 }
 
 export const createPost = async (content: string) => apiClient<Post>(

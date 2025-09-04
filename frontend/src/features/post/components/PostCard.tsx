@@ -8,7 +8,7 @@ import {getProfileImage} from "@/features/profile/utils/getProfileImage";
 export default function PostCard({post}: { post: Post }) {
     const imageUrl = getProfileImage(post.author.imageUrl);
 
-    const timeAgo = Math.floor((Date.now() - post.createdAt) / (1000 * 60 * 60));
+    const timeAgo = Math.floor((Date.now() - post.createdAt.getTime()) / (1000 * 60 * 60));
 
     return (
         <motion.article
