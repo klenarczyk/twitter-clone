@@ -42,7 +42,7 @@ export function usePostFeed({userId = null, initialPageSize = 8}: {
 
     useEffect(() => {
         loadMore();
-    }, []);
+    }, [loadMore]);
 
     function reset(newPageSize = initialPageSize) {
         pageSizeRef.current = newPageSize;

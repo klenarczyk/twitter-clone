@@ -46,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtUtil.generateToken((UserDetails) auth.getPrincipal());
 
-        Cookie cookie = new Cookie("jwt", token);
+        Cookie cookie = new Cookie("token", token);
         cookie.setHttpOnly(true);
         cookie.setSecure(cookieSecure);
         cookie.setPath("/");

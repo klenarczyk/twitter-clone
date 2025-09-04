@@ -3,15 +3,15 @@
 import {useParams} from "next/navigation";
 import Image from "next/image";
 import Feed from "@/features/post/components/Feed";
-import {useProfileImage} from "@/features/profile/hooks/useProfileImage";
 import {useProfile} from "@/features/profile/hooks/useProfile";
+import {getProfileImage} from "@/features/profile/utils/getProfileImage";
 
 export default function ProfilePage() {
     const params = useParams();
-    const {profile, loading: loadingProfile} = useProfile(params?.handle as string);
-    const {imageUrl} = useProfileImage(profile?.handle);
+    const {profile, loading} = useProfile(params?.handle as string);
+    const imageUrl = getProfileImage(profile?.imageUrl, loading);
 
-    if (loadingProfile) return <div className="text-white">Loading...</div>;
+    if (loading) return <div className="text-white">Loading...</div>;
 
     if (!profile) return <div className="text-white">Profile not found</div>;
 
@@ -19,14 +19,18 @@ export default function ProfilePage() {
         <div className="w-clamped">
             <div className="flex items-start justify-center gap-6 border-b border-[var(--color-500)] pb-4 mb-6">
                 <div className="flex justify-start w-32 h-32 relative">
-                    <Image
-                        src={imageUrl}
-                        alt="Profile picture"
-                        width={500}
-                        height={500}
-                        priority={true}
-                        className="rounded-full object-cover cursor-pointer"
-                    />
+                    {loading || !imageUrl ?
+                        <div
+                            className="w-10 h-10 border-4 border-t-4 border-mono-600 border-t-mono-200 rounded-full animate-spin"/>
+                        : <Image
+                            src={imageUrl}
+                            alt="Profile picture"
+                            width={500}
+                            height={500}
+                            priority={true}
+                            className="rounded-full object-cover cursor-pointer"
+                        />
+                    }
                 </div>
                 <div className="flex-1">
                     <p className="font-bold text-xl text-mono-100">{profile.fullName}</p>

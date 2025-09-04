@@ -7,7 +7,6 @@ export const fetchLogin = async (body: LoginRequest) => apiClient<User>(
     body
 );
 
-
 export const fetchRegister = async (body: RegisterRequest) => apiClient<void>(
     "/auth/register",
     "POST",

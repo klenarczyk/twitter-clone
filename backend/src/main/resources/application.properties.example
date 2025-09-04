@@ -26,3 +26,6 @@ app.upload-dir=uploads/
 springdoc.swagger-ui.operations-sorter=method
 springdoc.swagger-ui.defaultModelsExpandDepth=-1
 springdoc.swagger-ui.defaultModelExpandDepth=1
+
+# Trusted origins (comma-separated)
+app.trusted-origins=http://localhost:3000

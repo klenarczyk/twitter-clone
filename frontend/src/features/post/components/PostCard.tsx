@@ -1,14 +1,12 @@
-'use client';
-
 import React from 'react';
 import {motion} from 'framer-motion';
 import {Post} from "@/features/post/types/post";
 import Image from "next/image";
 import Link from "next/link";
-import {useProfileImage} from "@/features/profile/hooks/useProfileImage";
+import {getProfileImage} from "@/features/profile/utils/getProfileImage";
 
 export default function PostCard({post}: { post: Post }) {
-    const {imageUrl, loading: loadingImage} = useProfileImage(post.author.handle);
+    const imageUrl = getProfileImage(post.author.imageUrl);
 
     const timeAgo = Math.floor((Date.now() - post.createdAt) / (1000 * 60 * 60));
 
@@ -23,7 +21,7 @@ export default function PostCard({post}: { post: Post }) {
             <div className="flex gap-3">
                 <Link href={`/u/${post.author.handle}`}
                       className="w-12 h-12 rounded-full bg-mono-100 flex items-center justify-center cursor-pointer">
-                    <Image src={imageUrl} alt="Profile"
+                    <Image src={imageUrl!} alt="Profile"
                            height={50} width={50}
                            className="rounded-full"/>
                 </Link>

@@ -5,7 +5,7 @@ import Image from "next/image";
 import {createPost} from "@/features/post/api/postApi";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
-import {useProfileImage} from "@/features/profile/hooks/useProfileImage";
+import {getProfileImage} from "@/features/profile/utils/getProfileImage";
 import {useAuth} from "@/features/auth/hooks/useAuth";
 import {ApiError} from "@/lib/api/httpTypes";
 import {useToast} from "@/shared/toast/useToast";
@@ -14,8 +14,8 @@ export default function Composer() {
     const router = useRouter();
     const {addToast} = useToast();
 
-    const {user, loading: loadingUser} = useAuth();
-    const {imageUrl, loading: loadingImage} = useProfileImage(loadingUser ? undefined : user?.handle);
+    const {user, loading} = useAuth();
+    const imageUrl = getProfileImage(user?.imageUrl, loading);
 
     const [text, setText] = useState('');
 
@@ -66,8 +66,18 @@ export default function Composer() {
         <div className="bg-mono-950 border-b border-[var(--color-500)] p-4 shadow-sm">
             <div className="flex gap-3">
                 <Link href={user?.handle ? `/u/${user?.handle}` : "#"} className="w-12 h-12 rounded-full">
-                    <Image src={imageUrl} alt="Profile" height={50} width={50}
-                           className="rounded-full cursor-pointer"/>
+                    {loading || !imageUrl ? (
+                        <div className="w-12 h-12 rounded-full bg-mono-200 animate-pulse"/>
+                    ) : (
+                        <Image
+                            src={imageUrl}
+                            alt="Profile"
+                            height={50}
+                            width={50}
+                            className="rounded-full cursor-pointer"
+                        />
+                    )}
+
                 </Link>
                 <div className="flex-1">
                     <textarea
