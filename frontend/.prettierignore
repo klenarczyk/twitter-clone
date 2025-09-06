@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+
+# Next.js output
+.next/
+out/
+
+# TypeScript build
+dist/
+build/
+
+# Coverage reports
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE/editor folders
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Temporary files
+*.tmp
+*.temp
+
+# Config files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

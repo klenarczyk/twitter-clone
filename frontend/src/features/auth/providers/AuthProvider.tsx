@@ -1,50 +1,51 @@
 "use client";
 
-import {createContext, ReactNode, useEffect, useState} from "react";
-import {AuthContextType, User} from "@/features/auth/types/auth";
-import {fetchCurrentUser} from "@/features/auth/api/authApi";
-import {ApiError} from "@/lib/api/httpTypes";
+import { createContext, ReactNode, useEffect, useState } from "react";
+
+import { fetchCurrentUser } from "@/features/auth/api/authApi";
+import { AuthContextType, User } from "@/features/auth/types/auth";
+import { ApiError } from "@/lib/api/httpTypes";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({children}: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+	const [user, setUser] = useState<User | null>(null);
+	const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            setLoading(true);
+	useEffect(() => {
+		const fetchUser = async () => {
+			setLoading(true);
 
-            try {
-                const currentUser = await fetchCurrentUser();
-                setUser(currentUser);
-            } catch (err: unknown) {
-                setUser(null);
+			try {
+				const currentUser = await fetchCurrentUser();
+				setUser(currentUser);
+			} catch (err: unknown) {
+				setUser(null);
 
-                if (err instanceof ApiError) {
-                    switch (err.status) {
-                        case 401:
-                            break;
-                        default:
-                            console.error("API error:", err.message);
-                    }
-                } else {
-                    console.error("Unexpected error:", err);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
+				if (err instanceof ApiError) {
+					switch (err.status) {
+						case 401:
+							break;
+						default:
+							console.error("API error:", err.message);
+					}
+				} else {
+					console.error("Unexpected error:", err);
+				}
+			} finally {
+				setLoading(false);
+			}
+		};
 
-        fetchUser().then();
-    }, []);
+		fetchUser().then();
+	}, []);
 
-    const login = (user: User) => setUser(user);
-    const logout = () => setUser(null);
+	const login = (user: User) => setUser(user);
+	const logout = () => setUser(null);
 
-    return (
-        <AuthContext.Provider value={{user, loading, login, logout}}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
+	return (
+		<AuthContext.Provider value={{ user, loading, login, logout }}>
+			{children}
+		</AuthContext.Provider>
+	);
+};
