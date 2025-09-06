@@ -1,63 +1,66 @@
 @import "./tailwind.css";
 
 :root {
-    /* Monochrome base hue + saturation */
-    --color-hue: 0;
-    --color-saturation: 0%;
+	/* Monochrome base hue + saturation */
+	--color-hue: 0;
+	--color-saturation: 0%;
 
-    /* Lightness scale (matches Tailwind-like naming) */
-    --color-50: hsl(var(--color-hue), var(--color-saturation), 95%);
-    --color-100: hsl(var(--color-hue), var(--color-saturation), 90%);
-    --color-200: hsl(var(--color-hue), var(--color-saturation), 80%);
-    --color-300: hsl(var(--color-hue), var(--color-saturation), 70%);
-    --color-400: hsl(var(--color-hue), var(--color-saturation), 60%);
-    --color-500: hsl(var(--color-hue), var(--color-saturation), 50%);
-    --color-600: hsl(var(--color-hue), var(--color-saturation), 40%);
-    --color-700: hsl(var(--color-hue), var(--color-saturation), 30%);
-    --color-800: hsl(var(--color-hue), var(--color-saturation), 20%);
-    --color-900: hsl(var(--color-hue), var(--color-saturation), 10%);
-    --color-950: hsl(var(--color-hue), var(--color-saturation), 5%);
+	/* Lightness scale (matches Tailwind-like naming) */
+	--color-50: hsl(var(--color-hue), var(--color-saturation), 95%);
+	--color-100: hsl(var(--color-hue), var(--color-saturation), 90%);
+	--color-200: hsl(var(--color-hue), var(--color-saturation), 80%);
+	--color-300: hsl(var(--color-hue), var(--color-saturation), 70%);
+	--color-400: hsl(var(--color-hue), var(--color-saturation), 60%);
+	--color-500: hsl(var(--color-hue), var(--color-saturation), 50%);
+	--color-600: hsl(var(--color-hue), var(--color-saturation), 40%);
+	--color-700: hsl(var(--color-hue), var(--color-saturation), 30%);
+	--color-800: hsl(var(--color-hue), var(--color-saturation), 20%);
+	--color-900: hsl(var(--color-hue), var(--color-saturation), 10%);
+	--color-950: hsl(var(--color-hue), var(--color-saturation), 5%);
 
-    --max-width: 1100px;
+	--max-width: 1100px;
 }
 
 body {
-    background-color: var(--color-950);
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+	background-color: var(--color-950);
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
 @keyframes shake {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    20%, 60% {
-        transform: translateX(-4px);
-    }
-    40%, 80% {
-        transform: translateX(4px);
-    }
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	20%,
+	60% {
+		transform: translateX(-4px);
+	}
+	40%,
+	80% {
+		transform: translateX(4px);
+	}
 }
 
 .shake {
-    animation: shake 0.4s ease-in-out;
+	animation: shake 0.4s ease-in-out;
 }
 
 .container-center {
-    max-width: var(--max-width);
-    margin-left: auto;
-    margin-right: auto;
+	max-width: var(--max-width);
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .sr-only {
-    position: absolute !important;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
 }
