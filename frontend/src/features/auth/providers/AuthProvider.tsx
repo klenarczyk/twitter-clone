@@ -12,8 +12,6 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        if (user) return;
-
         const fetchUser = async () => {
             setLoading(true);
 
@@ -39,7 +37,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         };
 
         fetchUser().then();
-    }, [user]);
+    }, []);
 
     const login = (user: User) => setUser(user);
     const logout = () => setUser(null);

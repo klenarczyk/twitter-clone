@@ -1,65 +1,124 @@
-'use client';
+"use client";
 
-import React, {useEffect, useRef, useState} from 'react';
-import {usePostFeed} from '@/features/post/hooks/usePostFeed';
-import PostList from "@/features/post/components/PostList";
+import InfinitePostList from "@/features/post/components/InfinitePostList";
+import {motion} from "framer-motion";
+import {useState} from "react";
+import {useAuth} from "@/features/auth/hooks/useAuth";
+import Link from "next/link";
 
-export default function Feed({userId, initialPageSize = 8, className}: {
+export default function Feed({userId, initialPageSize = 8}: {
     userId?: number;
-    initialPageSize?: number;
-    className?: string
+    initialPageSize?: number
 }) {
-    const {posts, loadMore, hasMore} = usePostFeed({userId, initialPageSize});
-    const [loading, setLoading] = useState(true);
-    const sentinelRef = useRef<HTMLDivElement | null>(null);
+    const {user, loading: loadingUser} = useAuth();
+    const [activeTab, setActiveTab] = useState<"home" | "following">("home");
 
-    useEffect(() => {
-        if (!sentinelRef.current) return;
-        setLoading(true);
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && hasMore && !loading) {
-                        loadMore();
-                    }
-                });
-            },
-            {root: null, rootMargin: '300px', threshold: 0.1}
+    const handleTabClick = (tab: "home" | "following") => {
+        if (activeTab === tab) {
+            window.scrollTo({top: 0, behavior: "smooth"});
+        } else {
+            setActiveTab(tab);
+            window.scrollTo({top: 0, behavior: "smooth"});
+        }
+    };
+
+    if (loadingUser) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div
+                    className="animate-spin rounded-full h-10 w-10 border-4 border-zinc-600 border-t-transparent"></div>
+            </div>
         );
-
-        observer.observe(sentinelRef.current);
-        setLoading(false);
-        return () => observer.disconnect();
-    }, [loadMore, hasMore, loading]);
+    }
 
     return (
-        <section className={`space-y-4 ${className}`}>
-            {loading && (
-                <div className="p-6 border rounded-lg">
-                    <div className="animate-pulse space-y-3">
-                        <div className="h-4 bg-mono-900 rounded w-3/4"/>
-                        <div className="h-4 bg-mono-900 rounded w-1/2"/>
-                        <div className="h-40 bg-mono-900 rounded"/>
-                    </div>
-                </div>
-            )}
+        <div className="md:space-y-4 mb-14 md:mb-8 relative">
+            {/* Desktop */}
+            <div className="hidden md:flex sticky top-14 md:top-4 z-10 justify-center">
+                <div
+                    className={`relative inline-flex ${user ? "gap-0" : "gap-2"} items-center bg-zinc-900 rounded-full py-1 shadow-md md:bg-transparent md:shadow-none`}>
+                    <motion.div
+                        layout
+                        className={`${user ? "block" : "hidden"} absolute top-1 bottom-1 w-1/2 rounded-full bg-zinc-700`}
+                        initial={false}
+                        animate={{x: activeTab === "home" || !user ? "0%" : "100%"}}
+                        transition={{type: "spring", stiffness: 300, damping: 30}}
+                    />
 
-            <PostList posts={posts} loading={loading}/>
-
-            <div ref={sentinelRef}/>
-
-            <div className="flex items-center justify-center py-6">
-                {!hasMore ? (
-                    <div className="text-sm text-mono-300">You’re all caught up ✨</div>
-                ) : (
                     <button
-                        onClick={() => loadMore()}
-                        className="px-4 py-2 rounded-full border hover:bg-[var(--color-500)]"
+                        onClick={() => handleTabClick("home")}
+                        className={`${user ? "bg-transparent" : "bg-zinc-700"} z-10 w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer ${
+                            activeTab === "home" ? "text-white" : "text-zinc-400 hover:text-zinc-200"
+                        }`}
                     >
-                        Load more
+                        Home
                     </button>
+
+                    {user ? (
+                        <button
+                            onClick={() => handleTabClick("following")}
+                            className={`z-10 w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer ${
+                                activeTab === "following" ? "text-white" : "text-zinc-400 hover:text-zinc-200"
+                            }`}
+                        >
+                            Following
+                        </button>
+                    ) : (
+                        <Link
+                            href="/login"
+                            className="z-10 w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer bg-white text-black text-center"
+                        >
+                            Log in
+                        </Link>
+                    )}
+                </div>
+            </div>
+
+            {/* Mobile */}
+            <div className="md:hidden flex mb-4 sticky top-14 z-10 bg-mono-950">
+                {user ? (
+                    <>
+                        <button
+                            onClick={() => handleTabClick("home")}
+                            className={`w-1/2 py-3 text-center font-medium border-b ${
+                                activeTab === "home" ? "border-b-white text-white" : "border-b-[var(--color-800)] text-zinc-400"
+                            }`}
+                        >
+                            Home
+                        </button>
+                        <button
+                            onClick={() => handleTabClick("following")}
+                            className={`w-1/2 py-3 text-center font-medium border-b ${
+                                activeTab === "following" ? "border-b-white text-white" : "border-b-[var(--color-800)] text-zinc-400"
+                            }`}
+                        >
+                            Following
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <button
+                            onClick={() => handleTabClick("home")}
+                            className="w-1/2 py-3 text-center font-medium border-b border-b-[var(--color-800)] text-white"
+                        >
+                            Home
+                        </button>
+                        <Link
+                            href="/login"
+                            className="w-1/2 py-3 text-center font-medium border-b border-b-[var(--color-800)]
+                            text-black bg-white flex items-center justify-center rounded-none hover:bg-zinc-100 transition"
+                        >
+                            Log in
+                        </Link>
+                    </>
                 )}
             </div>
-        </section>
+
+            <div className="md:bg-zinc-900 rounded-2xl shadow-sm md:border md:border-zinc-800 px-2 md:mt-8">
+                <main className="w-full max-w-2xl mx-auto">
+                    <InfinitePostList userId={userId} initialPageSize={initialPageSize}/>
+                </main>
+            </div>
+        </div>
     );
 }

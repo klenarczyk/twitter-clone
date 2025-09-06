@@ -2,7 +2,7 @@
 
 import {useParams} from "next/navigation";
 import Image from "next/image";
-import Feed from "@/features/post/components/Feed";
+import Feed from "@/features/post/components/InfinitePostList";
 import {useProfile} from "@/features/profile/hooks/useProfile";
 import {getProfileImage} from "@/features/profile/utils/getProfileImage";
 

@@ -1,11 +1,9 @@
 import Feed from "@/features/post/components/Feed";
-import Composer from "@/features/post/components/Composer";
 
-export default function HomePage() {
+export default function MainPage() {
     return (
-        <main className="lg:col-span-2 flex flex-col gap-6">
-            <Composer/>
+        <div className="w-full max-w-2xl mx-auto">
             <Feed initialPageSize={8}/>
-        </main>
+        </div>
     );
 }

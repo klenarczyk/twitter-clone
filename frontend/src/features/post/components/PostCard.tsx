@@ -8,14 +8,14 @@ import {getProfileImage} from "@/features/profile/utils/getProfileImage";
 export default function PostCard({post}: { post: Post }) {
     const imageUrl = getProfileImage(post.author.imageUrl);
 
-    const timeAgo = Math.floor((Date.now() - post.createdAt) / (1000 * 60 * 60));
+    const timeAgo = Math.floor((Date.now() - post.createdAt.getTime()) / (1000 * 60 * 60));
 
     return (
         <motion.article
-            initial={{opacity: 0, y: 6}}
-            animate={{opacity: 1, y: 0}}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
             transition={{duration: 0.18}}
-            className="bg-mono-950 border-b border-[var(--color-600)] p-4 shadow-sm"
+            className="p-4"
             aria-labelledby={post.id.toString()}
         >
             <div className="flex gap-3">
