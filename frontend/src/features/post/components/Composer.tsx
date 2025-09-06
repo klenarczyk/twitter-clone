@@ -11,7 +11,7 @@ import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { ApiError } from "@/lib/api/httpTypes";
 import { useToast } from "@/shared/toast/useToast";
 
-export default function Composer() {
+export default function Composer({ onClose }: { onClose?: () => void }) {
 	const router = useRouter();
 	const { addToast } = useToast();
 

@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 
 import { fetchPosts } from "@/features/post/api/postApi";
 import { Post } from "@/features/post/types/post";
+import { useToast } from "@/shared/toast/useToast";
 
 export function useInfinitePosts({
 	userId = null,
@@ -17,6 +18,8 @@ export function useInfinitePosts({
 	const [isInitialLoading, setIsInitialLoading] = useState(true);
 	const pageSizeRef = useRef(initialPageSize);
 
+	const { addToast } = useToast();
+
 	const loadMore = useCallback(async () => {
 		if (loading || !hasMore) return;
 		setLoading(true);
@@ -29,16 +32,24 @@ export function useInfinitePosts({
 			});
 
 			setPosts((prev) => [...prev, ...res.items]);
-			setPage((prev) => prev + 1);
+			setPage(page + 1);
 			setHasMore(res.hasMore);
 		} catch (err: unknown) {
-			console.error(err);
 			setHasMore(false);
+
+			if (err instanceof Error) {
+				addToast({
+					text: "Failed to load posts. Please try again later.",
+					type: "error",
+				});
+			} else {
+				console.error(err);
+			}
 		} finally {
 			setLoading(false);
 			setIsInitialLoading(false);
 		}
-	}, [loading, hasMore, page, userId]);
+	}, [loading, hasMore, page, userId, addToast]);
 
 	function reset(newPageSize = initialPageSize) {
 		pageSizeRef.current = newPageSize;
