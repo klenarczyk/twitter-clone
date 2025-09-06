@@ -6,7 +6,7 @@ export function PostSkeleton() {
             initial={{opacity: 0, y: 6}}
             animate={{opacity: 1, y: 0}}
             transition={{duration: 0.18}}
-            className="bg-mono-950 border-b border-[var(--color-600)] p-4 shadow-sm animate-pulse"
+            className="p-4 animate-pulse"
         >
             <div className="flex gap-3">
                 <div className="w-12 h-12 rounded-full bg-mono-800"/>

@@ -12,8 +12,8 @@ export default function PostCard({post}: { post: Post }) {
 
     return (
         <motion.article
-            initial={{opacity: 0, y: 6}}
-            animate={{opacity: 1, y: 0}}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
             transition={{duration: 0.18}}
             className="p-4"
             aria-labelledby={post.id.toString()}
