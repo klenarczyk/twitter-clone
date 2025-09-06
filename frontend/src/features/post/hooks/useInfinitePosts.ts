@@ -17,7 +17,7 @@ export function useInfinitePosts({
     const pageSizeRef = useRef(initialPageSize);
 
     const loadMore = useCallback(async () => {
-        if (!hasMore || loading) return;
+        if (loading || !hasMore) return;
         setLoading(true);
 
         try {
@@ -36,7 +36,7 @@ export function useInfinitePosts({
             setLoading(false);
             setIsInitialLoading(false);
         }
-    }, [hasMore, page, userId, loading]);
+    }, [loading, hasMore, page, userId]);
 
     function reset(newPageSize = initialPageSize) {
         pageSizeRef.current = newPageSize;

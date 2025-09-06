@@ -1,11 +1,9 @@
 import Feed from "@/features/post/components/Feed";
 
-export default function HomePage() {
+export default function MainPage() {
     return (
-        <div className="lg:col-span-2 flex justify-center">
-            <main className="w-full max-w-2xl">
-                <Feed/>
-            </main>
+        <div className="w-full max-w-2xl mx-auto">
+            <Feed initialPageSize={8}/>
         </div>
     );
 }

@@ -27,12 +27,8 @@ export default function InfinitePostList({
         if (!sentinelRef.current || !hasMore || loading) return;
 
         const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) loadMore();
-                });
-            },
-            {root: null, rootMargin: "300px", threshold: 0.1}
+            ([entry]) => entry.isIntersecting && loadMore(),
+            {rootMargin: "300px"}
         );
 
         observer.observe(sentinelRef.current);
