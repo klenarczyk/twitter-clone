@@ -21,7 +21,13 @@ export default function InfinitePostList({
 
     useEffect(() => {
         if (isInitialLoading && hasMore) {
-            loadMore();
+            (async () => {
+                try {
+                    await loadMore();
+                } catch (err) {
+                    console.error(err);
+                }
+            })();
         }
     }, [isInitialLoading, hasMore, loadMore]);
 
@@ -60,7 +66,7 @@ export default function InfinitePostList({
 
             {!hasMore && posts.length > 0 && (
                 <div className="flex items-center justify-center py-6 text-sm text-mono-300">
-                    You're all caught up
+                    You&#39;re all caught up
                 </div>
             )}
         </section>

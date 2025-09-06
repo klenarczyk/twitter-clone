@@ -13,6 +13,15 @@ export default function Feed({userId, initialPageSize = 8}: {
     const {user, loading: loadingUser} = useAuth();
     const [activeTab, setActiveTab] = useState<"home" | "following">("home");
 
+    const handleTabClick = (tab: "home" | "following") => {
+        if (activeTab === tab) {
+            window.scrollTo({top: 0, behavior: "smooth"});
+        } else {
+            setActiveTab(tab);
+            window.scrollTo({top: 0, behavior: "smooth"});
+        }
+    };
+
     if (loadingUser) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -37,7 +46,7 @@ export default function Feed({userId, initialPageSize = 8}: {
                     />
 
                     <button
-                        onClick={() => setActiveTab("home")}
+                        onClick={() => handleTabClick("home")}
                         className={`${user ? "bg-transparent" : "bg-zinc-700"} z-10 w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer ${
                             activeTab === "home" ? "text-white" : "text-zinc-400 hover:text-zinc-200"
                         }`}
@@ -47,7 +56,7 @@ export default function Feed({userId, initialPageSize = 8}: {
 
                     {user ? (
                         <button
-                            onClick={() => setActiveTab("following")}
+                            onClick={() => handleTabClick("following")}
                             className={`z-10 w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer ${
                                 activeTab === "following" ? "text-white" : "text-zinc-400 hover:text-zinc-200"
                             }`}
@@ -70,7 +79,7 @@ export default function Feed({userId, initialPageSize = 8}: {
                 {user ? (
                     <>
                         <button
-                            onClick={() => setActiveTab("home")}
+                            onClick={() => handleTabClick("home")}
                             className={`w-1/2 py-3 text-center font-medium border-b ${
                                 activeTab === "home" ? "border-b-white text-white" : "border-b-[var(--color-800)] text-zinc-400"
                             }`}
@@ -78,7 +87,7 @@ export default function Feed({userId, initialPageSize = 8}: {
                             Home
                         </button>
                         <button
-                            onClick={() => setActiveTab("following")}
+                            onClick={() => handleTabClick("following")}
                             className={`w-1/2 py-3 text-center font-medium border-b ${
                                 activeTab === "following" ? "border-b-white text-white" : "border-b-[var(--color-800)] text-zinc-400"
                             }`}
@@ -89,13 +98,15 @@ export default function Feed({userId, initialPageSize = 8}: {
                 ) : (
                     <>
                         <button
+                            onClick={() => handleTabClick("home")}
                             className="w-1/2 py-3 text-center font-medium border-b border-b-[var(--color-800)] text-white"
                         >
                             Home
                         </button>
                         <Link
                             href="/login"
-                            className="w-1/2 py-3 text-center font-medium border-b border-b-[var(--color-800)] text-black bg-white flex items-center justify-center rounded-none hover:bg-zinc-100 transition"
+                            className="w-1/2 py-3 text-center font-medium border-b border-b-[var(--color-800)]
+                            text-black bg-white flex items-center justify-center rounded-none hover:bg-zinc-100 transition"
                         >
                             Log in
                         </Link>
