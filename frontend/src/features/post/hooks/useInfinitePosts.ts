@@ -32,6 +32,7 @@ export function useInfinitePosts({
             setHasMore(res.hasMore);
         } catch (err: unknown) {
             console.error(err);
+            setHasMore(false);
         } finally {
             setLoading(false);
             setIsInitialLoading(false);

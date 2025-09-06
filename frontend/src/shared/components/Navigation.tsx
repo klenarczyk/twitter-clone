@@ -7,14 +7,18 @@ import {useAuth} from "@/features/auth/hooks/useAuth";
 import {BellIcon, HomeIcon, MenuIcon, PlusIcon, SearchIcon, UserIcon} from "lucide-react";
 
 export default function Navigation({children}: { children: React.ReactNode }) {
-    const {user} = useAuth();
+    const {user, loading: loadingUser} = useAuth();
 
     const navItems = [
         {name: "Home", href: "/", icon: <HomeIcon className="size-6"/>},
         {name: "Search", href: "/#", icon: <SearchIcon className="size-6"/>},
         {name: "Add", href: "/#", icon: <PlusIcon className="size-6 text-white bg-blue-600 p-1 rounded-full"/>},
         {name: "Notifications", href: "/#", icon: <BellIcon className="size-6"/>},
-        {name: "Profile", href: user ? `/u/${user.handle}` : "/login", icon: <UserIcon className="size-6"/>},
+        {
+            name: "Profile",
+            href: loadingUser ? "#" : user ? `/u/${user.handle}` : "/login",
+            icon: <UserIcon className="size-6"/>
+        },
     ];
 
     return (
@@ -62,9 +66,8 @@ export default function Navigation({children}: { children: React.ReactNode }) {
                             className="invert object-contain"
                             priority/>
                     </Link>
-
                     <button
-                        className="absolute right-4 text-gray-400 hover:text-white transition-colors cursor-pointer">
+                        className="absolute left-4 text-gray-400 hover:text-white transition-colors cursor-pointer">
                         <MenuIcon className="size-6"/>
                     </button>
                 </div>

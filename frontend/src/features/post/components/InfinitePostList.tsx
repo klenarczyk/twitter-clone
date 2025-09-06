@@ -8,10 +8,12 @@ import {PostSkeleton} from "@/features/post/components/PostSkeleton";
 export default function InfinitePostList({
                                              userId,
                                              initialPageSize = 8,
+                                             emptyText = "No posts yet",
                                              className,
                                          }: {
     userId?: number;
     initialPageSize?: number;
+    emptyText?: string;
     className?: string;
 }) {
     const {posts, loadMore, hasMore, loading, isInitialLoading} = useInfinitePosts({userId, initialPageSize});
@@ -42,15 +44,23 @@ export default function InfinitePostList({
             ))}
 
             {(isInitialLoading || loading) &&
-                Array.from({length: initialPageSize}).map((_, i) =>
-                    <PostSkeleton key={i}/>
-                )}
+                Array.from({
+                    length: initialPageSize,
+                }).map((_, key) => <PostSkeleton key={key}/>)}
 
-            {hasMore && !isInitialLoading && <div ref={sentinelRef}/>}
+            {hasMore &&
+                <div ref={sentinelRef} aria-hidden/>
+            }
 
-            {!hasMore && (
+            {!isInitialLoading && posts.length === 0 && (
                 <div className="flex items-center justify-center py-6 text-sm text-mono-300">
-                    You’re all caught up
+                    {emptyText}
+                </div>
+            )}
+
+            {!hasMore && posts.length > 0 && (
+                <div className="flex items-center justify-center py-6 text-sm text-mono-300">
+                    You're all caught up
                 </div>
             )}
         </section>
