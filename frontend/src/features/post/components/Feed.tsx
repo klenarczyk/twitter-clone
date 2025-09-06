@@ -87,20 +87,19 @@ export default function Feed({userId, initialPageSize = 8}: {
                         </button>
                     </>
                 ) : (
-                    <div className="flex w-full justify-center gap-2 py-2">
+                    <>
+                        <button
+                            className="w-1/2 py-3 text-center font-medium border-b border-b-[var(--color-800)] text-white"
+                        >
+                            Home
+                        </button>
                         <Link
                             href="/login"
-                            className="w-24 text-sm font-medium py-2 rounded-full bg-white text-black text-center"
+                            className="w-1/2 py-3 text-center font-medium border-b border-b-[var(--color-800)] text-black bg-white flex items-center justify-center rounded-none hover:bg-zinc-100 transition"
                         >
                             Log in
                         </Link>
-                        <Link
-                            href="/register"
-                            className="w-24 text-sm font-medium py-2 rounded-full bg-zinc-700 text-white text-center"
-                        >
-                            Register
-                        </Link>
-                    </div>
+                    </>
                 )}
             </div>
 
