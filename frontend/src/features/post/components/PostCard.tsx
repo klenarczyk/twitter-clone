@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Ellipsis, Heart, MessageCircle } from "lucide-react";
+import { Ellipsis, Heart, MessageCircle, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
@@ -17,6 +17,8 @@ export default function PostCard({ post }: { post: Post }) {
 	const textRef = useRef<HTMLParagraphElement>(null);
 	const [isOverflowing, setIsOverflowing] = useState(false);
 	const [expanded, setExpanded] = useState(false);
+
+	const [liked, setLiked] = useState(false);
 
 	useEffect(() => {
 		if (textRef.current) {
@@ -36,7 +38,7 @@ export default function PostCard({ post }: { post: Post }) {
 				<div className="relative flex flex-col items-center">
 					<Link
 						href={`/u/${post.author.handle}`}
-						className="w-12 h-12 rounded-full bg-mono-100 flex items-center justify-center cursor-pointer"
+						className="size-12 rounded-full bg-mono-100 flex items-center justify-center cursor-pointer relative"
 					>
 						<Image
 							src={imageUrl!}
@@ -45,6 +47,10 @@ export default function PostCard({ post }: { post: Post }) {
 							width={50}
 							className="rounded-full"
 						/>
+
+						<span className="absolute -bottom-0 -right-0 bg-white text-xs font-bold rounded-full size-4 flex items-center justify-center">
+							<Plus className="size-2/3 text-black" />
+						</span>
 					</Link>
 				</div>
 
@@ -83,13 +89,28 @@ export default function PostCard({ post }: { post: Post }) {
 						</button>
 					)}
 
-					<div className="mt-3 flex items-center gap-4 text-sm text-mono-500">
-						<button className="flex items-center gap-1 hover:text-[var(--color-700)] cursor-pointer">
-							<Heart className="w-4 h-4" />
+					<div className="mt-3 flex items-center gap-3 text-sm text-mono-500">
+						<button
+							onClick={() => setLiked(!liked)}
+							className="flex items-center gap-1 cursor-pointer"
+						>
+							<motion.div
+								initial={false}
+								animate={{
+									scale: liked ? [1, 1.3, 1] : 1,
+									rotate: liked ? [0, -5, 5, 0] : 0,
+									color: liked ? "#ef4444" : "#9ca3af",
+								}}
+								transition={{ duration: 0.3 }}
+							>
+								<Heart
+									className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : "text-mono-400"}`}
+								/>
+							</motion.div>
 							<span className="ml-1 text-mono-400">12</span>
 						</button>
 						<button className="flex items-center gap-1 hover:text-[var(--color-700)] cursor-pointer">
-							<MessageCircle className="w-4 h-4" />
+							<MessageCircle className="size-4" />
 							<span className="ml-1 text-mono-400">3</span>
 						</button>
 					</div>
