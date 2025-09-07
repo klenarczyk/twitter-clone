@@ -4,5 +4,6 @@ export interface Post {
 	id: number;
 	author: Profile;
 	content: string;
+	likeCount: number;
 	createdAt: Date;
 }

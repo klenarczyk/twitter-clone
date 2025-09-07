@@ -18,6 +18,7 @@ export default function PostCard({ post }: { post: Post }) {
 	const [isOverflowing, setIsOverflowing] = useState(false);
 	const [expanded, setExpanded] = useState(false);
 
+	const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 	const [liked, setLiked] = useState(false);
 
 	useEffect(() => {
@@ -91,7 +92,10 @@ export default function PostCard({ post }: { post: Post }) {
 
 					<div className="mt-3 flex items-center gap-3 text-sm text-mono-500">
 						<button
-							onClick={() => setLiked(!liked)}
+							onClick={() => {
+								setLikeCount(liked ? likeCount - 1 : likeCount + 1);
+								setLiked(!liked);
+							}}
 							className="flex items-center gap-1 cursor-pointer"
 						>
 							<motion.div
@@ -107,7 +111,7 @@ export default function PostCard({ post }: { post: Post }) {
 									className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : "text-mono-400"}`}
 								/>
 							</motion.div>
-							<span className="ml-1 text-mono-400">12</span>
+							<span className="ml-1 text-mono-400">{likeCount}</span>
 						</button>
 						<button className="flex items-center gap-1 hover:text-[var(--color-700)] cursor-pointer">
 							<MessageCircle className="size-4" />
