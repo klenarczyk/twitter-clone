@@ -48,6 +48,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
+    public Post updatePost(Post post) {
+        return postRepository.save(post);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<Post> getAllPosts(Pageable pageable) {
         return postRepository.findAll(pageable);

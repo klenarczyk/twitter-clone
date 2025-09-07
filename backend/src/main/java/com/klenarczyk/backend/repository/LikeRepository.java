@@ -9,5 +9,6 @@ import java.util.List;
 public interface LikeRepository extends JpaRepository<Like, LikeId> {
 
     List<Like> findByPostId(Long postId);
+    boolean existsByUserIdAndPostId(Long userId, Long postId);
 
 }

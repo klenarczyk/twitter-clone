@@ -4,6 +4,7 @@ import com.klenarczyk.backend.common.exception.handler.docs.annotation.NotFoundR
 import com.klenarczyk.backend.common.exception.handler.docs.annotation.UnauthorizedResponse;
 import com.klenarczyk.backend.dto.post.*;
 import com.klenarczyk.backend.model.Post;
+import com.klenarczyk.backend.service.impl.LikeServiceImpl;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,9 +31,11 @@ import java.util.List;
 public class PostController {
 
     private final PostServiceImpl postService;
+    private final LikeServiceImpl likeService;
 
-    public PostController(PostServiceImpl postService) {
+    public PostController(PostServiceImpl postService, LikeServiceImpl likeService) {
         this.postService = postService;
+        this.likeService = likeService;
     }
 
     // Endpoints
@@ -86,6 +89,30 @@ public class PostController {
     @NotFoundResponse
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{postId}/like")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Likes a post")
+    @ApiResponse(responseCode = "204", description = "Post liked successfully")
+    @UnauthorizedResponse
+    @NotFoundResponse
+    public ResponseEntity<Void> likePost(@AuthenticationPrincipal UserDetails currentUser,
+                                         @PathVariable Long postId) {
+        likeService.likePost(currentUser, postId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{postId}/like")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Unlikes a post")
+    @ApiResponse(responseCode = "204", description = "Post unliked successfully")
+    @UnauthorizedResponse
+    @NotFoundResponse
+    public ResponseEntity<Void> unlikePost(@AuthenticationPrincipal UserDetails currentUser,
+                                           @PathVariable Long postId) {
+        likeService.unlikePost(currentUser, postId);
         return ResponseEntity.noContent().build();
     }
 

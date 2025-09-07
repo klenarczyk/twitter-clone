@@ -21,7 +21,7 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Column(name = "profile_image_url", length = 255)
+    @Column(name = "image_url", length = 255)
     private String imageUrl;
 
     @Column(name = "full_name", length = 100)

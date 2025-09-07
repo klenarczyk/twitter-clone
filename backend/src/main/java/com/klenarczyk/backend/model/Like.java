@@ -12,13 +12,11 @@ public class Like {
     @EmbeddedId
     private LikeId id;
 
-    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("postId")
     @JoinColumn(name = "post_id", nullable = false)
