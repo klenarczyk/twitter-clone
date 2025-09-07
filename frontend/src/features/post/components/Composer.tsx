@@ -22,7 +22,9 @@ export default function Composer({ onClose }: ComposerProps) {
 	const imageUrl = getProfileImage(user?.imageUrl, loading);
 
 	const [text, setText] = useState<string>("");
-	const canPost = text.trim().length > 0;
+	const CHARACTER_LIMIT = 280;
+	const canPost = text.trim().length > 0 && text.length <= CHARACTER_LIMIT;
+	const overflowCount = text.length > CHARACTER_LIMIT ? text.length - CHARACTER_LIMIT : 0;
 
 	async function handlePost() {
 		if (!canPost) return;
@@ -53,21 +55,15 @@ export default function Composer({ onClose }: ComposerProps) {
 
 	useEffect(() => {
 		const handleEsc = (event: KeyboardEvent) => {
-			if (event.key === "Escape") {
-				onClose?.();
-			}
+			if (event.key === "Escape") onClose?.();
 		};
 
 		document.addEventListener("keydown", handleEsc);
-
-		return () => {
-			document.removeEventListener("keydown", handleEsc);
-		};
+		return () => document.removeEventListener("keydown", handleEsc);
 	}, [onClose]);
 
 	useEffect(() => {
 		document.body.style.overflow = "hidden";
-
 		return () => {
 			document.body.style.overflow = "";
 		};
@@ -76,7 +72,10 @@ export default function Composer({ onClose }: ComposerProps) {
 	return (
 		<div className="flex flex-col h-full max-h-full">
 			{/* Header */}
-			<div className="flex justify-between items-center border-b border-[var(--color-700)] px-4 py-3 sm:px-6 flex-shrink-0">
+			<div
+				className="flex justify-between items-center border-b border-[var(--color-700)]
+				px-4 py-3 sm:px-6 flex-shrink-0"
+			>
 				<h2 className="text-lg font-semibold text-white">Compose</h2>
 				<button onClick={onClose} className="text-white cursor-pointer">
 					✕
@@ -93,12 +92,12 @@ export default function Composer({ onClose }: ComposerProps) {
 						alt="Profile"
 						height={40}
 						width={40}
-						className="rounded-full size-10"
+						className="rounded-full size-10 flex-shrink-0"
 					/>
 				)}
 
 				<div className="flex flex-col flex-1">
-					<span className="text-white font-semibol">{user?.handle}</span>
+					<span className="text-white font-semibold">{user?.handle}</span>
 
 					<div className="flex flex-1">
 						<TextArea
@@ -106,7 +105,9 @@ export default function Composer({ onClose }: ComposerProps) {
 							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
 								setText(e.target.value)
 							}
-							className="flex-1 h-auto max-h-full md:max-h-[50vh] resize-none text-mono-200 placeholder:text-[var(--color-500)] border-none focus:outline-none overflow-auto"
+							className="flex-1 h-auto max-h-full md:max-h-[50vh] resize-none text-mono-200
+								placeholder:text-[var(--color-500)] border-none focus:outline-none
+								overflow-auto whitespace-pre-wrap"
 							placeholder="What's happening?"
 						/>
 					</div>
@@ -115,7 +116,7 @@ export default function Composer({ onClose }: ComposerProps) {
 
 			{/* Footer */}
 			<div className="flex items-center justify-between px-4 py-3 sm:px-6">
-				<div className="flex gap-4 text-sm text-mono-300">
+				<div className="flex gap-4 text-sm text-mono-300 items-center">
 					<button className="hover:text-mono-100" disabled>
 						Image
 					</button>
@@ -123,17 +124,23 @@ export default function Composer({ onClose }: ComposerProps) {
 						GIF
 					</button>
 				</div>
-				<button
-					onClick={handlePost}
-					disabled={!canPost}
-					className={`text-sm font-semibold px-4 py-2 rounded-full transition cursor-pointer ${
-						canPost
-							? "bg-white text-black hover:bg-mono-200"
-							: "bg-mono-800 text-mono-400 cursor-not-allowed"
-					}`}
-				>
-					Post
-				</button>
+				<div className="flex gap-4 text-sm text-mono-300 items-center">
+					{overflowCount > 0 && (
+						<span className="text-red-500 font-semibold text-sm">-{overflowCount}</span>
+					)}
+
+					<button
+						onClick={handlePost}
+						disabled={!canPost}
+						className={`text-sm font-semibold px-4 py-2 rounded-full transition cursor-pointer ${
+							canPost
+								? "bg-white text-black hover:bg-mono-200"
+								: "bg-mono-800 text-mono-400 cursor-not-allowed"
+						}`}
+					>
+						Post
+					</button>
+				</div>
 			</div>
 		</div>
 	);

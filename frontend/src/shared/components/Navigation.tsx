@@ -17,7 +17,15 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 		{
 			name: "Home",
 			href: "/",
-			icon: <HomeIcon className="size-6" onClick={(e) => e.preventDefault()} />,
+			icon: (
+				<HomeIcon
+					className="size-6"
+					onClick={(e) => {
+						e.preventDefault();
+						window.scrollTo({ top: 0, behavior: "smooth" });
+					}}
+				/>
+			),
 		},
 		{
 			name: "Search",
@@ -26,7 +34,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 		},
 		{
 			name: "Add",
-			href: loadingUser || user ? "#" : "#",
+			href: loadingUser || user ? "#" : "/login",
 			icon: (
 				<PlusIcon
 					className="size-6 text-white bg-blue-600 p-1 rounded-full"

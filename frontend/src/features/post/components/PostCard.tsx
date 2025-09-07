@@ -1,15 +1,26 @@
+"use client";
+
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 
 export default function PostCard({ post }: { post: Post }) {
 	const imageUrl = getProfileImage(post.author.imageUrl);
-
 	const timeAgo = Math.floor((Date.now() - post.createdAt.getTime()) / (1000 * 60 * 60));
+
+	const textRef = useRef<HTMLParagraphElement>(null);
+	const [isOverflowing, setIsOverflowing] = useState(false);
+	const [expanded, setExpanded] = useState(false);
+
+	useEffect(() => {
+		if (textRef.current) {
+			setIsOverflowing(textRef.current.scrollHeight > textRef.current.clientHeight);
+		}
+	}, [post.content]);
 
 	return (
 		<motion.article
@@ -55,10 +66,22 @@ export default function PostCard({ post }: { post: Post }) {
 
 					<p
 						id={post.id.toString()}
-						className="mt-2 font-semibold text-sm text-mono-100 leading-6"
+						ref={textRef}
+						className={`mt-2 font-semibold text-sm text-mono-100 leading-6 whitespace-pre-wrap ${
+							!expanded ? "line-clamp-4 overflow-hidden" : ""
+						}`}
 					>
 						{post.content}
 					</p>
+
+					{isOverflowing && (
+						<button
+							className="text-sm text-[var(--color-500)] mt-1 cursor-pointer"
+							onClick={() => setExpanded(!expanded)}
+						>
+							{expanded ? "Show less" : "Show more"}
+						</button>
+					)}
 
 					<div className="mt-3 flex items-center gap-6 text-sm text-mono-500">
 						<button className="flex items-center gap-2">
