@@ -8,6 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
+import { Ellipsis } from "lucide-react";
 
 export default function PostCard({ post }: { post: Post }) {
 	const imageUrl = getProfileImage(post.author.imageUrl);
@@ -44,6 +45,7 @@ export default function PostCard({ post }: { post: Post }) {
 						className="rounded-full"
 					/>
 				</Link>
+
 				<div className="flex-1">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-2">
@@ -62,7 +64,9 @@ export default function PostCard({ post }: { post: Post }) {
 							<div className="text-mono-300">·</div>
 							<div className="text-mono-300 text-sm">{timeAgo}</div>
 						</div>
-						<div className="text-mono-300 cursor-pointer">•••</div>
+						<div className="text-mono-300 cursor-pointer">
+							<Ellipsis />
+						</div>
 					</div>
 
 					<p

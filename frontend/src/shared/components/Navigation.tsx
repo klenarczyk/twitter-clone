@@ -8,52 +8,38 @@ import React, { useState } from "react";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import Composer from "@/features/post/components/Composer";
+import { usePathname } from "next/navigation";
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
 	const { user, loading: loadingUser } = useAuth();
 	const [composerOpen, setComposerOpen] = useState(false);
+	const path = usePathname();
 
 	const navItems = [
 		{
 			name: "Home",
 			href: "/",
-			icon: (
-				<HomeIcon
-					className="size-6"
-					onClick={(e) => {
-						e.preventDefault();
-						window.scrollTo({ top: 0, behavior: "smooth" });
-					}}
-				/>
-			),
+			icon: <HomeIcon className="size-6" />,
 		},
 		{
 			name: "Search",
 			href: "#",
-			icon: <SearchIcon className="size-6" onClick={(e) => e.preventDefault()} />,
+			icon: <SearchIcon className="size-6" />,
 		},
 		{
 			name: "Add",
 			href: loadingUser || user ? "#" : "/login",
-			icon: (
-				<PlusIcon
-					className="size-6 text-white bg-blue-600 p-1 rounded-full"
-					onClick={(e) => {
-						e.preventDefault();
-						setComposerOpen(true);
-					}}
-				/>
-			),
+			icon: <PlusIcon className="size-6 text-white bg-blue-600 p-1 rounded-full" />,
 		},
 		{
 			name: "Notifications",
 			href: "#",
-			icon: <BellIcon className="size-6" onClick={(e) => e.preventDefault()} />,
+			icon: <BellIcon className="size-6" />,
 		},
 		{
 			name: "Profile",
 			href: loadingUser ? "#" : user ? `/u/${user.handle}` : "/login",
-			icon: <UserIcon className="size-6" onClick={(e) => e.preventDefault()} />,
+			icon: <UserIcon className="size-6" />,
 		},
 	];
 
@@ -76,13 +62,23 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 
 					<div className="flex flex-col items-center gap-8">
 						{navItems.map((item) => (
-							<Link
+							<button
 								key={item.name}
-								href={item.href}
-								className="text-gray-400 hover:text-white transition-colors"
+								onClick={(e) => {
+									e.preventDefault();
+									if (item.href === path || item.href === "#") {
+										window.scrollTo({ top: 0, behavior: "smooth" });
+									} else {
+										window.location.href = item.href;
+									}
+									if (item.name === "Add" && user) {
+										setComposerOpen(true);
+									}
+								}}
+								className="text-gray-400 hover:text-white transition-colors cursor-pointer"
 							>
 								{item.icon}
-							</Link>
+							</button>
 						))}
 					</div>
 
@@ -126,7 +122,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 				</main>
 			</div>
 
-			{composerOpen && (
+			{composerOpen && user && (
 				<motion.div
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
