@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -70,15 +71,15 @@ export default function Composer({ onClose }: ComposerProps) {
 	}, []);
 
 	return (
-		<div className="flex flex-col h-full max-h-full">
+		<div className="flex flex-col h-full">
 			{/* Header */}
 			<div
 				className="flex justify-between items-center border-b border-[var(--color-700)]
-				px-4 py-3 sm:px-6 flex-shrink-0"
+  					py-3 px-6"
 			>
-				<h2 className="text-lg font-semibold text-white">Compose</h2>
-				<button onClick={onClose} className="text-white cursor-pointer">
-					✕
+				<h1 className="text-lg font-semibold text-white">Compose</h1>
+				<button onClick={onClose} className="p-2 text-white cursor-pointer">
+					<X className="h-5 w-5" />
 				</button>
 			</div>
 

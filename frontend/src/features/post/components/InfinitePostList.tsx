@@ -47,15 +47,21 @@ export default function InfinitePostList({
 	}, [hasMore, loadMore, loading]);
 
 	return (
-		<section className={`space-y-4 flex flex-col w-full ${className}`}>
+		<section
+			className={`space-y-4 flex flex-col w-full divide-y divide-[var(--color-800)] ${className}`}
+		>
 			{posts.map((post, key) => (
-				<PostCard key={key} post={post} />
+				<div className="px-2" key={key}>
+					<PostCard post={post} />
+				</div>
 			))}
 
 			{(isInitialLoading || loading) &&
-				Array.from({
-					length: initialPageSize,
-				}).map((_, key) => <PostSkeleton key={key} />)}
+				Array.from({ length: initialPageSize }).map((_, key) => (
+					<div className="px-2" key={key}>
+						<PostSkeleton />
+					</div>
+				))}
 
 			{hasMore && <div ref={sentinelRef} aria-hidden />}
 

@@ -1,20 +1,24 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Ellipsis, Heart, MessageCircle, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
+import formatDate from "@/shared/utils/formatDate";
 
 export default function PostCard({ post }: { post: Post }) {
 	const imageUrl = getProfileImage(post.author.imageUrl);
-	const timeAgo = Math.floor((Date.now() - post.createdAt.getTime()) / (1000 * 60 * 60));
+	const timeAgo = formatDate(post.createdAt);
 
 	const textRef = useRef<HTMLParagraphElement>(null);
 	const [isOverflowing, setIsOverflowing] = useState(false);
 	const [expanded, setExpanded] = useState(false);
+
+	const [liked, setLiked] = useState(false);
 
 	useEffect(() => {
 		if (textRef.current) {
@@ -27,22 +31,29 @@ export default function PostCard({ post }: { post: Post }) {
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			transition={{ duration: 0.18 }}
-			className="p-4"
+			className="p-4 relative"
 			aria-labelledby={post.id.toString()}
 		>
-			<div className="flex gap-3">
-				<Link
-					href={`/u/${post.author.handle}`}
-					className="w-12 h-12 rounded-full bg-mono-100 flex items-center justify-center cursor-pointer"
-				>
-					<Image
-						src={imageUrl!}
-						alt="Profile"
-						height={50}
-						width={50}
-						className="rounded-full"
-					/>
-				</Link>
+			<div className="flex gap-3 relative">
+				<div className="relative flex flex-col items-center">
+					<Link
+						href={`/u/${post.author.handle}`}
+						className="size-12 rounded-full bg-mono-100 flex items-center justify-center cursor-pointer relative"
+					>
+						<Image
+							src={imageUrl!}
+							alt="Profile"
+							height={50}
+							width={50}
+							className="rounded-full"
+						/>
+
+						<span className="absolute -bottom-0 -right-0 bg-white text-xs font-bold rounded-full size-4 flex items-center justify-center">
+							<Plus className="size-2/3 text-black" />
+						</span>
+					</Link>
+				</div>
+
 				<div className="flex-1">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-2">
@@ -50,24 +61,19 @@ export default function PostCard({ post }: { post: Post }) {
 								href={`/u/${post.author.handle}`}
 								className="font-bold text-mono-100 cursor-pointer"
 							>
-								{post.author.fullName}
+								{post.author.handle}
 							</Link>
-							<Link
-								href={`/u/${post.author.handle}`}
-								className="text-mono-300 text-sm cursor-pointer"
-							>
-								@{post.author.handle}
-							</Link>
-							<div className="text-mono-300">·</div>
-							<div className="text-mono-300 text-sm">{timeAgo}h</div>
+							<div className="text-mono-300 text-sm">{timeAgo}</div>
 						</div>
-						<div className="text-mono-300 cursor-pointer">•••</div>
+						<div className="text-mono-300 cursor-pointer">
+							<Ellipsis className="size-5" />
+						</div>
 					</div>
 
 					<p
 						id={post.id.toString()}
 						ref={textRef}
-						className={`mt-2 font-semibold text-sm text-mono-100 leading-6 whitespace-pre-wrap ${
+						className={`mt-2 text-sm text-mono-100 leading-6 whitespace-pre-wrap ${
 							!expanded ? "line-clamp-4 overflow-hidden" : ""
 						}`}
 					>
@@ -83,18 +89,29 @@ export default function PostCard({ post }: { post: Post }) {
 						</button>
 					)}
 
-					<div className="mt-3 flex items-center gap-6 text-sm text-mono-500">
-						<button className="flex items-center gap-2">
-							<span className="cursor-pointer hover:text-[var(--color-700)]">
-								Like
-							</span>
-							<span>12</span>
+					<div className="mt-3 flex items-center gap-3 text-sm text-mono-500">
+						<button
+							onClick={() => setLiked(!liked)}
+							className="flex items-center gap-1 cursor-pointer"
+						>
+							<motion.div
+								initial={false}
+								animate={{
+									scale: liked ? [1, 1.3, 1] : 1,
+									rotate: liked ? [0, -5, 5, 0] : 0,
+									color: liked ? "#ef4444" : "#9ca3af",
+								}}
+								transition={{ duration: 0.3 }}
+							>
+								<Heart
+									className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : "text-mono-400"}`}
+								/>
+							</motion.div>
+							<span className="ml-1 text-mono-400">12</span>
 						</button>
-						<button className="flex items-center gap-2">
-							<span className="cursor-pointer hover:text-[var(--color-700)]">
-								Comment
-							</span>
-							<span>3</span>
+						<button className="flex items-center gap-1 hover:text-[var(--color-700)] cursor-pointer">
+							<MessageCircle className="size-4" />
+							<span className="ml-1 text-mono-400">3</span>
 						</button>
 					</div>
 				</div>
