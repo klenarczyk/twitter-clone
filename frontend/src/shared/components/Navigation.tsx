@@ -4,11 +4,11 @@ import { motion } from "framer-motion";
 import { BellIcon, HomeIcon, MenuIcon, PlusIcon, SearchIcon, UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import Composer from "@/features/post/components/Composer";
-import { usePathname } from "next/navigation";
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
 	const { user, loading: loadingUser } = useAuth();
@@ -43,6 +43,32 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 		},
 	];
 
+	const renderItems = () => {
+		return (
+			<>
+				{navItems.map((item) => (
+					<button
+						key={item.name}
+						onClick={(e) => {
+							e.preventDefault();
+							if (item.href === path || item.href === "#") {
+								window.scrollTo({ top: 0, behavior: "smooth" });
+							} else {
+								window.location.href = item.href;
+							}
+							if (item.name === "Add" && user) {
+								setComposerOpen(true);
+							}
+						}}
+						className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+					>
+						{item.icon}
+					</button>
+				))}
+			</>
+		);
+	};
+
 	return (
 		<>
 			<div className="flex-1 flex min-h-screen">
@@ -60,27 +86,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 						</Link>
 					</div>
 
-					<div className="flex flex-col items-center gap-8">
-						{navItems.map((item) => (
-							<button
-								key={item.name}
-								onClick={(e) => {
-									e.preventDefault();
-									if (item.href === path || item.href === "#") {
-										window.scrollTo({ top: 0, behavior: "smooth" });
-									} else {
-										window.location.href = item.href;
-									}
-									if (item.name === "Add" && user) {
-										setComposerOpen(true);
-									}
-								}}
-								className="text-gray-400 hover:text-white transition-colors cursor-pointer"
-							>
-								{item.icon}
-							</button>
-						))}
-					</div>
+					<div className="flex flex-col items-center gap-8">{renderItems()}</div>
 
 					<div className="flex justify-center mb-6">
 						<button className="text-gray-400 hover:text-white transition-colors cursor-pointer">
@@ -109,15 +115,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 					<div className="pt-14 md:pt-0 w-auto">{children}</div>
 
 					<nav className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-mono-950 border-t border-[var(--color-800)] flex justify-around py-2">
-						{navItems.map((item) => (
-							<Link
-								key={item.name}
-								href={item.href}
-								className="text-gray-400 hover:text-white p-2"
-							>
-								{item.icon}
-							</Link>
-						))}
+						{renderItems()}
 					</nav>
 				</main>
 			</div>
@@ -127,7 +125,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					exit={{ opacity: 0 }}
-					className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+					className="fixed inset-0 bg-black/50 flex items-center justify-center z-[150]"
 					onClick={(e) => {
 						if (e.target === e.currentTarget) {
 							setComposerOpen(false);
