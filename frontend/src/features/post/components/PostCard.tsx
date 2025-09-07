@@ -7,10 +7,11 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
+import formatDate from "@/shared/utils/formatDate";
 
 export default function PostCard({ post }: { post: Post }) {
 	const imageUrl = getProfileImage(post.author.imageUrl);
-	const timeAgo = Math.floor((Date.now() - post.createdAt.getTime()) / (1000 * 60 * 60));
+	const timeAgo = formatDate(post.createdAt);
 
 	const textRef = useRef<HTMLParagraphElement>(null);
 	const [isOverflowing, setIsOverflowing] = useState(false);
@@ -59,7 +60,7 @@ export default function PostCard({ post }: { post: Post }) {
 								@{post.author.handle}
 							</Link>
 							<div className="text-mono-300">·</div>
-							<div className="text-mono-300 text-sm">{timeAgo}h</div>
+							<div className="text-mono-300 text-sm">{timeAgo}</div>
 						</div>
 						<div className="text-mono-300 cursor-pointer">•••</div>
 					</div>
