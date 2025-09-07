@@ -1,22 +1,23 @@
-import React, { forwardRef } from "react";
+"use client";
 
-interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+import React, { useEffect, useRef } from "react";
+
+interface TextAreaProps {
+	value: string;
+	onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 	className?: string;
+	placeholder?: string;
 }
 
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-	({ className, ...props }, ref) => {
-		return (
-			<div className="w-full">
-				<textarea
-					ref={ref}
-					className={`w-full py-2 border rounded-md border-none focus:outline-none disabled:opacity-50 
-                disabled:cursor-not-allowed resize-none font-normal text-base text-mono-50 ${className}`}
-					{...props}
-				/>
-			</div>
-		);
-	}
-);
+export function TextArea({ value, onChange, ...props }: TextAreaProps) {
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-Textarea.displayName = "Textarea";
+	useEffect(() => {
+		if (textareaRef.current) {
+			textareaRef.current.style.height = "auto";
+			textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+		}
+	}, [value]);
+
+	return <textarea ref={textareaRef} value={value} onChange={onChange} rows={1} {...props} />;
+}

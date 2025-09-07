@@ -14,23 +14,38 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 	const [composerOpen, setComposerOpen] = useState(false);
 
 	const navItems = [
-		{ name: "Home", href: "/", icon: <HomeIcon className="size-6" /> },
-		{ name: "Search", href: "/#", icon: <SearchIcon className="size-6" /> },
+		{
+			name: "Home",
+			href: "/",
+			icon: <HomeIcon className="size-6" onClick={(e) => e.preventDefault()} />,
+		},
+		{
+			name: "Search",
+			href: "#",
+			icon: <SearchIcon className="size-6" onClick={(e) => e.preventDefault()} />,
+		},
 		{
 			name: "Add",
-			href: "/#",
+			href: loadingUser || user ? "#" : "#",
 			icon: (
 				<PlusIcon
 					className="size-6 text-white bg-blue-600 p-1 rounded-full"
-					onClick={() => setComposerOpen(true)}
+					onClick={(e) => {
+						e.preventDefault();
+						setComposerOpen(true);
+					}}
 				/>
 			),
 		},
-		{ name: "Notifications", href: "/#", icon: <BellIcon className="size-6" /> },
+		{
+			name: "Notifications",
+			href: "#",
+			icon: <BellIcon className="size-6" onClick={(e) => e.preventDefault()} />,
+		},
 		{
 			name: "Profile",
 			href: loadingUser ? "#" : user ? `/u/${user.handle}` : "/login",
-			icon: <UserIcon className="size-6" />,
+			icon: <UserIcon className="size-6" onClick={(e) => e.preventDefault()} />,
 		},
 	];
 
@@ -109,8 +124,35 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 					animate={{ opacity: 1 }}
 					exit={{ opacity: 0 }}
 					className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+					onClick={(e) => {
+						if (e.target === e.currentTarget) {
+							setComposerOpen(false);
+						}
+					}}
 				>
-					<Composer onClose={() => setComposerOpen(false)} />
+					{/* Mobile */}
+					<motion.div
+						initial={{ y: "100%" }}
+						animate={{ y: 0 }}
+						exit={{ y: "100%" }}
+						transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
+						className="md:hidden w-full h-full bg-zinc-900"
+					>
+						<Composer onClose={() => setComposerOpen(false)} />
+					</motion.div>
+
+					{/* Desktop */}
+					<motion.div
+						initial={{ scale: 0.9, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						exit={{ scale: 0.9, opacity: 0 }}
+						transition={{ type: "spring", stiffness: 300, damping: 25 }}
+						className="hidden md:flex flex-col w-11/12 max-w-xl max-h-11/12 rounded-2xl bg-zinc-900"
+					>
+						<div className="flex flex-col flex-1 overflow-auto">
+							<Composer onClose={() => setComposerOpen(false)} />
+						</div>
+					</motion.div>
 				</motion.div>
 			)}
 		</>
