@@ -33,7 +33,7 @@ export default function InfinitePostList({
 				}
 			})();
 		}
-	}, [isInitialLoading, hasMore, loadMore]);
+	}, [isInitialLoading, hasMore, loadMore, loading]);
 
 	useEffect(() => {
 		if (!sentinelRef.current || !hasMore || loading) return;
