@@ -1,6 +1,7 @@
 package com.klenarczyk.backend.service.impl;
 
 import com.klenarczyk.backend.dto.post.CreatePostRequest;
+import com.klenarczyk.backend.dto.post.PagedPostResponse;
 import com.klenarczyk.backend.model.*;
 import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.CommentRepository;

@@ -5,5 +5,6 @@ export interface Post {
 	author: Profile;
 	content: string;
 	likeCount: number;
+	isLiked: boolean;
 	createdAt: Date;
 }

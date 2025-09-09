@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class LikeServiceImpl implements LikeService {
 
@@ -64,4 +67,9 @@ public class LikeServiceImpl implements LikeService {
         }
     }
 
+    @Override
+    public Set<Long> getLikedPostIdsByUserId(Long userId, List<Long> postIds) {
+        List<Long> likedPostIds = likeRepository.findLikedPostIdsByUserIdAndPostIds(userId, postIds);
+        return Set.copyOf(likedPostIds);
+    }
 }
