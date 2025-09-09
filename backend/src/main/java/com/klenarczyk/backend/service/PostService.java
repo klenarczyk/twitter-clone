@@ -15,6 +15,8 @@ public interface PostService {
     Post createPost(@AuthenticationPrincipal UserDetails currentUser,
                     @Valid CreatePostRequest req);
 
+    Post updatePost(Post post);
+
     Page<Post> getAllPosts(Pageable pageable);
 
     Post getPostById(Long id);

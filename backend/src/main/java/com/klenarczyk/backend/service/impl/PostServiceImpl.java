@@ -1,6 +1,7 @@
 package com.klenarczyk.backend.service.impl;
 
 import com.klenarczyk.backend.dto.post.CreatePostRequest;
+import com.klenarczyk.backend.dto.post.PagedPostResponse;
 import com.klenarczyk.backend.model.*;
 import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.CommentRepository;
@@ -45,6 +46,12 @@ public class PostServiceImpl implements PostService {
         newPost.setContent(req.getContent());
 
         return postRepository.save(newPost);
+    }
+
+    @Override
+    @Transactional
+    public Post updatePost(Post post) {
+        return postRepository.save(post);
     }
 
     @Override

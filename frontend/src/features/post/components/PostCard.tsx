@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
+import { likePost, unlikePost } from "@/features/post/api/postApi";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
@@ -18,7 +19,26 @@ export default function PostCard({ post }: { post: Post }) {
 	const [isOverflowing, setIsOverflowing] = useState(false);
 	const [expanded, setExpanded] = useState(false);
 
-	const [liked, setLiked] = useState(false);
+	const [likeCount, setLikeCount] = useState(post.likeCount || 0);
+	const [isLiked, setIsLiked] = useState(post.isLiked);
+	const isLiking = useRef(false);
+
+	const handleLike = async () => {
+		if (isLiking.current) return;
+		isLiking.current = true;
+		try {
+			if (isLiked) {
+				await unlikePost(post.id);
+				setLikeCount(likeCount - 1);
+			} else {
+				await likePost(post.id);
+				setLikeCount(likeCount + 1);
+			}
+			setIsLiked(!isLiked);
+		} finally {
+			isLiking.current = false;
+		}
+	};
 
 	useEffect(() => {
 		if (textRef.current) {
@@ -91,23 +111,23 @@ export default function PostCard({ post }: { post: Post }) {
 
 					<div className="mt-3 flex items-center gap-3 text-sm text-mono-500">
 						<button
-							onClick={() => setLiked(!liked)}
+							onClick={handleLike}
 							className="flex items-center gap-1 cursor-pointer"
 						>
 							<motion.div
 								initial={false}
 								animate={{
-									scale: liked ? [1, 1.3, 1] : 1,
-									rotate: liked ? [0, -5, 5, 0] : 0,
-									color: liked ? "#ef4444" : "#9ca3af",
+									scale: isLiked ? [1, 1.3, 1] : 1,
+									rotate: isLiked ? [0, -5, 5, 0] : 0,
+									color: isLiked ? "#ef4444" : "#9ca3af",
 								}}
 								transition={{ duration: 0.3 }}
 							>
 								<Heart
-									className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : "text-mono-400"}`}
+									className={`w-4 h-4 ${isLiked ? "fill-red-500 text-red-500" : "text-mono-400"}`}
 								/>
 							</motion.div>
-							<span className="ml-1 text-mono-400">12</span>
+							<span className="ml-1 text-mono-400">{likeCount}</span>
 						</button>
 						<button className="flex items-center gap-1 hover:text-[var(--color-700)] cursor-pointer">
 							<MessageCircle className="size-4" />

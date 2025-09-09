@@ -4,6 +4,9 @@ import com.klenarczyk.backend.common.exception.handler.docs.annotation.NotFoundR
 import com.klenarczyk.backend.common.exception.handler.docs.annotation.UnauthorizedResponse;
 import com.klenarczyk.backend.dto.post.*;
 import com.klenarczyk.backend.model.Post;
+import com.klenarczyk.backend.model.User;
+import com.klenarczyk.backend.service.UserService;
+import com.klenarczyk.backend.service.impl.LikeServiceImpl;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,6 +26,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${app.api.base}/posts")
@@ -30,9 +35,13 @@ import java.util.List;
 public class PostController {
 
     private final PostServiceImpl postService;
+    private final LikeServiceImpl likeService;
+    private final UserService userService;
 
-    public PostController(PostServiceImpl postService) {
+    public PostController(PostServiceImpl postService, LikeServiceImpl likeService, UserService userService) {
         this.postService = postService;
+        this.likeService = likeService;
+        this.userService = userService;
     }
 
     // Endpoints
@@ -42,12 +51,22 @@ public class PostController {
     @ApiResponse(responseCode = "200", description = "Posts retrieved successfully")
     public ResponseEntity<PagedPostResponse> getPosts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit
+            @RequestParam(defaultValue = "10") int limit,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
         Pageable pageable = PageRequest.of(page, limit, Sort.by("createdAt").descending());
         Page<Post> postPage = postService.getAllPosts(pageable);
+        List<PostResponse> postResponses;
 
-        List<PostResponse> postResponses = PostResponse.fromEntities(postPage.getContent());
+        if (userDetails != null) {
+            User user = userService.getAuthenticatedUser(userDetails);
+            List<Long> postIds = postPage.getContent().stream().map(Post::getId).toList();
+            Set<Long> likedPostIds = likeService.getLikedPostIdsByUserId(user.getId(), postIds);
+            postResponses = PostResponse.fromEntities(postPage.getContent(), likedPostIds);
+        } else {
+            postResponses = PostResponse.fromEntities(postPage.getContent());
+        }
+
         boolean hasMore = postPage.hasNext();
 
         return ResponseEntity.ok(new PagedPostResponse(postResponses, hasMore));
@@ -86,6 +105,30 @@ public class PostController {
     @NotFoundResponse
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{postId}/like")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Likes a post")
+    @ApiResponse(responseCode = "200", description = "Post liked successfully")
+    @UnauthorizedResponse
+    @NotFoundResponse
+    public ResponseEntity<Void> likePost(@AuthenticationPrincipal UserDetails currentUser,
+                                         @PathVariable Long postId) {
+        likeService.likePost(currentUser, postId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{postId}/like")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Unlikes a post")
+    @ApiResponse(responseCode = "204", description = "Post unliked successfully")
+    @UnauthorizedResponse
+    @NotFoundResponse
+    public ResponseEntity<Void> unlikePost(@AuthenticationPrincipal UserDetails currentUser,
+                                           @PathVariable Long postId) {
+        likeService.unlikePost(currentUser, postId);
         return ResponseEntity.noContent().build();
     }
 
