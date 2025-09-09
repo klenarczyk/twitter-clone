@@ -31,8 +31,11 @@ export default function Composer({ parentId, onClose }: ComposerProps) {
 	async function handlePost() {
 		if (!canPost) return;
 		try {
-			await createPost(text);
-			addToast({ text: "Post created successfully!", type: "success" });
+			await createPost(text, parentId);
+			addToast({
+				text: `${parentId ? "Reply" : "Post"} created successfully!`,
+				type: "success",
+			});
 			onClose?.();
 		} catch (err: unknown) {
 			if (err instanceof ApiError) {
@@ -75,7 +78,9 @@ export default function Composer({ parentId, onClose }: ComposerProps) {
 		<div className="flex flex-col h-full">
 			{/* Header */}
 			<div className="flex justify-between items-center border-b border-[var(--color-700)] py-3 pl-6 pr-4">
-				<h1 className="text-lg font-semibold text-white">{parent ? "Reply" : "Compose"}</h1>
+				<h1 className="text-lg font-semibold text-white">
+					{parentId ? "Reply" : "Compose"}
+				</h1>
 				<button onClick={onClose} className="p-2 text-white cursor-pointer">
 					<X className="size-5" />
 				</button>

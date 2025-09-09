@@ -22,7 +22,11 @@ export const fetchPosts = async ({ page = 0, limit = 10, authorId }: FetchPostsP
 	} as { items: Post[]; hasMore: boolean };
 };
 
-export const createPost = async (content: string) => apiClient<Post>("/posts", "POST", { content });
+export const createPost = async (content: string, parentId?: number | null) =>
+	apiClient<Post>("/posts", "POST", {
+		content,
+		parentPostId: parentId ?? null,
+	});
 
 export const likePost = async (postId: number) => apiClient(`/posts/${postId}/like`, "POST");
 

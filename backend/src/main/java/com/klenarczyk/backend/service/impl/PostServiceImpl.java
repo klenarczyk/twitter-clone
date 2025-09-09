@@ -39,6 +39,13 @@ public class PostServiceImpl implements PostService {
         Post newPost = new Post();
         newPost.setUser(user);
         newPost.setContent(req.getContent());
+        if (req.getParentPostId() != null) {
+            Post parentPost = getPostById(req.getParentPostId());
+            newPost.setParentPost(parentPost);
+
+            parentPost.setReplyCount(parentPost.getReplyCount() + 1);
+            postRepository.save(parentPost);
+        }
 
         return postRepository.save(newPost);
     }
