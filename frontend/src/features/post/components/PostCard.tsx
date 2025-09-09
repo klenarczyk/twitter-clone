@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
+import { likePost, unlikePost } from "@/features/post/api/postApi";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
@@ -20,14 +21,23 @@ export default function PostCard({ post }: { post: Post }) {
 
 	const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 	const [isLiked, setIsLiked] = useState(post.isLiked);
+	const isLiking = useRef(false);
 
-	const handleLike = () => {
-		if (isLiked) {
-			setLikeCount(likeCount - 1);
-		} else {
-			setLikeCount(likeCount + 1);
+	const handleLike = async () => {
+		if (isLiking.current) return;
+		isLiking.current = true;
+		try {
+			if (isLiked) {
+				await unlikePost(post.id);
+				setLikeCount(likeCount - 1);
+			} else {
+				await likePost(post.id);
+				setLikeCount(likeCount + 1);
+			}
+			setIsLiked(!isLiked);
+		} finally {
+			isLiking.current = false;
 		}
-		setIsLiked(!isLiked);
 	};
 
 	useEffect(() => {

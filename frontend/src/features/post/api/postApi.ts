@@ -23,3 +23,7 @@ export const fetchPosts = async ({ page = 0, limit = 10, authorId }: FetchPostsP
 };
 
 export const createPost = async (content: string) => apiClient<Post>("/posts", "POST", { content });
+
+export const likePost = async (postId: number) => apiClient(`/posts/${postId}/like`, "POST");
+
+export const unlikePost = async (postId: number) => apiClient(`/posts/${postId}/like`, "DELETE");
