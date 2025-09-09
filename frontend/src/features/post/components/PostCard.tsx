@@ -10,6 +10,7 @@ import { likePost, unlikePost } from "@/features/post/api/postApi";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
+import { formatNumber } from "@/shared/utils/formatNumber";
 
 export default function PostCard({ post }: { post: Post }) {
 	const imageUrl = getProfileImage(post.author.imageUrl);
@@ -22,6 +23,8 @@ export default function PostCard({ post }: { post: Post }) {
 	const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 	const [isLiked, setIsLiked] = useState(post.isLiked);
 	const isLiking = useRef(false);
+
+	const [replyCount, setReplyCount] = useState(0);
 
 	const handleLike = async () => {
 		if (isLiking.current) return;
@@ -127,11 +130,11 @@ export default function PostCard({ post }: { post: Post }) {
 									className={`w-4 h-4 ${isLiked ? "fill-red-500 text-red-500" : "text-mono-400"}`}
 								/>
 							</motion.div>
-							<span className="ml-1 text-mono-400">{likeCount}</span>
+							<span className="ml-1 text-mono-400">{formatNumber(likeCount)}</span>
 						</button>
 						<button className="flex items-center gap-1 hover:text-[var(--color-700)] cursor-pointer">
 							<MessageCircle className="size-4" />
-							<span className="ml-1 text-mono-400">3</span>
+							<span className="ml-1 text-mono-400">{formatNumber(replyCount)}</span>
 						</button>
 					</div>
 				</div>
