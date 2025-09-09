@@ -11,7 +11,12 @@ public class CreatePostRequest {
     @Column(nullable = false, length = 280)
     private String content;
 
+    private Long parentPostId = null;
+
     public String getContent() { return this.content; }
     public void setContent(String content) { this.content = content; }
+
+    public Long getParentPostId() { return this.parentPostId; }
+    public void setParentPostId(Long parentPostId) { this.parentPostId = parentPostId; }
 
 }

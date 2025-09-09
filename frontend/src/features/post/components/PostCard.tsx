@@ -24,7 +24,7 @@ export default function PostCard({ post }: { post: Post }) {
 	const [isLiked, setIsLiked] = useState(post.isLiked);
 	const isLiking = useRef(false);
 
-	const [replyCount, setReplyCount] = useState(0);
+	const [replyCount, setReplyCount] = useState(post.replyCount || 0);
 
 	const handleLike = async () => {
 		if (isLiking.current) return;
@@ -115,7 +115,7 @@ export default function PostCard({ post }: { post: Post }) {
 					<div className="mt-3 flex items-center gap-3 text-sm text-mono-500">
 						<button
 							onClick={handleLike}
-							className="flex items-center gap-1 cursor-pointer"
+							className="flex items-center gap-0.5 cursor-pointer"
 						>
 							<motion.div
 								initial={false}
@@ -132,9 +132,9 @@ export default function PostCard({ post }: { post: Post }) {
 							</motion.div>
 							<span className="ml-1 text-mono-400">{formatNumber(likeCount)}</span>
 						</button>
-						<button className="flex items-center gap-1 hover:text-[var(--color-700)] cursor-pointer">
+						<button className="flex items-center gap-0.5 text-mono-400 hover:text-[var(--color-500)] cursor-pointer">
 							<MessageCircle className="size-4" />
-							<span className="ml-1 text-mono-400">{formatNumber(replyCount)}</span>
+							<span className="ml-1">{formatNumber(replyCount)}</span>
 						</button>
 					</div>
 				</div>

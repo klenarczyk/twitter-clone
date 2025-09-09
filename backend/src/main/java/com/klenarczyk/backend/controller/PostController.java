@@ -27,7 +27,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${app.api.base}/posts")
@@ -45,17 +44,24 @@ public class PostController {
     }
 
     // Endpoints
-
     @GetMapping
     @Operation(summary = "Returns a paginated list of posts")
     @ApiResponse(responseCode = "200", description = "Posts retrieved successfully")
     public ResponseEntity<PagedPostResponse> getPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) Long parentId,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         Pageable pageable = PageRequest.of(page, limit, Sort.by("createdAt").descending());
-        Page<Post> postPage = postService.getAllPosts(pageable);
+        Page<Post> postPage;
+
+        if (parentId != null) {
+            postPage = postService.getReplies(parentId, pageable);
+        } else {
+            postPage = postService.getTopLevelPosts(pageable);
+        }
+
         List<PostResponse> postResponses;
 
         if (userDetails != null) {
