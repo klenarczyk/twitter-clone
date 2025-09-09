@@ -9,17 +9,20 @@ import { useInfinitePosts } from "@/features/post/hooks/useInfinitePosts";
 
 export default function InfinitePostList({
 	userId,
+	parentId,
 	initialPageSize = 8,
 	emptyText = "No posts yet",
 	className,
 }: {
 	userId?: number;
+	parentId?: number;
 	initialPageSize?: number;
 	emptyText?: string;
 	className?: string;
 }) {
 	const { posts, loadMore, hasMore, loading, isInitialLoading } = useInfinitePosts({
 		userId,
+		parentId,
 		initialPageSize,
 	});
 	const sentinelRef = useRef<HTMLDivElement | null>(null);

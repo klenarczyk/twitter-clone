@@ -32,7 +32,7 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 	const [isLiked, setIsLiked] = useState(post.isLiked);
 	const isLiking = useRef(false);
 
-	const [replyCount, setReplyCount] = useState(post.replyCount || 0);
+	const [replyCount] = useState(post.replyCount || 0);
 
 	const handleLike = async () => {
 		if (isLiking.current) return;

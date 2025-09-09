@@ -1,6 +1,14 @@
 "use client";
 
-import { BellIcon, HomeIcon, MenuIcon, PlusIcon, SearchIcon, UserIcon } from "lucide-react";
+import {
+	BellIcon,
+	ChevronLeft,
+	HomeIcon,
+	MenuIcon,
+	PlusIcon,
+	SearchIcon,
+	UserIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -105,6 +113,14 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 
 			<main className="flex-1 md:ml-20 min-h-screen w-auto">
 				<div className="md:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-center py-4 bg-mono-950 z-10">
+					{path !== "/" && (
+						<button
+							onClick={() => window.history.back()}
+							className="absolute left-4 text-gray-400 hover:text-white transition-colors cursor-pointer"
+						>
+							<ChevronLeft className="size-6" />
+						</button>
+					)}
 					<Link href="/">
 						<Image
 							src="/images/logo.png"
@@ -115,7 +131,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 							priority
 						/>
 					</Link>
-					<button className="absolute left-4 text-gray-400 hover:text-white transition-colors cursor-pointer">
+					<button className="absolute right-4 text-gray-400 hover:text-white transition-colors cursor-pointer">
 						<MenuIcon className="size-6" />
 					</button>
 				</div>
