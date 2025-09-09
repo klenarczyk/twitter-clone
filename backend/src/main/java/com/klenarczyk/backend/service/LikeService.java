@@ -16,4 +16,7 @@ public interface LikeService {
                     Long postId);
 
     Set<Long> getLikedPostIdsByUserId(Long userId, List<Long> postIds);
+
+    boolean isPostLikedByUser(Long userId, Long postId);
+
 }

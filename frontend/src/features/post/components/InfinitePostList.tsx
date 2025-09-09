@@ -81,7 +81,7 @@ export default function InfinitePostList({
 
 			{!hasMore && posts.length > 0 && (
 				<div className="flex items-center justify-center py-6 text-sm text-mono-300">
-					You&#39;re all caught up
+					{parentId ? "That's all folks" : "You're all caught up"}
 				</div>
 			)}
 		</section>

@@ -10,6 +10,7 @@ import java.util.List;
 public interface LikeRepository extends JpaRepository<Like, LikeId> {
 
     List<Like> findByPostId(Long postId);
+
     boolean existsByUserIdAndPostId(Long userId, Long postId);
 
     @Query("select l.id.postId from Like l where l.id.userId = :userId and l.id.postId in :postIds")

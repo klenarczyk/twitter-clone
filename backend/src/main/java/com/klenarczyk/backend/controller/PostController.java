@@ -82,9 +82,19 @@ public class PostController {
     @Operation(summary = "Returns a post by id")
     @ApiResponse(responseCode = "200", description = "Post retrieved successfully")
     @NotFoundResponse
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
+    public ResponseEntity<PostResponse> getPost(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
         Post post = postService.getPostById(id);
-        return ResponseEntity.ok(PostResponse.fromEntity(post));
+        boolean isLiked = false;
+
+        if (userDetails != null) {
+            User user = userService.getAuthenticatedUser(userDetails);
+            isLiked = likeService.isPostLikedByUser(user.getId(), id);
+        }
+
+        return ResponseEntity.ok(PostResponse.fromEntity(post, isLiked));
     }
 
     @PostMapping

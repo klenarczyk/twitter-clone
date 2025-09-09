@@ -120,7 +120,7 @@ export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number
 				)}
 			</div>
 
-			<div className="md:bg-zinc-900 rounded-2xl shadow-sm md:border md:border-zinc-800 md:mt-8">
+			<div className="md:bg-zinc-900 rounded-2xl shadow-sm md:border md:border-zinc-800 md:mt-8 pt-2">
 				<main className="w-full max-w-2xl mx-auto">
 					<InfinitePostList initialPageSize={initialPageSize} />
 				</main>

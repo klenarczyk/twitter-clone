@@ -2,23 +2,52 @@
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import InfinitePostList from "@/features/post/components/InfinitePostList";
-import { Post } from "@/features/post/types/post";
 import { ChevronLeft } from "lucide-react";
 import PostCard from "@/features/post/components/PostCard";
+import { useEffect, useState } from "react";
+import { Post } from "@/features/post/types/post";
+import { fetchPostById } from "@/features/post/api/postApi";
 
 export default function PostReplies({
 	initialPageSize = 8,
-	post,
+	postId,
 }: {
 	initialPageSize?: number;
-	post: Post;
+	postId: number;
 }) {
-	const { user, loading: loadingUser } = useAuth();
+	const [post, setPost] = useState<Post | null>(null);
+	const [loadingPost, setLoadingPost] = useState(true);
 
-	if (loadingUser) {
+	useEffect(() => {
+		(async () => {
+			setLoadingPost(true);
+			try {
+				const res = await fetchPostById(postId);
+				setPost(res);
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					console.error("Failed to fetch post:", err.message);
+				} else {
+					console.error("Failed to fetch post:", err);
+				}
+			} finally {
+				setLoadingPost(false);
+			}
+		})();
+	}, [postId]);
+
+	if (loadingPost) {
 		return (
 			<div className="flex justify-center items-center h-64">
 				<div className="animate-spin rounded-full h-10 w-10 border-4 border-zinc-600 border-t-transparent"></div>
+			</div>
+		);
+	}
+
+	if (!post) {
+		return (
+			<div className="flex justify-center items-center h-64 text-zinc-400">
+				Post not found.
 			</div>
 		);
 	}
@@ -47,7 +76,11 @@ export default function PostReplies({
 				</div>
 
 				<main className="w-full max-w-2xl mx-auto">
-					<InfinitePostList parentId={post.id} initialPageSize={initialPageSize} />
+					<InfinitePostList
+						parentId={postId}
+						initialPageSize={initialPageSize}
+						emptyText="No replies yet"
+					/>
 				</main>
 			</div>
 		</div>
