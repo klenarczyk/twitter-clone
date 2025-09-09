@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 
 import PostCard from "@/features/post/components/PostCard";
@@ -22,6 +23,7 @@ export default function InfinitePostList({
 		initialPageSize,
 	});
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
+	const router = useRouter();
 
 	useEffect(() => {
 		if (isInitialLoading && hasMore) {
@@ -52,7 +54,10 @@ export default function InfinitePostList({
 		>
 			{posts.map((post, key) => (
 				<div className="px-2" key={key}>
-					<PostCard post={post} />
+					<PostCard
+						post={post}
+						onClick={() => router.push(`/u/${post.author.handle}/posts/${post.id}`)}
+					/>
 				</div>
 			))}
 

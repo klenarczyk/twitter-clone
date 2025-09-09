@@ -12,7 +12,7 @@ import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
 import { formatNumber } from "@/shared/utils/formatNumber";
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({ post, onClick }: { post: Post; onClick?: () => void }) {
 	const imageUrl = getProfileImage(post.author.imageUrl);
 	const timeAgo = formatDate(post.createdAt);
 
@@ -54,8 +54,15 @@ export default function PostCard({ post }: { post: Post }) {
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			transition={{ duration: 0.18 }}
-			className="p-4 relative"
+			className={`p-4 relative ${onClick && "cursor-pointer"}`}
 			aria-labelledby={post.id.toString()}
+			onClick={(e) => {
+				const target = e.target as HTMLElement;
+
+				if (!target.closest("button") && !target.closest("a") && onClick) {
+					onClick();
+				}
+			}}
 		>
 			<div className="flex gap-3 relative">
 				<div className="relative flex flex-col items-center">
