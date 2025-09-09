@@ -11,8 +11,16 @@ import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
 import { formatNumber } from "@/shared/utils/formatNumber";
+import { useComposer } from "@/features/post/hooks/useComposer";
 
-export default function PostCard({ post, onClick }: { post: Post; onClick?: () => void }) {
+type PostCardProps = {
+	post: Post;
+	onClick?: () => void;
+};
+
+export default function PostCard({ post, onClick }: PostCardProps) {
+	const { openComposer } = useComposer();
+
 	const imageUrl = getProfileImage(post.author.imageUrl);
 	const timeAgo = formatDate(post.createdAt);
 
@@ -139,7 +147,10 @@ export default function PostCard({ post, onClick }: { post: Post; onClick?: () =
 							</motion.div>
 							<span className="ml-1 text-mono-400">{formatNumber(likeCount)}</span>
 						</button>
-						<button className="flex items-center gap-0.5 text-mono-400 hover:text-[var(--color-500)] cursor-pointer">
+						<button
+							onClick={() => openComposer(post.id)}
+							className="flex items-center gap-0.5 text-mono-400 hover:text-[var(--color-500)] cursor-pointer"
+						>
 							<MessageCircle className="size-4" />
 							<span className="ml-1">{formatNumber(replyCount)}</span>
 						</button>

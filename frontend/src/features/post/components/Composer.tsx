@@ -13,10 +13,11 @@ import { TextArea } from "@/shared/components/TextArea";
 import { useToast } from "@/shared/toast/useToast";
 
 interface ComposerProps {
+	parentId?: number | null;
 	onClose?: () => void;
 }
 
-export default function Composer({ onClose }: ComposerProps) {
+export default function Composer({ parentId, onClose }: ComposerProps) {
 	const router = useRouter();
 	const { addToast } = useToast();
 	const { user, loading } = useAuth();
@@ -73,50 +74,45 @@ export default function Composer({ onClose }: ComposerProps) {
 	return (
 		<div className="flex flex-col h-full">
 			{/* Header */}
-			<div
-				className="flex justify-between items-center border-b border-[var(--color-700)]
-  					py-3 px-6"
-			>
-				<h1 className="text-lg font-semibold text-white">Compose</h1>
+			<div className="flex justify-between items-center border-b border-[var(--color-700)] py-3 pl-6 pr-4">
+				<h1 className="text-lg font-semibold text-white">{parent ? "Reply" : "Compose"}</h1>
 				<button onClick={onClose} className="p-2 text-white cursor-pointer">
-					<X className="h-5 w-5" />
+					<X className="size-5" />
 				</button>
 			</div>
 
 			{/* Content */}
-			<div className="flex gap-3 overflow-auto px-4 py-3">
-				{loading ? (
-					<div className="size-10 rounded-full bg-mono-200 animate-pulse" />
-				) : (
-					<Image
-						src={imageUrl!}
-						alt="Profile"
-						height={40}
-						width={40}
-						className="rounded-full size-10 flex-shrink-0"
-					/>
-				)}
+			<div className="flex-1 flex flex-col overflow-y-auto px-4 py-3">
+				{parent && <h1 className="text-white">{parentId}</h1>}
 
-				<div className="flex flex-col flex-1">
-					<span className="text-white font-semibold">{user?.handle}</span>
+				<div className="flex gap-3 mt-3">
+					{loading ? (
+						<div className="size-10 rounded-full bg-mono-200 animate-pulse" />
+					) : (
+						<Image
+							src={imageUrl!}
+							alt="Profile"
+							height={40}
+							width={40}
+							className="rounded-full size-10"
+						/>
+					)}
 
-					<div className="flex flex-1">
+					<div className="flex flex-col flex-1">
+						<span className="text-white font-semibold">{user?.handle}</span>
 						<TextArea
 							value={text}
-							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-								setText(e.target.value)
-							}
-							className="flex-1 h-auto max-h-full md:max-h-[50vh] resize-none text-mono-200
-								placeholder:text-[var(--color-500)] border-none focus:outline-none
-								overflow-auto whitespace-pre-wrap"
-							placeholder="What's happening?"
+							onChange={(e) => setText(e.target.value)}
+							className="w-full resize-none overflow-hidden text-mono-200
+            placeholder:text-[var(--color-500)] border-none focus:outline-none whitespace-pre-wrap"
+							placeholder={`${parent ? "Reply to post" : "What's happening?"}`}
 						/>
 					</div>
 				</div>
 			</div>
 
 			{/* Footer */}
-			<div className="flex items-center justify-between px-4 py-3 sm:px-6">
+			<div className="flex items-center justify-between px-4 py-3 sm:px-6 border-t border-[var(--color-700)]">
 				<div className="flex gap-4 text-sm text-mono-300 items-center">
 					<button className="hover:text-mono-100" disabled>
 						Image
