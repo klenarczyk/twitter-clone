@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { ComposerProvider } from "@/features/post/Providers/ComposerProviders";
+import { ComposerProvider } from "@/features/post/Providers/ComposerProvider";
 import Navigation from "@/shared/components/Navigation";
 
 export default function MainLayout({ children }: { children: ReactNode }) {

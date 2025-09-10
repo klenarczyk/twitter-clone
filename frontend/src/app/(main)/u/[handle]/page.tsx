@@ -46,7 +46,7 @@ export default function ProfilePage() {
 			</div>
 
 			<div className="flex justify-center">
-				<Feed userId={profile.id} initialPageSize={8} className="w-full" />
+				<Feed authorId={profile.id} initialPageSize={8} className="w-full" />
 			</div>
 		</div>
 	);

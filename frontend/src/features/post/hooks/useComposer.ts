@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { ComposerContext } from "@/features/post/Providers/ComposerProviders";
+import { ComposerContext } from "@/features/post/Providers/ComposerProvider";
 
 export const useComposer = () => {
 	const context = useContext(ComposerContext);
