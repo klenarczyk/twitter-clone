@@ -148,7 +148,7 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 							<span className="ml-1 text-mono-400">{formatNumber(likeCount)}</span>
 						</button>
 						<button
-							onClick={() => openComposer(post.id)}
+							onClick={() => openComposer(post)}
 							className="flex items-center gap-0.5 text-mono-400 hover:text-[var(--color-500)] cursor-pointer"
 						>
 							<MessageCircle className="size-4" />

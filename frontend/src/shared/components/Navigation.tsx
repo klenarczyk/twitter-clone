@@ -1,14 +1,6 @@
 "use client";
 
-import {
-	BellIcon,
-	ChevronLeft,
-	HomeIcon,
-	MenuIcon,
-	PlusIcon,
-	SearchIcon,
-	UserIcon,
-} from "lucide-react";
+import { BellIcon, ChevronLeft, HomeIcon, MenuIcon, PlusIcon, SearchIcon, UserIcon, } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -58,13 +50,12 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 						key={item.name}
 						onClick={(e) => {
 							e.preventDefault();
-							if (item.href === path || item.href === "#") {
+							if (item.name === "Add" && user) {
+								openComposer();
+							} else if (item.href === path || item.href === "#") {
 								window.scrollTo({ top: 0, behavior: "smooth" });
 							} else {
 								window.location.href = item.href;
-							}
-							if (item.name === "Add" && user) {
-								openComposer();
 							}
 						}}
 						className="text-gray-400 hover:text-white transition-colors cursor-pointer"

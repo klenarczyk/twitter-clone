@@ -5,11 +5,12 @@ import React, { createContext, ReactNode, useState } from "react";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import Composer from "@/features/post/components/Composer";
+import { Post } from "@/features/post/types/post";
 
 type ComposerContextType = {
 	isOpen: boolean;
-	parentPostId: number | null;
-	openComposer: (parentId?: number) => void;
+	parentPost: Post | null;
+	openComposer: (parent?: Post) => void;
 	closeComposer: () => void;
 };
 
@@ -18,20 +19,20 @@ export const ComposerContext = createContext<ComposerContextType | undefined>(un
 export const ComposerProvider = ({ children }: { children: ReactNode }) => {
 	const { user } = useAuth();
 	const [isOpen, setIsOpen] = useState(false);
-	const [parentPostId, setParentPostId] = useState<number | null>(null);
+	const [parentPost, setParentPost] = useState<Post | null>(null);
 
-	const openComposer = (parentId?: number) => {
-		setParentPostId(parentId ?? null);
+	const openComposer = (parent?: Post) => {
+		setParentPost(parent ?? null);
 		setIsOpen(true);
 	};
 
 	const closeComposer = () => {
-		setParentPostId(null);
+		setParentPost(null);
 		setIsOpen(false);
 	};
 
 	return (
-		<ComposerContext.Provider value={{ isOpen, parentPostId, openComposer, closeComposer }}>
+		<ComposerContext.Provider value={{ isOpen, parentPost, openComposer, closeComposer }}>
 			{children}
 
 			{isOpen && user && (
@@ -54,7 +55,7 @@ export const ComposerProvider = ({ children }: { children: ReactNode }) => {
 						transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
 						className="md:hidden w-full h-full bg-zinc-900"
 					>
-						<Composer parentId={parentPostId} onClose={() => setIsOpen(false)} />
+						<Composer parent={parentPost} onClose={() => setIsOpen(false)} />
 					</motion.div>
 
 					{/* Desktop */}
@@ -66,7 +67,7 @@ export const ComposerProvider = ({ children }: { children: ReactNode }) => {
 						className="hidden md:flex flex-col w-11/12 max-w-2xl max-h-[90vh] h-full rounded-2xl bg-zinc-900"
 					>
 						<div className="flex flex-col h-full">
-							<Composer parentId={parentPostId} onClose={() => setIsOpen(false)} />
+							<Composer parent={parentPost} onClose={() => setIsOpen(false)} />
 						</div>
 					</motion.div>
 				</motion.div>
