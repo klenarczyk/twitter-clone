@@ -7,13 +7,7 @@ import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import InfinitePostList from "@/features/post/components/InfinitePostList";
 
-export default function Feed({
-	userId,
-	initialPageSize = 8,
-}: {
-	userId?: number;
-	initialPageSize?: number;
-}) {
+export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number }) {
 	const { user, loading: loadingUser } = useAuth();
 	const [activeTab, setActiveTab] = useState<"home" | "following">("home");
 
@@ -126,9 +120,9 @@ export default function Feed({
 				)}
 			</div>
 
-			<div className="md:bg-zinc-900 rounded-2xl shadow-sm md:border md:border-zinc-800 md:mt-8">
+			<div className="md:bg-zinc-900 rounded-2xl shadow-sm md:border md:border-zinc-800 md:mt-8 pt-2">
 				<main className="w-full max-w-2xl mx-auto">
-					<InfinitePostList userId={userId} initialPageSize={initialPageSize} />
+					<InfinitePostList initialPageSize={initialPageSize} />
 				</main>
 			</div>
 		</div>

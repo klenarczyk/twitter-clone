@@ -2,6 +2,7 @@ package com.klenarczyk.backend.service.impl;
 
 import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.model.Like;
+import com.klenarczyk.backend.model.LikeId;
 import com.klenarczyk.backend.model.Post;
 import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.repository.LikeRepository;
@@ -31,7 +32,7 @@ public class LikeServiceImpl implements LikeService {
     @Override
     @Transactional(readOnly = true)
     public Like getLikeByUserAndPost(Long userId, Long postId) {
-        return likeRepository.findById(new com.klenarczyk.backend.model.LikeId(userId, postId))
+        return likeRepository.findById(new LikeId(userId, postId))
                 .orElseThrow(() -> new ResourceNotFoundException("Like not found"));
     }
 
@@ -42,7 +43,7 @@ public class LikeServiceImpl implements LikeService {
         User user = userService.getUserByEmail(currentUser.getUsername());
         Post post = postService.getPostById(postId);
 
-        if(!likeRepository.existsByUserIdAndPostId(user.getId(), post.getId())) {
+        if(!isPostLikedByUser(user.getId(), postId)) {
             Like like = new Like(user, post);
             likeRepository.save(like);
 
@@ -58,7 +59,7 @@ public class LikeServiceImpl implements LikeService {
         User user = userService.getUserByEmail(currentUser.getUsername());
         Post post = postService.getPostById(postId);
 
-        if(likeRepository.existsByUserIdAndPostId(user.getId(), post.getId())) {
+        if(isPostLikedByUser(user.getId(), postId)) {
             Like like = getLikeByUserAndPost(user.getId(), postId);
             likeRepository.delete(like);
 
@@ -68,8 +69,16 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<Long> getLikedPostIdsByUserId(Long userId, List<Long> postIds) {
         List<Long> likedPostIds = likeRepository.findLikedPostIdsByUserIdAndPostIds(userId, postIds);
         return Set.copyOf(likedPostIds);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isPostLikedByUser(Long userId, Long postId) {
+        return likeRepository.existsByUserIdAndPostId(userId, postId);
+    }
+
 }

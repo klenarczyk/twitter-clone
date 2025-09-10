@@ -7,20 +7,23 @@ import React, { useEffect, useState } from "react";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { createPost } from "@/features/post/api/postApi";
+import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { ApiError } from "@/lib/api/httpTypes";
 import { TextArea } from "@/shared/components/TextArea";
 import { useToast } from "@/shared/toast/useToast";
 
 interface ComposerProps {
+	parent?: Post | null;
 	onClose?: () => void;
 }
 
-export default function Composer({ onClose }: ComposerProps) {
+export default function Composer({ parent, onClose }: ComposerProps) {
 	const router = useRouter();
 	const { addToast } = useToast();
 	const { user, loading } = useAuth();
 	const imageUrl = getProfileImage(user?.imageUrl, loading);
+	const parentImageUrl = getProfileImage(parent?.author.imageUrl);
 
 	const [text, setText] = useState<string>("");
 	const CHARACTER_LIMIT = 280;
@@ -30,8 +33,11 @@ export default function Composer({ onClose }: ComposerProps) {
 	async function handlePost() {
 		if (!canPost) return;
 		try {
-			await createPost(text);
-			addToast({ text: "Post created successfully!", type: "success" });
+			await createPost(text, parent?.id);
+			addToast({
+				text: `${parent ? "Reply" : "Post"} created successfully!`,
+				type: "success",
+			});
 			onClose?.();
 		} catch (err: unknown) {
 			if (err instanceof ApiError) {
@@ -73,50 +79,65 @@ export default function Composer({ onClose }: ComposerProps) {
 	return (
 		<div className="flex flex-col h-full">
 			{/* Header */}
-			<div
-				className="flex justify-between items-center border-b border-[var(--color-700)]
-  					py-3 px-6"
-			>
-				<h1 className="text-lg font-semibold text-white">Compose</h1>
+			<div className="flex justify-between items-center border-b border-[var(--color-700)] py-3 pl-6 pr-4">
+				<h1 className="text-lg font-semibold text-white">{parent ? "Reply" : "Compose"}</h1>
 				<button onClick={onClose} className="p-2 text-white cursor-pointer">
-					<X className="h-5 w-5" />
+					<X className="size-5" />
 				</button>
 			</div>
 
 			{/* Content */}
-			<div className="flex gap-3 overflow-auto px-4 py-3">
-				{loading ? (
-					<div className="size-10 rounded-full bg-mono-200 animate-pulse" />
-				) : (
-					<Image
-						src={imageUrl!}
-						alt="Profile"
-						height={40}
-						width={40}
-						className="rounded-full size-10 flex-shrink-0"
-					/>
+			<div className="flex-1 flex flex-col overflow-y-auto px-4 py-3">
+				{parent && (
+					<div className="mb-3 p-3 rounded-xl bg-zinc-800 border border-zinc-800">
+						<div className="flex gap-3">
+							<Image
+								src={parentImageUrl!}
+								alt="Parent profile"
+								height={32}
+								width={32}
+								className="rounded-full size-8"
+							/>
+							<div className="flex flex-col">
+								<span className="text-white font-semibold">
+									{parent.author.handle}
+								</span>
+								<p className="text-mono-200 whitespace-pre-wrap">
+									{parent.content}
+								</p>
+							</div>
+						</div>
+					</div>
 				)}
 
-				<div className="flex flex-col flex-1">
-					<span className="text-white font-semibold">{user?.handle}</span>
+				<div className="flex gap-3 mt-3">
+					{loading ? (
+						<div className="size-10 rounded-full bg-mono-200 animate-pulse" />
+					) : (
+						<Image
+							src={imageUrl!}
+							alt="Profile"
+							height={40}
+							width={40}
+							className="rounded-full size-10"
+						/>
+					)}
 
-					<div className="flex flex-1">
+					<div className="flex flex-col flex-1">
+						<span className="text-white font-semibold">{user?.handle}</span>
 						<TextArea
 							value={text}
-							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-								setText(e.target.value)
-							}
-							className="flex-1 h-auto max-h-full md:max-h-[50vh] resize-none text-mono-200
-								placeholder:text-[var(--color-500)] border-none focus:outline-none
-								overflow-auto whitespace-pre-wrap"
-							placeholder="What's happening?"
+							onChange={(e) => setText(e.target.value)}
+							className="w-full resize-none overflow-hidden text-mono-200
+					placeholder:text-[var(--color-500)] border-none focus:outline-none whitespace-pre-wrap"
+							placeholder={`${parent ? "Reply to post" : "What's happening?"}`}
 						/>
 					</div>
 				</div>
 			</div>
 
 			{/* Footer */}
-			<div className="flex items-center justify-between px-4 py-3 sm:px-6">
+			<div className="flex items-center justify-between px-4 py-3 sm:px-6 border-t border-[var(--color-700)]">
 				<div className="flex gap-4 text-sm text-mono-300 items-center">
 					<button className="hover:text-mono-100" disabled>
 						Image

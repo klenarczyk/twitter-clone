@@ -1,10 +1,8 @@
 package com.klenarczyk.backend.service.impl;
 
 import com.klenarczyk.backend.dto.post.CreatePostRequest;
-import com.klenarczyk.backend.dto.post.PagedPostResponse;
 import com.klenarczyk.backend.model.*;
 import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
-import com.klenarczyk.backend.repository.CommentRepository;
 import com.klenarczyk.backend.repository.LikeRepository;
 import com.klenarczyk.backend.repository.PostRepository;
 import com.klenarczyk.backend.service.PostService;
@@ -24,14 +22,11 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserServiceImpl userService;
     private final LikeRepository likeRepository;
-    private final CommentRepository commentRepository;
 
-    public PostServiceImpl(PostRepository postRepository, UserServiceImpl userService, LikeRepository likeRepository,
-                           CommentRepository commentRepository) {
+    public PostServiceImpl(PostRepository postRepository, UserServiceImpl userService, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.userService = userService;
         this.likeRepository = likeRepository;
-        this.commentRepository = commentRepository;
     }
 
     // Methods
@@ -44,6 +39,13 @@ public class PostServiceImpl implements PostService {
         Post newPost = new Post();
         newPost.setUser(user);
         newPost.setContent(req.getContent());
+        if (req.getParentPostId() != null) {
+            Post parentPost = getPostById(req.getParentPostId());
+            newPost.setParentPost(parentPost);
+
+            parentPost.setReplyCount(parentPost.getReplyCount() + 1);
+            postRepository.save(parentPost);
+        }
 
         return postRepository.save(newPost);
     }
@@ -58,6 +60,18 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public Page<Post> getAllPosts(Pageable pageable) {
         return postRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Post> getTopLevelPosts(Pageable pageable) {
+        return postRepository.findByParentPostNull(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Post> getReplies(Long parentId, Pageable pageable) {
+        return postRepository.findByParentPostId(parentId, pageable);
     }
 
     @Override
@@ -109,13 +123,6 @@ public class PostServiceImpl implements PostService {
     public List<Like> getPostLikes(Long postId) {
         Post post = getPostById(postId);
         return likeRepository.findByPostId(postId);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Comment> getPostReplies(Long postId) {
-        Post post = getPostById(postId);
-        return commentRepository.findByPostId(postId);
     }
 
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 
 import PostCard from "@/features/post/components/PostCard";
@@ -8,20 +9,24 @@ import { useInfinitePosts } from "@/features/post/hooks/useInfinitePosts";
 
 export default function InfinitePostList({
 	userId,
+	parentId,
 	initialPageSize = 8,
 	emptyText = "No posts yet",
 	className,
 }: {
 	userId?: number;
+	parentId?: number;
 	initialPageSize?: number;
 	emptyText?: string;
 	className?: string;
 }) {
 	const { posts, loadMore, hasMore, loading, isInitialLoading } = useInfinitePosts({
 		userId,
+		parentId,
 		initialPageSize,
 	});
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
+	const router = useRouter();
 
 	useEffect(() => {
 		if (isInitialLoading && hasMore) {
@@ -52,7 +57,10 @@ export default function InfinitePostList({
 		>
 			{posts.map((post, key) => (
 				<div className="px-2" key={key}>
-					<PostCard post={post} />
+					<PostCard
+						post={post}
+						onClick={() => router.push(`/u/${post.author.handle}/posts/${post.id}`)}
+					/>
 				</div>
 			))}
 
@@ -73,7 +81,7 @@ export default function InfinitePostList({
 
 			{!hasMore && posts.length > 0 && (
 				<div className="flex items-center justify-center py-6 text-sm text-mono-300">
-					You&#39;re all caught up
+					{parentId ? "That's all folks" : "You're all caught up"}
 				</div>
 			)}
 		</section>

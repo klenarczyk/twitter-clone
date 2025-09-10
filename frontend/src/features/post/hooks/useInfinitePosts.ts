@@ -5,10 +5,10 @@ import { Post } from "@/features/post/types/post";
 import { useToast } from "@/shared/toast/useToast";
 
 export function useInfinitePosts({
-	userId = null,
+	parentId = null,
 	initialPageSize = 8,
 }: {
-	userId?: number | null;
+	parentId?: number | null;
 	initialPageSize?: number;
 }) {
 	const [posts, setPosts] = useState<Post[]>([]);
@@ -28,7 +28,7 @@ export function useInfinitePosts({
 			const res = await fetchPosts({
 				page,
 				limit: pageSizeRef.current,
-				...(userId ? { authorId: userId } : {}),
+				...(parentId ? { parentId } : {}),
 			});
 
 			setPosts((prev) => [...prev, ...res.items]);
@@ -49,7 +49,7 @@ export function useInfinitePosts({
 			setLoading(false);
 			setIsInitialLoading(false);
 		}
-	}, [loading, hasMore, page, userId, addToast]);
+	}, [loading, hasMore, page, parentId, addToast]);
 
 	function reset(newPageSize = initialPageSize) {
 		pageSizeRef.current = newPageSize;

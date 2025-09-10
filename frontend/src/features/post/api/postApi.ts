@@ -5,11 +5,18 @@ export type FetchPostsParams = {
 	page?: number;
 	limit?: number;
 	authorId?: number;
+	parentId?: number;
 };
 
-export const fetchPosts = async ({ page = 0, limit = 10, authorId }: FetchPostsParams) => {
+export const fetchPosts = async ({
+	page = 0,
+	limit = 10,
+	authorId,
+	parentId,
+}: FetchPostsParams) => {
 	const params = new URLSearchParams({ page: String(page), limit: String(limit) });
 	if (authorId) params.append("authorId", String(authorId));
+	if (parentId) params.append("parentId", String(parentId));
 
 	const res = await apiClient<{ items: Post[]; hasMore: boolean }>(`/posts?${params.toString()}`);
 
@@ -22,7 +29,20 @@ export const fetchPosts = async ({ page = 0, limit = 10, authorId }: FetchPostsP
 	} as { items: Post[]; hasMore: boolean };
 };
 
-export const createPost = async (content: string) => apiClient<Post>("/posts", "POST", { content });
+export const fetchPostById = async (postId: number) => {
+	const res = await apiClient<Post>(`/posts/${postId}`);
+
+	return {
+		...res,
+		createdAt: new Date(res.createdAt),
+	} as Post;
+};
+
+export const createPost = async (content: string, parentId?: number | null) =>
+	apiClient<Post>("/posts", "POST", {
+		content,
+		parentPostId: parentId ?? null,
+	});
 
 export const likePost = async (postId: number) => apiClient(`/posts/${postId}/like`, "POST");
 

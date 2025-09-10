@@ -7,17 +7,30 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-public record PostResponse(Long id, UserSummary author, String content, Long likeCount,
-                           boolean isLiked , LocalDateTime createdAt) {
+public record PostResponse(Long id, UserSummary author, String content, Long parentPostId, Long likeCount,
+                           Long replyCount,
+                           boolean isLiked, LocalDateTime createdAt) {
 
     public static PostResponse fromEntity(Post post) {
-        return new PostResponse(post.getId(), UserSummary.fromEntity(post.getUser()), post.getContent(),
-         post.getLikeCount(), false, post.getCreatedAt());
+        return new PostResponse(post.getId(), UserSummary.fromEntity(
+                post.getUser()),
+                post.getContent(),
+                post.getParentPost() != null ? post.getParentPost().getId() : null,
+                post.getLikeCount(),
+                post.getReplyCount(),
+                false,
+                post.getCreatedAt());
     }
 
     public static PostResponse fromEntity(Post post, boolean isLiked) {
-        return new PostResponse(post.getId(), UserSummary.fromEntity(post.getUser()), post.getContent(),
-                post.getLikeCount(), isLiked, post.getCreatedAt());
+        return new PostResponse(post.getId(), UserSummary.fromEntity(
+                post.getUser()),
+                post.getContent(),
+                post.getParentPost() != null ? post.getParentPost().getId() : null,
+                post.getLikeCount(),
+                post.getReplyCount(),
+                isLiked,
+                post.getCreatedAt());
     }
 
     public static List<PostResponse> fromEntities(List<Post> posts) {

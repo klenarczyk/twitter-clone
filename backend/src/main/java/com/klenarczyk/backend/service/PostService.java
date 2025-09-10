@@ -19,6 +19,10 @@ public interface PostService {
 
     Page<Post> getAllPosts(Pageable pageable);
 
+    Page<Post> getTopLevelPosts(Pageable pageable);
+
+    Page<Post> getReplies(Long parentId, Pageable pageable);
+
     Post getPostById(Long id);
 
     List<Post> getPostsByAuthor(Long userId);
@@ -31,7 +35,5 @@ public interface PostService {
     void unlikePost(Long userId, Long postId);
 
     List<Like> getPostLikes(Long postId);
-
-    List<Comment> getPostReplies(Long postId);
 
 }

@@ -19,5 +19,5 @@ export function TextArea({ value, onChange, ...props }: TextAreaProps) {
 		}
 	}, [value]);
 
-	return <textarea ref={textareaRef} value={value} onChange={onChange} rows={1} {...props} />;
+	return <textarea ref={textareaRef} value={value} onChange={onChange} {...props} />;
 }
