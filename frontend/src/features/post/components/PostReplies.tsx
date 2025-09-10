@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import InfinitePostList from "@/features/post/components/InfinitePostList";
 import { ChevronLeft } from "lucide-react";
-import PostCard from "@/features/post/components/PostCard";
 import { useEffect, useState } from "react";
-import { Post } from "@/features/post/types/post";
+
 import { fetchPostById } from "@/features/post/api/postApi";
+import InfinitePostList from "@/features/post/components/InfinitePostList";
+import PostCard from "@/features/post/components/PostCard";
+import { Post } from "@/features/post/types/post";
 
 export default function PostReplies({
 	initialPageSize = 8,

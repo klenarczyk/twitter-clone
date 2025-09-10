@@ -5,11 +5,9 @@ import { Post } from "@/features/post/types/post";
 import { useToast } from "@/shared/toast/useToast";
 
 export function useInfinitePosts({
-	userId = null,
 	parentId = null,
 	initialPageSize = 8,
 }: {
-	userId?: number | null;
 	parentId?: number | null;
 	initialPageSize?: number;
 }) {
