@@ -161,18 +161,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Follow createFollow(Long followedId, Long followerId) {
-        User followed = getUserById(followedId);
-        User follower = getUserById(followerId);
+    public Follow createFollow(UserDetails currentUser, Long userId) {
+        User user = getAuthenticatedUser(currentUser);
+        User toBeFollowed = getUserById(userId);
 
-        Follow follow = new Follow(follower, followed);
+        if (user.getId().equals(toBeFollowed.getId())) {
+            throw new ConflictException("self-follow", "You cannot follow yourself");
+        }
+
+        if (followRepository.existsById(new FollowId(user.getId(), toBeFollowed.getId()))) {
+            throw new ConflictException("follow", "You are already following this user");
+        }
+
+        Follow follow = new Follow(user, toBeFollowed);
         return followRepository.save(follow);
     }
 
     @Override
     @Transactional
-    public void deleteFollow(Long followedId, Long followerId) {
-        Follow follow = followRepository.findById(new FollowId(followedId, followerId))
+    public void deleteFollow(UserDetails currentUser, Long userId) {
+        User user = getAuthenticatedUser(currentUser);
+
+        Follow follow = followRepository.findById(new FollowId(user.getId(), userId))
                 .orElseThrow(() -> new ResourceNotFoundException("Follow relationship not found"));
         followRepository.delete(follow);
     }

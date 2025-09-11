@@ -12,13 +12,11 @@ public class Follow {
     @EmbeddedId
     private FollowId id;
 
-    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("followerId")
     @JoinColumn(name = "follower_id", nullable = false)
     private User follower;
 
-    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("followedId")
     @JoinColumn(name = "followed_id", nullable = false)

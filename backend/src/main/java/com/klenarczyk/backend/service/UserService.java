@@ -34,9 +34,9 @@ public interface UserService {
 
     String uploadUserImage(UserDetails currentUser, MultipartFile file);
 
-    Follow createFollow(Long followedId, Long followerId);
+    Follow createFollow(UserDetails currentUser, Long userId);
 
-    void deleteFollow(Long followedId, Long followerId);
+    void deleteFollow(UserDetails currentUser, Long userId);
 
     boolean doesUserExist(Long id);
 
