@@ -15,4 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByParentPostNull(Pageable pageable);
     Page<Post> findByParentPostId(Long parentPostId, Pageable pageable);
 
+    List<Post> findByUserIdAndParentPostIsNull(Long userId);
+    Page<Post> findByUserIdAndParentPostIsNull(Long userId, Pageable pageable);
+
 }

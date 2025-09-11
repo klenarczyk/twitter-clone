@@ -48,10 +48,10 @@ public class PostServiceImpl implements PostService {
 
             parentPost.setReplyCount(parentPost.getReplyCount() + 1);
             postRepository.save(parentPost);
+        } else {
+            user.setPostCount(user.getPostCount() + 1);
+            userRepository.save(user);
         }
-
-        user.setPostCount(user.getPostCount() + 1);
-        userRepository.save(user);
 
         return postRepository.save(newPost);
     }
@@ -90,13 +90,13 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public List<Post> getPostsByAuthor(Long userId) {
-        return postRepository.findByUserId(userId);
+        return postRepository.findByUserIdAndParentPostIsNull(userId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Post> getPostsByAuthor(Long authorId, Pageable pageable) {
-        return postRepository.findByUserId(authorId, pageable);
+        return postRepository.findByUserIdAndParentPostIsNull(authorId, pageable);
     }
 
     @Override
