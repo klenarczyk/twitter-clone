@@ -34,10 +34,6 @@ public interface UserService {
 
     String uploadUserImage(UserDetails currentUser, MultipartFile file);
 
-    Follow createFollow(UserDetails currentUser, Long userId);
-
-    void deleteFollow(UserDetails currentUser, Long userId);
-
     boolean doesUserExist(Long id);
 
     boolean isEmailTaken(String email);

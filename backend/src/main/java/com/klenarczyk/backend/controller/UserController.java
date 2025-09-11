@@ -7,6 +7,7 @@ import com.klenarczyk.backend.dto.post.PostResponse;
 import com.klenarczyk.backend.dto.users.*;
 import com.klenarczyk.backend.model.Follow;
 import com.klenarczyk.backend.model.Post;
+import com.klenarczyk.backend.service.impl.FollowServiceImpl;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
 import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;
@@ -33,10 +34,12 @@ public class UserController {
 
     private final UserServiceImpl userService;
     private final PostServiceImpl postService;
+    private final FollowServiceImpl followService;
 
-    public UserController(UserServiceImpl userService, PostServiceImpl postService) {
+    public UserController(UserServiceImpl userService, PostServiceImpl postService, FollowServiceImpl followService) {
         this.userService = userService;
         this.postService = postService;
+        this.followService = followService;
     }
 
     // Endpoints
@@ -123,7 +126,7 @@ public class UserController {
     public ResponseEntity<FollowResponse> followUser(@AuthenticationPrincipal UserDetails currentUser,
                                            @PathVariable Long userId) {
 
-        Follow follow = userService.createFollow(currentUser, userId);
+        Follow follow = followService.createFollow(currentUser, userId);
         return ResponseEntity.ok(FollowResponse.fromEntity(follow));
     }
 
@@ -135,7 +138,7 @@ public class UserController {
     @NotFoundResponse
     public ResponseEntity<Void> unfollowUser(@AuthenticationPrincipal UserDetails currentUser,
                                              @PathVariable Long userId) {
-        userService.deleteFollow(currentUser, userId);
+        followService.deleteFollow(currentUser, userId);
         return ResponseEntity.noContent().build();
     }
 

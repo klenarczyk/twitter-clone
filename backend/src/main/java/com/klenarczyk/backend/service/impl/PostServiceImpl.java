@@ -5,6 +5,7 @@ import com.klenarczyk.backend.model.*;
 import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.LikeRepository;
 import com.klenarczyk.backend.repository.PostRepository;
+import com.klenarczyk.backend.repository.UserRepository;
 import com.klenarczyk.backend.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -22,11 +23,13 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserServiceImpl userService;
     private final LikeRepository likeRepository;
+    private final UserRepository userRepository;
 
-    public PostServiceImpl(PostRepository postRepository, UserServiceImpl userService, LikeRepository likeRepository) {
+    public PostServiceImpl(PostRepository postRepository, UserServiceImpl userService, LikeRepository likeRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userService = userService;
         this.likeRepository = likeRepository;
+        this.userRepository = userRepository;
     }
 
     // Methods
@@ -46,6 +49,9 @@ public class PostServiceImpl implements PostService {
             parentPost.setReplyCount(parentPost.getReplyCount() + 1);
             postRepository.save(parentPost);
         }
+
+        user.setPostCount(user.getPostCount() + 1);
+        userRepository.save(user);
 
         return postRepository.save(newPost);
     }
@@ -97,6 +103,11 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void deletePost(Long id) {
         Post post = getPostById(id);
+        User author = post.getUser();
+
+        author.setPostCount(author.getPostCount() - 1);
+        userRepository.save(author);
+
         postRepository.delete(post);
     }
 
