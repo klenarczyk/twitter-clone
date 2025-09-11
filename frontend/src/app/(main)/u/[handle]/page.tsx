@@ -12,6 +12,14 @@ export default function ProfilePage() {
 	const { profile, loading } = useProfile(params?.handle as string);
 	const router = useRouter();
 
+	if (loading) {
+		return (
+			<div className="flex justify-center items-center h-64">
+				<p className="text-zinc-400">Loading...</p>
+			</div>
+		);
+	}
+
 	if (!profile) {
 		return (
 			<div className="flex justify-center items-center h-64">

@@ -4,31 +4,60 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { followUser, unfollowUser } from "@/features/profile/api/profileApi";
-import { useFollow } from "@/features/profile/providers/FollowProvider";
 import type { Profile } from "@/features/profile/types/user";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { formatNumber } from "@/shared/utils/formatNumber";
+import { useToast } from "@/shared/toast/useToast";
+import { ApiError } from "@/lib/api/httpTypes";
+import { useAuth } from "@/features/auth/providers/AuthProvider";
 
 export function ProfileHeader({ profile }: { profile: Profile }) {
-	const { following, toggleFollow } = useFollow();
-	const isFollowing = following[profile.id] ?? false;
+	const { user } = useAuth();
+	const [isFollowing, setIsFollowing] = useState(profile.isFollowed || false);
+	const { addToast } = useToast();
 
 	const [followerCount, setFollowerCount] = useState(profile.followerCount || 0);
 
 	const handleFollowToggle = async () => {
-		if (isFollowing) {
-			await unfollowUser(profile.id);
-			setFollowerCount((c) => c - 1);
-		} else {
-			await followUser(profile.id);
-			setFollowerCount((c) => c + 1);
+		try {
+			if (isFollowing) {
+				await unfollowUser(profile.id);
+				setIsFollowing(false);
+				setFollowerCount((c) => c - 1);
+			} else {
+				await followUser(profile.id);
+				setIsFollowing(true);
+				setFollowerCount((c) => c + 1);
+			}
+		} catch (err) {
+			if (err instanceof ApiError) {
+				switch (err.status) {
+					case 409: {
+						addToast({
+							type: "error",
+							text: err.details!.issue,
+						});
+						break;
+					}
+					default: {
+						addToast({
+							type: "error",
+							text: "An unknown error occurred. Please try again.",
+						});
+						break;
+					}
+				}
+			} else {
+				addToast({
+					type: "error",
+					text: "An unknown error occurred. Please try again.",
+				});
+			}
 		}
-
-		toggleFollow(profile.id);
 	};
 
 	const imageUrl = getProfileImage(profile?.imageUrl);
-	const isCurrentUser = false;
+	const isCurrentUser = profile.id === user?.id;
 
 	useEffect(() => {
 		setFollowerCount(profile.followerCount || 0);
@@ -62,13 +91,13 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 
 					<div className="mt-4">
 						{isCurrentUser ? (
-							<button className="px-4 py-2 rounded-xl bg-zinc-800 text-white hover:bg-zinc-700 transition">
+							<button className="px-4 py-2 rounded-xl bg-zinc-800 text-white hover:bg-zinc-700 transition cursor-pointer">
 								Edit Profile
 							</button>
 						) : (
 							<button
 								onClick={handleFollowToggle}
-								className={`px-4 py-2 rounded-xl transition ${
+								className={`px-4 py-2 rounded-xl transition cursor-pointer ${
 									isFollowing
 										? "bg-zinc-700 text-white hover:bg-zinc-600"
 										: "bg-white text-black hover:bg-zinc-200"

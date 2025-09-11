@@ -43,7 +43,6 @@ public class UserController {
     }
 
     // Endpoints
-
     @GetMapping("/me")
     @Operation(summary = "Returns the currently authenticated user")
     @ApiResponse(responseCode = "200", description = "Current user fetched successfully")
@@ -57,18 +56,38 @@ public class UserController {
     @Operation(summary = "Returns a user by id")
     @ApiResponse(responseCode = "200", description = "User retrieved successfully")
     @NotFoundResponse
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getUserById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails currentUser
+    ) {
         User user = userService.getUserById(id);
-        return ResponseEntity.ok(UserResponse.fromEntity(user));
+        boolean isFollowing = false;
+
+        if (currentUser != null) {
+            User authUser = userService.getAuthenticatedUser(currentUser);
+            isFollowing = followService.isUserFollowing(authUser.getId(), id);
+        }
+
+        return ResponseEntity.ok(UserResponse.fromEntity(user, isFollowing));
     }
 
     @GetMapping("/handle/{handle}")
     @Operation(summary = "Returns a user by handle")
     @ApiResponse(responseCode = "200", description = "User retrieved successfully")
     @NotFoundResponse
-    public ResponseEntity<UserResponse> getUserById(@PathVariable String handle) {
+    public ResponseEntity<UserResponse> getUserById(
+            @PathVariable String handle,
+            @AuthenticationPrincipal UserDetails currentUser
+    ) {
         User user = userService.getUserByHandle(handle);
-        return ResponseEntity.ok(UserResponse.fromEntity(user));
+        boolean isFollowing = false;
+
+        if (currentUser != null) {
+            User authUser = userService.getAuthenticatedUser(currentUser);
+            isFollowing = followService.isUserFollowing(authUser.getId(), user.getId());
+        }
+
+        return ResponseEntity.ok(UserResponse.fromEntity(user, isFollowing));
     }
 
     @GetMapping("/search")
