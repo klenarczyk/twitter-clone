@@ -52,6 +52,7 @@ public class PostController {
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(required = false) Long parentId,
             @RequestParam(required = false) Long authorId,
+            @RequestParam(required = false) Boolean followed,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         Pageable pageable = PageRequest.of(page, limit, Sort.by("createdAt").descending());
@@ -61,6 +62,9 @@ public class PostController {
             postPage = postService.getReplies(parentId, pageable);
         } else if (authorId != null) {
             postPage = postService.getPostsByAuthor(authorId, pageable);
+        } else if (followed != null && followed && userDetails != null) {
+            User user = userService.getAuthenticatedUser(userDetails);
+            postPage = postService.getPostsByFollowedUsers(user.getId(), pageable);
         } else {
             postPage = postService.getTopLevelPosts(pageable);
         }

@@ -3,7 +3,6 @@ package com.klenarczyk.backend.service.impl;
 import com.klenarczyk.backend.security.auth.dto.RegisterRequest;
 import com.klenarczyk.backend.dto.users.UpdateUserRequest;
 import com.klenarczyk.backend.model.Follow;
-import com.klenarczyk.backend.model.FollowId;
 import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.common.exception.ConflictException;
 import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
@@ -157,6 +156,15 @@ public class UserServiceImpl implements UserService {
 
         user.setImageUrl(imageUrl);
         return userRepository.saveAndFlush(user).getImageUrl();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getFollowedUserIds(Long userId) {
+        List<Follow> following = followRepository.findFollowsByFollowerId(userId);
+        return following.stream()
+                .map(follow -> follow.getFollowed().getId())
+                .toList();
     }
 
     @Override

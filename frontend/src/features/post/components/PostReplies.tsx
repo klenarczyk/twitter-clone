@@ -1,13 +1,13 @@
 "use client";
 
 import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { fetchPostById } from "@/features/post/api/postApi";
 import InfinitePostList from "@/features/post/components/InfinitePostList";
 import PostCard from "@/features/post/components/PostCard";
 import { Post } from "@/features/post/types/post";
-import { useRouter } from "next/navigation";
 
 export default function PostReplies({
 	initialPageSize = 8,

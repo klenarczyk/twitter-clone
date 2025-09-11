@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 
 import { fetchLogin } from "@/features/auth/api/authApi";
+import { useAuth } from "@/features/auth/providers/AuthProvider";
 import { ApiError } from "@/lib/api/httpTypes";
 import Button from "@/shared/components/Button";
 import Form from "@/shared/components/form/Form";
@@ -12,7 +13,6 @@ import FormItem from "@/shared/components/form/FormItem";
 import InputField from "@/shared/components/form/InputField";
 import { useToast } from "@/shared/toast/useToast";
 import { validateEmail } from "@/shared/utils/validation";
-import { useAuth } from "@/features/auth/providers/AuthProvider";
 
 export default function LoginPage() {
 	const { login } = useAuth();

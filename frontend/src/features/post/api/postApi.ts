@@ -6,15 +6,18 @@ export type FetchPostsParams = {
 	limit?: number;
 	authorId?: number;
 	parentId?: number;
+	followed?: boolean;
 };
 
 export const fetchPosts = async ({
 	page = 0,
 	limit = 10,
+	followed = false,
 	authorId,
 	parentId,
 }: FetchPostsParams) => {
 	const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+	params.append("followed", String(followed));
 	if (parentId) {
 		params.append("parentId", String(parentId));
 	} else if (authorId) {

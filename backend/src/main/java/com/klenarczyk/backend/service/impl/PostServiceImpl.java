@@ -70,6 +70,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Post> getPostsByFollowedUsers(Long userId, Pageable pageable) {
+        List<Long> followedUserIds = userService.getFollowedUserIds(userId);
+        return postRepository.findByUserIdInAndParentPostIsNull(followedUserIds, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<Post> getTopLevelPosts(Pageable pageable) {
         return postRepository.findByParentPostNull(pageable);
     }

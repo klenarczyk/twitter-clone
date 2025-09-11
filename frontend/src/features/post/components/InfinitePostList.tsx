@@ -12,17 +12,20 @@ export default function InfinitePostList({
 	authorId,
 	initialPageSize = 8,
 	emptyText = "No posts yet",
+	followed = false,
 	className,
 }: {
 	parentId?: number;
 	authorId?: number;
 	initialPageSize?: number;
 	emptyText?: string;
+	followed?: boolean;
 	className?: string;
 }) {
 	const { posts, loadMore, hasMore, loading, isInitialLoading } = useInfinitePosts({
 		authorId,
 		parentId,
+		followed,
 		initialPageSize,
 	});
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -30,13 +33,9 @@ export default function InfinitePostList({
 
 	useEffect(() => {
 		if (isInitialLoading && hasMore) {
-			(async () => {
-				try {
-					await loadMore();
-				} catch (err) {
-					console.error(err);
-				}
-			})();
+			loadMore()
+				.then()
+				.catch((err) => console.error(err));
 		}
 	}, [isInitialLoading, hasMore, loadMore, loading]);
 

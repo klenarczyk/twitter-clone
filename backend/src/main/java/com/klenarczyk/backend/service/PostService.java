@@ -19,6 +19,8 @@ public interface PostService {
 
     Page<Post> getAllPosts(Pageable pageable);
 
+    Page<Post> getPostsByFollowedUsers(Long userId, Pageable pageable);
+
     Page<Post> getTopLevelPosts(Pageable pageable);
 
     Page<Post> getReplies(Long parentId, Pageable pageable);

@@ -1,21 +1,13 @@
 "use client";
 
-import {
-	BellIcon,
-	ChevronLeft,
-	HomeIcon,
-	MenuIcon,
-	PlusIcon,
-	SearchIcon,
-	UserIcon,
-} from "lucide-react";
+import { ChevronLeft, HomeIcon, MenuIcon, PlusIcon, SearchIcon, UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
-import { useComposer } from "@/features/post/hooks/useComposer";
 import { useAuth } from "@/features/auth/providers/AuthProvider";
+import { useComposer } from "@/features/post/hooks/useComposer";
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
 	const { user, loading: loadingUser } = useAuth();
@@ -38,11 +30,6 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 			name: "Add",
 			href: loadingUser || user ? "#" : "/login",
 			icon: <PlusIcon className="size-6 text-white bg-blue-600 p-1 rounded-full" />,
-		},
-		{
-			name: "Notifications",
-			href: "#",
-			icon: <BellIcon className="size-6" />,
 		},
 		{
 			name: "Profile",
@@ -91,14 +78,16 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 						}}
 						className="text-gray-400 hover:text-white transition-colors cursor-pointer"
 					>
-						<Image
-							src="/images/logo.png"
-							alt="Logo"
-							width={40}
-							height={40}
-							className="invert object-contain"
-							priority
-						/>
+						<div className="relative w-10 h-10">
+							<Image
+								src="/images/logo.png"
+								alt="Logo"
+								fill
+								sizes="40px"
+								className="invert object-contain"
+								priority
+							/>
+						</div>
 					</button>
 				</div>
 

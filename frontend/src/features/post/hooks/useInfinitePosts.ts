@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { fetchPosts } from "@/features/post/api/postApi";
 import { Post } from "@/features/post/types/post";
@@ -7,10 +7,12 @@ import { useToast } from "@/shared/toast/useToast";
 export function useInfinitePosts({
 	parentId = null,
 	authorId = null,
+	followed = false,
 	initialPageSize = 8,
 }: {
 	parentId?: number | null;
 	authorId?: number | null;
+	followed?: boolean;
 	initialPageSize?: number;
 }) {
 	const [posts, setPosts] = useState<Post[]>([]);
@@ -30,6 +32,7 @@ export function useInfinitePosts({
 			const res = await fetchPosts({
 				page,
 				limit: pageSizeRef.current,
+				followed,
 				...(parentId ? { parentId } : authorId ? { authorId } : {}),
 			});
 
@@ -51,15 +54,22 @@ export function useInfinitePosts({
 			setLoading(false);
 			setIsInitialLoading(false);
 		}
-	}, [loading, hasMore, page, parentId, authorId, addToast]);
+	}, [loading, hasMore, page, followed, parentId, authorId, addToast]);
 
-	function reset(newPageSize = initialPageSize) {
-		pageSizeRef.current = newPageSize;
-		setPosts([]);
-		setPage(0);
-		setHasMore(true);
-		setIsInitialLoading(true);
-	}
+	const reset = useCallback(
+		(newPageSize = initialPageSize) => {
+			pageSizeRef.current = newPageSize;
+			setPosts([]);
+			setPage(0);
+			setHasMore(true);
+			setIsInitialLoading(true);
+		},
+		[initialPageSize]
+	);
 
-	return { posts, loadMore, hasMore, reset, loading, isInitialLoading };
+	useEffect(() => {
+		reset(initialPageSize);
+	}, [followed, authorId, parentId, initialPageSize, reset]);
+
+	return { posts, loadMore, hasMore, loading, reset, isInitialLoading };
 }

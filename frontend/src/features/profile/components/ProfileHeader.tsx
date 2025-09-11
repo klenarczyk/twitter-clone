@@ -3,13 +3,13 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import { useAuth } from "@/features/auth/providers/AuthProvider";
 import { followUser, unfollowUser } from "@/features/profile/api/profileApi";
 import type { Profile } from "@/features/profile/types/user";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
-import { formatNumber } from "@/shared/utils/formatNumber";
-import { useToast } from "@/shared/toast/useToast";
 import { ApiError } from "@/lib/api/httpTypes";
-import { useAuth } from "@/features/auth/providers/AuthProvider";
+import { useToast } from "@/shared/toast/useToast";
+import { formatNumber } from "@/shared/utils/formatNumber";
 
 export function ProfileHeader({ profile }: { profile: Profile }) {
 	const { user } = useAuth();
@@ -76,6 +76,7 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 							width={96}
 							height={96}
 							className="rounded-full object-cover"
+							priority
 						/>
 					)}
 				</div>

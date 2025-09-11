@@ -5,13 +5,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+import { useAuth } from "@/features/auth/providers/AuthProvider";
 import { createPost } from "@/features/post/api/postApi";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { ApiError } from "@/lib/api/httpTypes";
 import { TextArea } from "@/shared/components/TextArea";
 import { useToast } from "@/shared/toast/useToast";
-import { useAuth } from "@/features/auth/providers/AuthProvider";
 
 interface ComposerProps {
 	parent?: Post | null;
