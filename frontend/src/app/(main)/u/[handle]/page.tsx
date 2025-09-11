@@ -1,12 +1,12 @@
 "use client";
 
+import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 
 import InfinitePostList from "@/features/post/components/InfinitePostList";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
-import { ChevronLeft } from "lucide-react";
 
 export default function ProfilePage() {
 	const params = useParams();
