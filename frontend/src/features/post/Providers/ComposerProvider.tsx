@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import React, { createContext, ReactNode, useState } from "react";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import Composer from "@/features/post/components/Composer";
 import { Post } from "@/features/post/types/post";
+import { useAuth } from "@/features/auth/providers/AuthProvider";
 
 type ComposerContextType = {
 	isOpen: boolean;

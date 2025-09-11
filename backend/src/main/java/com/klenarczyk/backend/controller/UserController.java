@@ -158,4 +158,16 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.fromEntities(following));
     }
 
+    @GetMapping("/follow/status/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Checks if the authenticated user is following a specific user")
+    @ApiResponse(responseCode = "200", description = "Follow status retrieved successfully")
+    @UnauthorizedResponse
+    @NotFoundResponse
+    public ResponseEntity<Boolean> isFollowing(@AuthenticationPrincipal UserDetails currentUser,
+                                                            @PathVariable Long userId) {
+        User user = userService.getAuthenticatedUser(currentUser);
+        return ResponseEntity.ok(followService.isUserFollowing(user.getId(), userId));
+    }
+
 }

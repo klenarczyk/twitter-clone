@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import InfinitePostList from "@/features/post/components/InfinitePostList";
+import { useAuth } from "@/features/auth/providers/AuthProvider";
 
 export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number }) {
 	const { user, loading: loadingUser } = useAuth();

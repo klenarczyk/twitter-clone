@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/features/auth/providers/AuthProvider";
 
 export const useRequireAuth = () => {
 	const { user, loading } = useAuth();

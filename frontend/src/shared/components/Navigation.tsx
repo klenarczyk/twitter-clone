@@ -11,16 +11,17 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useComposer } from "@/features/post/hooks/useComposer";
+import { useAuth } from "@/features/auth/providers/AuthProvider";
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
 	const { user, loading: loadingUser } = useAuth();
 	const { openComposer } = useComposer();
 	const path = usePathname();
+	const router = useRouter();
 
 	const navItems = [
 		{
@@ -63,7 +64,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 							} else if (item.href === path || item.href === "#") {
 								window.scrollTo({ top: 0, behavior: "smooth" });
 							} else {
-								window.location.href = item.href;
+								router.push(item.href);
 							}
 						}}
 						className="text-gray-400 hover:text-white transition-colors cursor-pointer"

@@ -7,6 +7,7 @@ import { fetchPostById } from "@/features/post/api/postApi";
 import InfinitePostList from "@/features/post/components/InfinitePostList";
 import PostCard from "@/features/post/components/PostCard";
 import { Post } from "@/features/post/types/post";
+import { useRouter } from "next/navigation";
 
 export default function PostReplies({
 	initialPageSize = 8,
@@ -17,6 +18,7 @@ export default function PostReplies({
 }) {
 	const [post, setPost] = useState<Post | null>(null);
 	const [loadingPost, setLoadingPost] = useState(true);
+	const router = useRouter();
 
 	useEffect(() => {
 		(async () => {
@@ -56,7 +58,7 @@ export default function PostReplies({
 		<div className="md:space-y-4 mb-14 md:mb-8 relative">
 			<div className="hidden md:flex sticky top-14 md:top-4 z-10 items-center px-4 py-1">
 				<button
-					onClick={() => window.history.back()}
+					onClick={() => router.back()}
 					className="p-2 rounded-full transition cursor-pointer"
 				>
 					<ChevronLeft className="text-white hover:text-zinc-400 transition-colors" />
