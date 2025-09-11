@@ -8,20 +8,20 @@ import { PostSkeleton } from "@/features/post/components/PostSkeleton";
 import { useInfinitePosts } from "@/features/post/hooks/useInfinitePosts";
 
 export default function InfinitePostList({
-	userId,
 	parentId,
+	authorId,
 	initialPageSize = 8,
 	emptyText = "No posts yet",
 	className,
 }: {
-	userId?: number;
 	parentId?: number;
+	authorId?: number;
 	initialPageSize?: number;
 	emptyText?: string;
 	className?: string;
 }) {
 	const { posts, loadMore, hasMore, loading, isInitialLoading } = useInfinitePosts({
-		userId,
+		authorId,
 		parentId,
 		initialPageSize,
 	});

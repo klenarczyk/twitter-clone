@@ -51,6 +51,7 @@ public class PostController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(required = false) Long parentId,
+            @RequestParam(required = false) Long authorId,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         Pageable pageable = PageRequest.of(page, limit, Sort.by("createdAt").descending());
@@ -58,6 +59,8 @@ public class PostController {
 
         if (parentId != null) {
             postPage = postService.getReplies(parentId, pageable);
+        } else if (authorId != null) {
+            postPage = postService.getPostsByAuthor(authorId, pageable);
         } else {
             postPage = postService.getTopLevelPosts(pageable);
         }

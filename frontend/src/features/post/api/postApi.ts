@@ -15,8 +15,11 @@ export const fetchPosts = async ({
 	parentId,
 }: FetchPostsParams) => {
 	const params = new URLSearchParams({ page: String(page), limit: String(limit) });
-	if (authorId) params.append("authorId", String(authorId));
-	if (parentId) params.append("parentId", String(parentId));
+	if (parentId) {
+		params.append("parentId", String(parentId));
+	} else if (authorId) {
+		params.append("authorId", String(authorId));
+	}
 
 	const res = await apiClient<{ items: Post[]; hasMore: boolean }>(`/posts?${params.toString()}`);
 
