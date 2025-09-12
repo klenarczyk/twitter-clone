@@ -50,6 +50,8 @@ export const createPost = async (content: string, parentId?: number | null) =>
 		parentPostId: parentId ?? null,
 	});
 
+export const deletePost = async (postId: number) => apiClient(`/posts/${postId}`, "DELETE");
+
 export const likePost = async (postId: number) => apiClient(`/posts/${postId}/like`, "POST");
 
 export const unlikePost = async (postId: number) => apiClient(`/posts/${postId}/like`, "DELETE");
