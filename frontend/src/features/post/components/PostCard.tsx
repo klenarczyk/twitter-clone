@@ -12,6 +12,8 @@ import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
 import { formatNumber } from "@/shared/utils/formatNumber";
 import { useComposer } from "@/features/post/context/ComposerContext";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 type PostCardProps = {
 	post: Post;
@@ -19,20 +21,24 @@ type PostCardProps = {
 };
 
 export default function PostCard({ post, onClick }: PostCardProps) {
+	const { user } = useAuth();
 	const { openComposer } = useComposer();
+	const router = useRouter();
 
-	const imageUrl = getProfileImage(post.author.imageUrl);
-	const timeAgo = formatDate(post.createdAt);
-
-	const textRef = useRef<HTMLParagraphElement>(null);
 	const [isOverflowing, setIsOverflowing] = useState(false);
 	const [expanded, setExpanded] = useState(false);
-
 	const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 	const [isLiked, setIsLiked] = useState(post.isLiked);
+	const [replyCount] = useState(post.replyCount || 0);
+
+	const textRef = useRef<HTMLParagraphElement>(null);
 	const isLiking = useRef(false);
 
-	const [replyCount] = useState(post.replyCount || 0);
+	useEffect(() => {
+		if (textRef.current) {
+			setIsOverflowing(textRef.current.scrollHeight > textRef.current.clientHeight);
+		}
+	}, [post.content]);
 
 	const handleLike = async () => {
 		if (isLiking.current) return;
@@ -51,11 +57,8 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 		}
 	};
 
-	useEffect(() => {
-		if (textRef.current) {
-			setIsOverflowing(textRef.current.scrollHeight > textRef.current.clientHeight);
-		}
-	}, [post.content]);
+	const imageUrl = getProfileImage(post.author.imageUrl);
+	const timeAgo = formatDate(post.createdAt);
 
 	return (
 		<motion.article
@@ -93,12 +96,13 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 						<div className="flex items-center gap-2">
 							<Link
 								href={`/u/${post.author.handle}`}
-								className="font-bold text-mono-100 cursor-pointer"
+								className="font-bold text-mono-100 cursor-pointer hover:underline"
 							>
 								{post.author.handle}
 							</Link>
 							<div className="text-mono-300 text-sm">{timeAgo}</div>
 						</div>
+
 						<div className="text-mono-300 cursor-pointer">
 							<Ellipsis className="size-5" />
 						</div>
@@ -125,7 +129,7 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 
 					<div className="mt-3 flex items-center gap-3 text-sm text-mono-500">
 						<button
-							onClick={handleLike}
+							onClick={user ? handleLike : () => router.push("/login")}
 							className="flex items-center gap-0.5 cursor-pointer"
 						>
 							<motion.div

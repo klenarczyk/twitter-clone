@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon, X } from "lucide-react";
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode, useContext, useState } from "react";
 
 import ExclamationIcon from "@/shared/components/icons/ExclamationIcon";
 import InfoIcon from "@/shared/components/icons/InfoIcon";
@@ -70,45 +70,57 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 		<ToastContext.Provider value={{ toasts, addToast, removeToast }}>
 			{children}
 
-			<div className="fixed top-0 right-0 z-[1000] flex max-h-screen gap-2 flex-col-reverse p-4 md:max-w-[420px]">
-				<AnimatePresence>
-					{toasts.map((t) => (
-						<motion.div
-							key={t.id}
-							initial={{ opacity: 0, x: 100, y: 0 }}
-							animate={{ opacity: 1, x: 0, y: 0 }}
-							exit={{ opacity: 0, x: 100, y: 0, transition: { duration: 0.1 } }}
-							transition={{
-								x: { type: "spring", stiffness: 400, damping: 25 },
-								y: { type: "spring", stiffness: 400, damping: 25 },
-								opacity: { duration: 0.15 },
-								layout: { type: "spring", stiffness: 300, damping: 25 },
-							}}
-							layout
-							className={
-								"pointer-events-auto relative flex w-full items-center justify-start" +
-								" overflow-hidden rounded-lg border px-4 py-6 shadow-lg bg-[#111111] text-foreground"
-							}
-						>
-							<ToastIcon type={t.type} />
-
-							<p className="flex-1 px-4 wrap text-sm text-white">{t.text}</p>
-
-							<X
-								className="text-gray-300 size-5 cursor-pointer"
-								onClick={() => removeToast(t.id)}
-							/>
-
+			{toasts.length > 0 && (
+				<div className="fixed top-0 right-0 z-[1000] flex max-h-screen gap-2 flex-col-reverse p-4 md:max-w-[420px]">
+					<AnimatePresence>
+						{toasts.map((t) => (
 							<motion.div
-								className="absolute bottom-0 left-0 h-0.5 bg-white/50"
-								initial={{ width: "100%" }}
-								animate={{ width: 0 }}
-								transition={{ duration: 3, ease: "linear" }}
-							/>
-						</motion.div>
-					))}
-				</AnimatePresence>
-			</div>
+								key={t.id}
+								initial={{ opacity: 0, x: 100, y: 0 }}
+								animate={{ opacity: 1, x: 0, y: 0 }}
+								exit={{ opacity: 0, x: 100, y: 0, transition: { duration: 0.1 } }}
+								transition={{
+									x: { type: "spring", stiffness: 400, damping: 25 },
+									y: { type: "spring", stiffness: 400, damping: 25 },
+									opacity: { duration: 0.15 },
+									layout: { type: "spring", stiffness: 300, damping: 25 },
+								}}
+								layout
+								className={
+									"pointer-events-auto relative flex w-full items-center justify-start" +
+									" overflow-hidden rounded-lg border px-4 py-6 shadow-lg bg-[#111111] text-foreground"
+								}
+							>
+								<ToastIcon type={t.type} />
+
+								<p className="flex-1 px-4 wrap text-sm text-white">{t.text}</p>
+
+								<X
+									className="text-gray-300 size-5 cursor-pointer"
+									onClick={() => removeToast(t.id)}
+								/>
+
+								<motion.div
+									className="absolute bottom-0 left-0 h-0.5 bg-white/50"
+									initial={{ width: "100%" }}
+									animate={{ width: 0 }}
+									transition={{ duration: 3, ease: "linear" }}
+								/>
+							</motion.div>
+						))}
+					</AnimatePresence>
+				</div>
+			)}
 		</ToastContext.Provider>
 	);
+}
+
+export function useToast() {
+	const context = useContext(ToastContext);
+
+	if (!context) {
+		throw new Error("useToast must be used within a ToastProvider");
+	}
+
+	return context;
 }

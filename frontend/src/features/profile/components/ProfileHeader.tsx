@@ -8,9 +8,9 @@ import { followUser, unfollowUser } from "@/features/profile/api/profileApi";
 import type { Profile } from "@/features/profile/types/user";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { ApiError } from "@/lib/api/httpTypes";
-import { useToast } from "@/shared/toast/useToast";
 import { formatNumber } from "@/shared/utils/formatNumber";
 import Container from "@/shared/components/ui/Container";
+import { useToast } from "@/shared/toast/ToastContext";
 
 export default function ProfileHeader({ profile }: { profile: Profile }) {
 	const { user } = useAuth();

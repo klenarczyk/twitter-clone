@@ -10,8 +10,8 @@ import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { ApiError } from "@/lib/api/httpTypes";
 import { TextArea } from "@/shared/components/ui/TextArea";
-import { useToast } from "@/shared/toast/useToast";
 import Popup from "@/shared/components/ui/Popup";
+import { useToast } from "@/shared/toast/ToastContext";
 
 interface ComposerProps {
 	parent?: Post | null;

@@ -11,8 +11,13 @@ import Form from "@/shared/components/form/Form";
 import FormItem from "@/shared/components/form/FormItem";
 import InputField from "@/shared/components/form/InputField";
 import Button from "@/shared/components/ui/Button";
-import { useToast } from "@/shared/toast/useToast";
-import { validateEmail, validateFullName, validateHandle, validatePassword, } from "@/shared/utils/validation";
+import {
+	validateEmail,
+	validateFullName,
+	validateHandle,
+	validatePassword,
+} from "@/shared/utils/validation";
+import { useToast } from "@/shared/toast/ToastContext";
 
 export default function RegisterForm() {
 	const router = useRouter();

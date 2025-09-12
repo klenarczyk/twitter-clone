@@ -37,7 +37,7 @@ export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number
 
 					<button
 						onClick={() => handleTabClick("home")}
-						className={`${user ? "bg-transparent" : "bg-zinc-700"} z-10 w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer ${
+						className={`${user ? "bg-transparent" : "bg-zinc-700"} w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer z-10 ${
 							activeTab === "home"
 								? "text-white"
 								: "text-zinc-400 hover:text-zinc-200"
@@ -49,7 +49,7 @@ export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number
 					{user ? (
 						<button
 							onClick={() => handleTabClick("following")}
-							className={`z-10 w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer ${
+							className={`w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer z-10 ${
 								activeTab === "following"
 									? "text-white"
 									: "text-zinc-400 hover:text-zinc-200"
@@ -60,7 +60,7 @@ export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number
 					) : (
 						<Link
 							href="/login"
-							className="z-10 w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer bg-white text-black text-center"
+							className="w-24 text-sm font-medium py-2 rounded-full transition cursor-pointer bg-white text-black text-center z-10"
 						>
 							Log in
 						</Link>
