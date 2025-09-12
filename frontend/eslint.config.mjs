@@ -22,7 +22,12 @@ const eslintConfig = [
 		rules: {
 			"prettier/prettier": [
 				"error",
-				{ singleQuote: false, semi: true, trailingComma: "es5", printWidth: 100 },
+				{
+					singleQuote: false,
+					semi: true,
+					trailingComma: "es5",
+					printWidth: 100,
+				},
 			],
 			"simple-import-sort/imports": "error",
 			"simple-import-sort/exports": "error",

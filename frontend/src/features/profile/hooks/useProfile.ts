@@ -42,7 +42,13 @@ export const useProfile = (handle?: string) => {
 			}
 		};
 
-		loadUser();
+		(async () => {
+			try {
+				await loadUser();
+			} catch (error) {
+				console.error("Error loading user:", error);
+			}
+		})();
 	}, [handle]);
 
 	return { profile, loading };

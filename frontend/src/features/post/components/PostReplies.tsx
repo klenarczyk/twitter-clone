@@ -1,12 +1,13 @@
 "use client";
 
-import { ChevronLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { fetchPostById } from "@/features/post/api/postApi";
 import InfinitePostList from "@/features/post/components/InfinitePostList";
 import PostCard from "@/features/post/components/PostCard";
 import { Post } from "@/features/post/types/post";
+import Container from "@/shared/components/ui/Container";
+import BackHeader from "@/shared/components/ui/BackHeader";
 
 export default function PostReplies({
 	initialPageSize = 8,
@@ -54,22 +55,9 @@ export default function PostReplies({
 
 	return (
 		<div className="md:space-y-4 mb-14 md:mb-8 relative">
-			<div className="hidden md:flex sticky top-14 md:top-4 z-10 items-center px-4 py-1">
-				<button
-					onClick={() => window.history.back()}
-					className="p-2 rounded-full transition cursor-pointer"
-				>
-					<ChevronLeft className="text-white hover:text-zinc-400 transition-colors" />
-				</button>
+			<BackHeader title="Post" />
 
-				<div className="flex-1 text-center">
-					<h1 className="text-lg font-semibold text-white">Post</h1>
-				</div>
-
-				<div className="w-9" />
-			</div>
-
-			<div className="md:bg-zinc-900 rounded-2xl shadow-sm md:border md:border-zinc-800 md:mt-8 pt-2">
+			<Container>
 				<PostCard post={post} />
 				<div className="px-4 py-2 text-sm text-mono-300 pt-2 border-y border-zinc-800">
 					Replies
@@ -82,7 +70,7 @@ export default function PostReplies({
 						emptyText="No replies yet"
 					/>
 				</main>
-			</div>
+			</Container>
 		</div>
 	);
 }

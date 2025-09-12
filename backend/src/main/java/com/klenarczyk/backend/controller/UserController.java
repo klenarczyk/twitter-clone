@@ -4,12 +4,11 @@ import com.klenarczyk.backend.common.exception.handler.docs.annotation.InternalS
 import com.klenarczyk.backend.common.exception.handler.docs.annotation.NotFoundResponse;
 import com.klenarczyk.backend.common.exception.handler.docs.annotation.UnauthorizedResponse;
 import com.klenarczyk.backend.dto.post.PostResponse;
-import com.klenarczyk.backend.dto.users.PagedUserResponse;
-import com.klenarczyk.backend.dto.users.ProfileImageResponse;
-import com.klenarczyk.backend.dto.users.UpdateUserRequest;
+import com.klenarczyk.backend.dto.users.*;
+import com.klenarczyk.backend.model.Follow;
 import com.klenarczyk.backend.model.Post;
+import com.klenarczyk.backend.service.impl.FollowServiceImpl;
 import com.klenarczyk.backend.service.impl.PostServiceImpl;
-import com.klenarczyk.backend.dto.users.UserResponse;
 import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,14 +34,15 @@ public class UserController {
 
     private final UserServiceImpl userService;
     private final PostServiceImpl postService;
+    private final FollowServiceImpl followService;
 
-    public UserController(UserServiceImpl userService, PostServiceImpl postService) {
+    public UserController(UserServiceImpl userService, PostServiceImpl postService, FollowServiceImpl followService) {
         this.userService = userService;
         this.postService = postService;
+        this.followService = followService;
     }
 
     // Endpoints
-
     @GetMapping("/me")
     @Operation(summary = "Returns the currently authenticated user")
     @ApiResponse(responseCode = "200", description = "Current user fetched successfully")
@@ -56,18 +56,38 @@ public class UserController {
     @Operation(summary = "Returns a user by id")
     @ApiResponse(responseCode = "200", description = "User retrieved successfully")
     @NotFoundResponse
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getUserById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails currentUser
+    ) {
         User user = userService.getUserById(id);
-        return ResponseEntity.ok(UserResponse.fromEntity(user));
+        boolean isFollowing = false;
+
+        if (currentUser != null) {
+            User authUser = userService.getAuthenticatedUser(currentUser);
+            isFollowing = followService.isUserFollowing(authUser.getId(), id);
+        }
+
+        return ResponseEntity.ok(UserResponse.fromEntity(user, isFollowing));
     }
 
     @GetMapping("/handle/{handle}")
     @Operation(summary = "Returns a user by handle")
     @ApiResponse(responseCode = "200", description = "User retrieved successfully")
     @NotFoundResponse
-    public ResponseEntity<UserResponse> getUserById(@PathVariable String handle) {
+    public ResponseEntity<UserResponse> getUserById(
+            @PathVariable String handle,
+            @AuthenticationPrincipal UserDetails currentUser
+    ) {
         User user = userService.getUserByHandle(handle);
-        return ResponseEntity.ok(UserResponse.fromEntity(user));
+        boolean isFollowing = false;
+
+        if (currentUser != null) {
+            User authUser = userService.getAuthenticatedUser(currentUser);
+            isFollowing = followService.isUserFollowing(authUser.getId(), user.getId());
+        }
+
+        return ResponseEntity.ok(UserResponse.fromEntity(user, isFollowing));
     }
 
     @GetMapping("/search")
@@ -114,6 +134,59 @@ public class UserController {
     public ResponseEntity<List<PostResponse>> getUserPosts(@PathVariable Long id) {
         List<Post> posts = postService.getPostsByAuthor(id);
         return ResponseEntity.ok(PostResponse.fromEntities(posts));
+    }
+
+    @PostMapping("/follow/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Follows a user")
+    @ApiResponse(responseCode = "200", description = "User followed successfully")
+    @UnauthorizedResponse
+    @NotFoundResponse
+    public ResponseEntity<FollowResponse> followUser(@AuthenticationPrincipal UserDetails currentUser,
+                                           @PathVariable Long userId) {
+
+        Follow follow = followService.createFollow(currentUser, userId);
+        return ResponseEntity.ok(FollowResponse.fromEntity(follow));
+    }
+
+    @DeleteMapping("/unfollow/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Unfollows a user")
+    @ApiResponse(responseCode = "204", description = "User unfollowed successfully")
+    @UnauthorizedResponse
+    @NotFoundResponse
+    public ResponseEntity<Void> unfollowUser(@AuthenticationPrincipal UserDetails currentUser,
+                                             @PathVariable Long userId) {
+        followService.deleteFollow(currentUser, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/followers")
+    @Operation(summary = "Returns followers of a specific user")
+    @ApiResponse(responseCode = "200", description = "Followers retrieved successfully")
+    public ResponseEntity<List<UserResponse>> getUserFollowers(@PathVariable Long id) {
+        List<User> followers = userService.getFollowers(id);
+        return ResponseEntity.ok(UserResponse.fromEntities(followers));
+    }
+
+    @GetMapping("/{id}/following")
+    @Operation(summary = "Returns users followed by a specific user")
+    @ApiResponse(responseCode = "200", description = "Following users retrieved successfully")
+    public ResponseEntity<List<UserResponse>> getUserFollowing(@PathVariable Long id) {
+        List<User> following = userService.getFollowing(id);
+        return ResponseEntity.ok(UserResponse.fromEntities(following));
+    }
+
+    @GetMapping("/follow/status/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Checks if the authenticated user is following a specific user")
+    @ApiResponse(responseCode = "200", description = "Follow status retrieved successfully")
+    @UnauthorizedResponse
+    @NotFoundResponse
+    public ResponseEntity<Boolean> isFollowing(@AuthenticationPrincipal UserDetails currentUser,
+                                                            @PathVariable Long userId) {
+        User user = userService.getAuthenticatedUser(currentUser);
+        return ResponseEntity.ok(followService.isUserFollowing(user.getId(), userId));
     }
 
 }

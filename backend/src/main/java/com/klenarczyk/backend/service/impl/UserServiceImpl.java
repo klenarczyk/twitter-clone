@@ -3,7 +3,6 @@ package com.klenarczyk.backend.service.impl;
 import com.klenarczyk.backend.security.auth.dto.RegisterRequest;
 import com.klenarczyk.backend.dto.users.UpdateUserRequest;
 import com.klenarczyk.backend.model.Follow;
-import com.klenarczyk.backend.model.FollowId;
 import com.klenarczyk.backend.model.User;
 import com.klenarczyk.backend.common.exception.ConflictException;
 import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
@@ -160,21 +159,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public Follow createFollow(Long followedId, Long followerId) {
-        User followed = getUserById(followedId);
-        User follower = getUserById(followerId);
-
-        Follow follow = new Follow(follower, followed);
-        return followRepository.save(follow);
-    }
-
-    @Override
-    @Transactional
-    public void deleteFollow(Long followedId, Long followerId) {
-        Follow follow = followRepository.findById(new FollowId(followedId, followerId))
-                .orElseThrow(() -> new ResourceNotFoundException("Follow relationship not found"));
-        followRepository.delete(follow);
+    @Transactional(readOnly = true)
+    public List<Long> getFollowedUserIds(Long userId) {
+        List<Follow> following = followRepository.findFollowsByFollowerId(userId);
+        return following.stream()
+                .map(follow -> follow.getFollowed().getId())
+                .toList();
     }
 
     @Override

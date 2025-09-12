@@ -1,17 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Ellipsis, Heart, MessageCircle, Plus } from "lucide-react";
+import { Ellipsis, Heart, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 import { likePost, unlikePost } from "@/features/post/api/postApi";
-import { useComposer } from "@/features/post/hooks/useComposer";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
 import { formatNumber } from "@/shared/utils/formatNumber";
+import { useComposer } from "@/features/post/context/ComposerContext";
 
 type PostCardProps = {
 	post: Post;
@@ -85,10 +85,6 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 							width={50}
 							className="rounded-full"
 						/>
-
-						<span className="absolute -bottom-0 -right-0 bg-white text-xs font-bold rounded-full size-4 flex items-center justify-center">
-							<Plus className="size-2/3 text-black" />
-						</span>
 					</Link>
 				</div>
 

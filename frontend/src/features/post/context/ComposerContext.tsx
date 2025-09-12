@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode, useContext, useState } from "react";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/features/auth/context/AuthContext";
 import Composer from "@/features/post/components/Composer";
 import { Post } from "@/features/post/types/post";
 
@@ -74,4 +74,12 @@ export const ComposerProvider = ({ children }: { children: ReactNode }) => {
 			)}
 		</ComposerContext.Provider>
 	);
+};
+
+export const useComposer = () => {
+	const context = useContext(ComposerContext);
+
+	if (!context) throw new Error("useComposer must be used within ComposerProvider");
+
+	return context;
 };

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -34,9 +35,7 @@ public interface UserService {
 
     String uploadUserImage(UserDetails currentUser, MultipartFile file);
 
-    Follow createFollow(Long followedId, Long followerId);
-
-    void deleteFollow(Long followedId, Long followerId);
+    List<Long> getFollowedUserIds(Long userId);
 
     boolean doesUserExist(Long id);
 

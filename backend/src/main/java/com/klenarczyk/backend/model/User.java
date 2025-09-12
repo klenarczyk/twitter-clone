@@ -27,6 +27,15 @@ public class User {
     @Column(name = "full_name", length = 100)
     private String fullName;
 
+    @Column(name = "follower_count")
+    private Long followerCount = 0L;
+
+    @Column(name = "following_count")
+    private Long followingCount = 0L;
+
+    @Column(name = "post_count")
+    private Long postCount = 0L;
+
     private String bio;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -75,6 +84,15 @@ public class User {
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
+
+    public Long getFollowerCount() { return followerCount; }
+    public void setFollowerCount(Long followerCount) { this.followerCount = followerCount; }
+
+    public Long getFollowingCount() { return followingCount; }
+    public void setFollowingCount(Long followingCount) { this.followingCount = followingCount; }
+
+    public Long getPostCount() { return postCount; }
+    public void setPostCount(Long postCount) { this.postCount = postCount; }
 
     public String getBio() { return bio; }
     public void setBio(String bio) { this.bio = bio; }

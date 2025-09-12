@@ -5,6 +5,7 @@ import com.klenarczyk.backend.model.*;
 import com.klenarczyk.backend.common.exception.ResourceNotFoundException;
 import com.klenarczyk.backend.repository.LikeRepository;
 import com.klenarczyk.backend.repository.PostRepository;
+import com.klenarczyk.backend.repository.UserRepository;
 import com.klenarczyk.backend.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -22,11 +23,13 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserServiceImpl userService;
     private final LikeRepository likeRepository;
+    private final UserRepository userRepository;
 
-    public PostServiceImpl(PostRepository postRepository, UserServiceImpl userService, LikeRepository likeRepository) {
+    public PostServiceImpl(PostRepository postRepository, UserServiceImpl userService, LikeRepository likeRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userService = userService;
         this.likeRepository = likeRepository;
+        this.userRepository = userRepository;
     }
 
     // Methods
@@ -45,6 +48,9 @@ public class PostServiceImpl implements PostService {
 
             parentPost.setReplyCount(parentPost.getReplyCount() + 1);
             postRepository.save(parentPost);
+        } else {
+            user.setPostCount(user.getPostCount() + 1);
+            userRepository.save(user);
         }
 
         return postRepository.save(newPost);
@@ -60,6 +66,13 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public Page<Post> getAllPosts(Pageable pageable) {
         return postRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Post> getPostsByFollowedUsers(Long userId, Pageable pageable) {
+        List<Long> followedUserIds = userService.getFollowedUserIds(userId);
+        return postRepository.findByUserIdInAndParentPostIsNull(followedUserIds, pageable);
     }
 
     @Override
@@ -84,19 +97,24 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public List<Post> getPostsByAuthor(Long userId) {
-        return postRepository.findByUserId(userId);
+        return postRepository.findByUserIdAndParentPostIsNull(userId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<Post> getPostsByAuthor(Long authorId, Pageable pageable) {
-        return postRepository.findByUserId(authorId, pageable);
+        return postRepository.findByUserIdAndParentPostIsNull(authorId, pageable);
     }
 
     @Override
     @Transactional
     public void deletePost(Long id) {
         Post post = getPostById(id);
+        User author = post.getUser();
+
+        author.setPostCount(author.getPostCount() - 1);
+        userRepository.save(author);
+
         postRepository.delete(post);
     }
 

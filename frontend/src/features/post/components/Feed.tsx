@@ -4,11 +4,12 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/features/auth/context/AuthContext";
 import InfinitePostList from "@/features/post/components/InfinitePostList";
+import Container from "@/shared/components/ui/Container";
 
 export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number }) {
-	const { user, loading: loadingUser } = useAuth();
+	const { user } = useAuth();
 	const [activeTab, setActiveTab] = useState<"home" | "following">("home");
 
 	const handleTabClick = (tab: "home" | "following") => {
@@ -16,17 +17,8 @@ export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number
 			window.scrollTo({ top: 0, behavior: "smooth" });
 		} else {
 			setActiveTab(tab);
-			window.scrollTo({ top: 0, behavior: "smooth" });
 		}
 	};
-
-	if (loadingUser) {
-		return (
-			<div className="flex justify-center items-center h-64">
-				<div className="animate-spin rounded-full h-10 w-10 border-4 border-zinc-600 border-t-transparent"></div>
-			</div>
-		);
-	}
 
 	return (
 		<div className="md:space-y-4 mb-14 md:mb-8 relative">
@@ -39,7 +31,7 @@ export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number
 						layout
 						className={`${user ? "block" : "hidden"} absolute top-1 bottom-1 w-1/2 rounded-full bg-zinc-700`}
 						initial={false}
-						animate={{ x: activeTab === "home" || !user ? "0%" : "100%" }}
+						animate={{ left: activeTab === "home" || !user ? "0%" : "50%" }}
 						transition={{ type: "spring", stiffness: 300, damping: 30 }}
 					/>
 
@@ -120,11 +112,12 @@ export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number
 				)}
 			</div>
 
-			<div className="md:bg-zinc-900 rounded-2xl shadow-sm md:border md:border-zinc-800 md:mt-8 pt-2">
-				<main className="w-full max-w-2xl mx-auto">
-					<InfinitePostList initialPageSize={initialPageSize} />
-				</main>
-			</div>
+			<Container>
+				<InfinitePostList
+					initialPageSize={initialPageSize}
+					followed={activeTab === "following"}
+				/>
+			</Container>
 		</div>
 	);
 }

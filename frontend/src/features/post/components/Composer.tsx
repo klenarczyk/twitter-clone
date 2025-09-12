@@ -1,17 +1,17 @@
 "use client";
 
-import { X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/features/auth/context/AuthContext";
 import { createPost } from "@/features/post/api/postApi";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { ApiError } from "@/lib/api/httpTypes";
-import { TextArea } from "@/shared/components/TextArea";
+import { TextArea } from "@/shared/components/ui/TextArea";
 import { useToast } from "@/shared/toast/useToast";
+import Popup from "@/shared/components/ui/Popup";
 
 interface ComposerProps {
 	parent?: Post | null;
@@ -77,15 +77,7 @@ export default function Composer({ parent, onClose }: ComposerProps) {
 	}, []);
 
 	return (
-		<div className="flex flex-col h-full">
-			{/* Header */}
-			<div className="flex justify-between items-center border-b border-[var(--color-700)] py-3 pl-6 pr-4">
-				<h1 className="text-lg font-semibold text-white">{parent ? "Reply" : "Compose"}</h1>
-				<button onClick={onClose} className="p-2 text-white cursor-pointer">
-					<X className="size-5" />
-				</button>
-			</div>
-
+		<Popup title={parent ? "Reply" : "Compose"} onClose={onClose}>
 			{/* Content */}
 			<div className="flex-1 flex flex-col overflow-y-auto px-4 py-3">
 				{parent && (
@@ -164,6 +156,6 @@ export default function Composer({ parent, onClose }: ComposerProps) {
 					</button>
 				</div>
 			</div>
-		</div>
+		</Popup>
 	);
 }
