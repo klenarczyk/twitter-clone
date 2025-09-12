@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { useAuth } from "@/features/auth/providers/AuthProvider";
+import { useAuth } from "@/features/auth/context/AuthContext";
 
-export const useRequireAuth = () => {
+export default function useRequireAuth() {
 	const { user, loading } = useAuth();
 	const router = useRouter();
 
@@ -16,4 +16,4 @@ export const useRequireAuth = () => {
 	}, [user, loading, router]);
 
 	return { user, loading };
-};
+}

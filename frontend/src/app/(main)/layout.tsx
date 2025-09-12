@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import Navigation from "@/shared/components/Navigation";
+import Navigation from "@/shared/components/ui/Navigation";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
 	return (

@@ -7,11 +7,11 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 import { likePost, unlikePost } from "@/features/post/api/postApi";
-import { useComposer } from "@/features/post/hooks/useComposer";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
 import { formatNumber } from "@/shared/utils/formatNumber";
+import { useComposer } from "@/features/post/context/ComposerContext";
 
 type PostCardProps = {
 	post: Post;

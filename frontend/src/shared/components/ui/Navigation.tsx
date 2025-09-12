@@ -6,8 +6,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
-import { useAuth } from "@/features/auth/providers/AuthProvider";
-import { useComposer } from "@/features/post/hooks/useComposer";
+import { useAuth } from "@/features/auth/context/AuthContext";
+
+import { useComposer } from "@/features/post/context/ComposerContext";
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
 	const { user, loading: loadingUser } = useAuth();
@@ -73,7 +74,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 							if (path === "/") {
 								window.scrollTo({ top: 0, behavior: "smooth" });
 							} else {
-								window.location.href = "/";
+								router.replace("/");
 							}
 						}}
 						className="text-gray-400 hover:text-white transition-colors cursor-pointer"
@@ -110,7 +111,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 							<ChevronLeft className="size-6" />
 						</button>
 					)}
-					<Link href="/">
+					<Link href="/public">
 						<Image
 							src="/images/logo.png"
 							alt="Logo"

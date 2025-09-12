@@ -33,11 +33,9 @@ export default function InfinitePostList({
 
 	useEffect(() => {
 		if (isInitialLoading && hasMore) {
-			loadMore()
-				.then()
-				.catch((err) => console.error(err));
+			loadMore().catch((err) => console.error(err));
 		}
-	}, [isInitialLoading, hasMore, loadMore, loading]);
+	}, [isInitialLoading, hasMore, loadMore]);
 
 	useEffect(() => {
 		if (!sentinelRef.current || !hasMore || loading) return;
@@ -63,12 +61,9 @@ export default function InfinitePostList({
 				</div>
 			))}
 
-			{(isInitialLoading || loading) &&
-				Array.from({ length: initialPageSize }).map((_, key) => (
-					<div className="px-2" key={key}>
-						<PostSkeleton />
-					</div>
-				))}
+			{(isInitialLoading || loading) && (
+				<PostSkeleton count={isInitialLoading ? initialPageSize : 3} />
+			)}
 
 			{hasMore && <div ref={sentinelRef} aria-hidden />}
 

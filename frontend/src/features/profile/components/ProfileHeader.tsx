@@ -3,20 +3,24 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import { useAuth } from "@/features/auth/providers/AuthProvider";
+import { useAuth } from "@/features/auth/context/AuthContext";
 import { followUser, unfollowUser } from "@/features/profile/api/profileApi";
 import type { Profile } from "@/features/profile/types/user";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { ApiError } from "@/lib/api/httpTypes";
 import { useToast } from "@/shared/toast/useToast";
 import { formatNumber } from "@/shared/utils/formatNumber";
+import Container from "@/shared/components/ui/Container";
 
-export function ProfileHeader({ profile }: { profile: Profile }) {
+export default function ProfileHeader({ profile }: { profile: Profile }) {
 	const { user } = useAuth();
-	const [isFollowing, setIsFollowing] = useState(profile.isFollowed || false);
 	const { addToast } = useToast();
-
+	const [isFollowing, setIsFollowing] = useState(profile.isFollowed || false);
 	const [followerCount, setFollowerCount] = useState(profile.followerCount || 0);
+
+	useEffect(() => {
+		setFollowerCount(profile.followerCount || 0);
+	}, [profile]);
 
 	const handleFollowToggle = async () => {
 		try {
@@ -59,12 +63,8 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 	const imageUrl = getProfileImage(profile?.imageUrl);
 	const isCurrentUser = profile.id === user?.id;
 
-	useEffect(() => {
-		setFollowerCount(profile.followerCount || 0);
-	}, [profile]);
-
 	return (
-		<div className="md:bg-zinc-900 rounded-2xl shadow-sm md:border md:border-zinc-800 pt-6 pb-4 px-6">
+		<Container className="pt-6 pb-4 px-6">
 			<div className="flex items-start gap-6">
 				<div className="w-24 h-24 relative">
 					{!imageUrl ? (
@@ -85,9 +85,11 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 					<p className="font-bold text-xl text-white">{profile.fullName}</p>
 					<p className="text-zinc-400 font-medium">@{profile.handle}</p>
 					<div className="flex gap-6 mt-3 text-zinc-300 font-medium">
-						<span>{formatNumber(followerCount)} Followers</span>
-						<span>{formatNumber(profile.followingCount)} Following</span>
-						<span>{formatNumber(profile.postCount)} Posts</span>
+						<span className="text-center">{formatNumber(followerCount)} Followers</span>
+						<span className="text-center">
+							{formatNumber(profile.followingCount)} Following
+						</span>
+						<span className="text-center">{formatNumber(profile.postCount)} Posts</span>
 					</div>
 
 					<div className="mt-4">
@@ -111,6 +113,6 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 				</div>
 			</div>
 			<p className="mt-4 text-zinc-200">{profile.bio}</p>
-		</div>
+		</Container>
 	);
 }
