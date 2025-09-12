@@ -7,7 +7,6 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 import { useAuth } from "@/features/auth/context/AuthContext";
-
 import { useComposer } from "@/features/post/context/ComposerContext";
 
 export default function Navigation({ children }: { children: React.ReactNode }) {
@@ -24,7 +23,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 		},
 		{
 			name: "Search",
-			href: "#",
+			href: "/search",
 			icon: <SearchIcon className="size-6" />,
 		},
 		{
