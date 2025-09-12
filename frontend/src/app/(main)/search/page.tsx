@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Container from "@/shared/components/ui/Container";
-import BackHeader from "@/shared/components/ui/BackHeader";
-import InfiniteProfileList from "@/features/profile/components/InfiniteProfileList";
 import { Search } from "lucide-react";
+import React, { useEffect, useState } from "react";
+
+import InfiniteProfileList from "@/features/profile/components/InfiniteProfileList";
+import BackHeader from "@/shared/components/ui/BackHeader";
+import Container from "@/shared/components/ui/Container";
 
 export default function SearchPage() {
 	const [query, setQuery] = useState("");

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { fetchProfiles } from "@/features/profile/api/profileApi";
 import { Profile } from "@/features/profile/types/user";
-
 import { useToast } from "@/shared/toast/ToastContext";
 
 export function useInfiniteProfiles({

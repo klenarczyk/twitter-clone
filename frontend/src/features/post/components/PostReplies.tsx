@@ -6,8 +6,8 @@ import { fetchPostById } from "@/features/post/api/postApi";
 import InfinitePostList from "@/features/post/components/InfinitePostList";
 import PostCard from "@/features/post/components/PostCard";
 import { Post } from "@/features/post/types/post";
-import Container from "@/shared/components/ui/Container";
 import BackHeader from "@/shared/components/ui/BackHeader";
+import Container from "@/shared/components/ui/Container";
 
 export default function PostReplies({
 	initialPageSize = 8,

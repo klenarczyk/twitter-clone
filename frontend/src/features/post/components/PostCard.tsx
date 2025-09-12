@@ -4,16 +4,16 @@ import { motion } from "framer-motion";
 import { Ellipsis, Heart, MessageCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
+import { useAuth } from "@/features/auth/context/AuthContext";
 import { deletePost, likePost, unlikePost } from "@/features/post/api/postApi";
+import { useComposer } from "@/features/post/context/ComposerContext";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
 import { formatNumber } from "@/shared/utils/formatNumber";
-import { useComposer } from "@/features/post/context/ComposerContext";
-import { useAuth } from "@/features/auth/context/AuthContext";
-import { useRouter } from "next/navigation";
 
 type PostCardProps = {
 	post: Post;

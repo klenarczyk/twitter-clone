@@ -1,9 +1,9 @@
 "use client";
 
 import { Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
-import Image from "next/image";
 
 import { fetchRegister } from "@/features/auth/api/authApi";
 import { ApiError } from "@/lib/api/httpTypes";
@@ -11,13 +11,13 @@ import Form from "@/shared/components/form/Form";
 import FormItem from "@/shared/components/form/FormItem";
 import InputField from "@/shared/components/form/InputField";
 import Button from "@/shared/components/ui/Button";
+import { useToast } from "@/shared/toast/ToastContext";
 import {
 	validateEmail,
 	validateFullName,
 	validateHandle,
 	validatePassword,
 } from "@/shared/utils/validation";
-import { useToast } from "@/shared/toast/ToastContext";
 
 export default function RegisterForm() {
 	const router = useRouter();

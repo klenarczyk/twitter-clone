@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { fetchPosts } from "@/features/post/api/postApi";
 import { Post } from "@/features/post/types/post";
-
 import { useToast } from "@/shared/toast/ToastContext";
 
 export function useInfinitePosts({

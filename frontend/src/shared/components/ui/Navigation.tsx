@@ -1,6 +1,15 @@
 "use client";
 
-import { ChevronLeft, HomeIcon, LogInIcon, LogOutIcon, MenuIcon, PlusIcon, SearchIcon, UserIcon, } from "lucide-react";
+import {
+	ChevronLeft,
+	HomeIcon,
+	LogInIcon,
+	LogOutIcon,
+	MenuIcon,
+	PlusIcon,
+	SearchIcon,
+	UserIcon,
+} from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
