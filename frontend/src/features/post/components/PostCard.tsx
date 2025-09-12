@@ -1,17 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Ellipsis, Heart, MessageCircle } from "lucide-react";
+import { Ellipsis, Heart, MessageCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
-import { likePost, unlikePost } from "@/features/post/api/postApi";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import { deletePost, likePost, unlikePost } from "@/features/post/api/postApi";
+import { useComposer } from "@/features/post/context/ComposerContext";
 import { Post } from "@/features/post/types/post";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import formatDate from "@/shared/utils/formatDate";
 import { formatNumber } from "@/shared/utils/formatNumber";
-import { useComposer } from "@/features/post/context/ComposerContext";
 
 type PostCardProps = {
 	post: Post;
@@ -19,20 +21,36 @@ type PostCardProps = {
 };
 
 export default function PostCard({ post, onClick }: PostCardProps) {
+	const { user } = useAuth();
 	const { openComposer } = useComposer();
+	const router = useRouter();
 
-	const imageUrl = getProfileImage(post.author.imageUrl);
-	const timeAgo = formatDate(post.createdAt);
-
-	const textRef = useRef<HTMLParagraphElement>(null);
 	const [isOverflowing, setIsOverflowing] = useState(false);
 	const [expanded, setExpanded] = useState(false);
-
 	const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 	const [isLiked, setIsLiked] = useState(post.isLiked);
+	const [replyCount] = useState(post.replyCount || 0);
+	const [menuOpen, setMenuOpen] = useState(false);
+
+	const menuRef = useRef<HTMLDivElement>(null);
+	const textRef = useRef<HTMLParagraphElement>(null);
 	const isLiking = useRef(false);
 
-	const [replyCount] = useState(post.replyCount || 0);
+	useEffect(() => {
+		if (textRef.current) {
+			setIsOverflowing(textRef.current.scrollHeight > textRef.current.clientHeight);
+		}
+	}, [post.content]);
+
+	useEffect(() => {
+		function handleClickOutside(e: MouseEvent) {
+			if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+				setMenuOpen(false);
+			}
+		}
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
 
 	const handleLike = async () => {
 		if (isLiking.current) return;
@@ -51,11 +69,8 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 		}
 	};
 
-	useEffect(() => {
-		if (textRef.current) {
-			setIsOverflowing(textRef.current.scrollHeight > textRef.current.clientHeight);
-		}
-	}, [post.content]);
+	const imageUrl = getProfileImage(post.author.imageUrl);
+	const timeAgo = formatDate(post.createdAt);
 
 	return (
 		<motion.article
@@ -89,19 +104,50 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 				</div>
 
 				<div className="flex-1">
-					<div className="flex items-center justify-between">
+					<div
+						className={`flex items-center ${post.author.id === user?.id ? "justify-between" : "justify-start"}`}
+					>
 						<div className="flex items-center gap-2">
 							<Link
 								href={`/u/${post.author.handle}`}
-								className="font-bold text-mono-100 cursor-pointer"
+								className="font-bold text-mono-100 cursor-pointer hover:underline"
 							>
 								{post.author.handle}
 							</Link>
 							<div className="text-mono-300 text-sm">{timeAgo}</div>
 						</div>
-						<div className="text-mono-300 cursor-pointer">
-							<Ellipsis className="size-5" />
-						</div>
+
+						{post.author.id === user?.id && (
+							<div className="relative" ref={menuRef}>
+								<button
+									onClick={(e) => {
+										e.stopPropagation();
+										setMenuOpen((p) => !p);
+									}}
+									className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+								>
+									<Ellipsis className="size-5" />
+								</button>
+
+								{menuOpen && (
+									<div className="absolute top-full mt-2 right-0 bg-mono-900 border border-[var(--color-800)] rounded-lg shadow-lg p-2 z-50">
+										<button
+											onClick={() => {
+												deletePost(post.id)
+													.then(() => {
+														setMenuOpen(false);
+														window.location.reload();
+													})
+													.catch((e) => console.error(e));
+											}}
+											className="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-400 hover:bg-mono-800 rounded-md w-full text-left cursor-pointer"
+										>
+											<Trash2 className="size-4" /> Delete
+										</button>
+									</div>
+								)}
+							</div>
+						)}
 					</div>
 
 					<p
@@ -125,7 +171,7 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 
 					<div className="mt-3 flex items-center gap-3 text-sm text-mono-500">
 						<button
-							onClick={handleLike}
+							onClick={user ? handleLike : () => router.push("/login")}
 							className="flex items-center gap-0.5 cursor-pointer"
 						>
 							<motion.div

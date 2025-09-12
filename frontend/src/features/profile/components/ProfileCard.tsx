@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
+import React from "react";
+
 import { Profile } from "@/features/profile/types/user";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 

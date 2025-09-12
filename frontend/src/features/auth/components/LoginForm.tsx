@@ -1,8 +1,9 @@
 "use client";
 
 import { Eye, EyeOff } from "lucide-react";
-import { ChangeEvent, FormEvent, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 import { fetchLogin } from "@/features/auth/api/authApi";
 import { useAuth } from "@/features/auth/context/AuthContext";
@@ -11,9 +12,8 @@ import Form from "@/shared/components/form/Form";
 import FormItem from "@/shared/components/form/FormItem";
 import InputField from "@/shared/components/form/InputField";
 import Button from "@/shared/components/ui/Button";
-import { useToast } from "@/shared/toast/useToast";
+import { useToast } from "@/shared/toast/ToastContext";
 import { validateEmail } from "@/shared/utils/validation";
-import Image from "next/image";
 
 export default function LoginForm() {
 	const { login } = useAuth();
