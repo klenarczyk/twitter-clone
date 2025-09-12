@@ -116,6 +116,7 @@ export default function Feed({ initialPageSize = 8 }: { initialPageSize?: number
 				<InfinitePostList
 					initialPageSize={initialPageSize}
 					followed={activeTab === "following"}
+					className="pt-2"
 				/>
 			</Container>
 		</div>
