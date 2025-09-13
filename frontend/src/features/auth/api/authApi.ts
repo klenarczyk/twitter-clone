@@ -8,3 +8,5 @@ export const fetchRegister = async (body: RegisterRequest) =>
 	apiClient<void>("/auth/register", "POST", body);
 
 export const fetchCurrentUser = async () => apiClient<User>("/users/me");
+
+export const fetchLogout = async () => apiClient<void>("/auth/logout", "POST");

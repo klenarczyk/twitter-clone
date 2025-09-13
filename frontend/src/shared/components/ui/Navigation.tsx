@@ -24,14 +24,21 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 	const router = useRouter();
 
 	const [menuOpen, setMenuOpen] = useState(false);
-	const menuRef = useRef<HTMLDivElement>(null);
+	const desktopMenuRef = useRef<HTMLDivElement>(null);
+	const mobileMenuRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		function handleClickOutside(e: MouseEvent) {
-			if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+			if (
+				desktopMenuRef.current &&
+				!desktopMenuRef.current.contains(e.target as Node) &&
+				mobileMenuRef.current &&
+				!mobileMenuRef.current.contains(e.target as Node)
+			) {
 				setMenuOpen(false);
 			}
 		}
+
 		if (menuOpen) {
 			document.addEventListener("mousedown", handleClickOutside);
 		}
@@ -81,6 +88,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 	const handleAuthAction = () => {
 		if (user) {
 			logout();
+			window.location.reload();
 		} else {
 			router.push("/login");
 		}
@@ -118,9 +126,16 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 
 				<div className="flex flex-col items-center gap-8">{renderItems()}</div>
 
-				<div className="relative flex justify-center mb-6" ref={menuRef}>
+				<div
+					className="relative flex justify-center mb-6"
+					ref={desktopMenuRef}
+					onClick={(e) => e.stopPropagation()}
+				>
 					<button
-						onClick={() => setMenuOpen((p) => !p)}
+						onClick={(e) => {
+							e.stopPropagation();
+							setMenuOpen((p) => !p);
+						}}
 						className="text-gray-400 hover:text-white transition-colors cursor-pointer"
 					>
 						<MenuIcon className="size-5" />
@@ -129,7 +144,10 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 					{menuOpen && (
 						<div className="absolute bottom-full mb-2 left-0 bg-mono-900 border border-[var(--color-800)] rounded-lg shadow-lg p-2 z-50">
 							<button
-								onClick={handleAuthAction}
+								onClick={(e) => {
+									e.stopPropagation();
+									handleAuthAction();
+								}}
 								className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-mono-800 rounded-md w-full text-left cursor-pointer"
 							>
 								{user ? (
@@ -185,7 +203,7 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 						</div>
 					</button>
 
-					<div className="relative" ref={menuRef}>
+					<div className="relative" ref={mobileMenuRef}>
 						<button
 							onClick={() => setMenuOpen((p) => !p)}
 							className="text-gray-400 hover:text-white transition-colors cursor-pointer"
@@ -196,7 +214,10 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 						{menuOpen && (
 							<div className="absolute top-full mt-2 right-0 bg-mono-900 border border-[var(--color-800)] rounded-lg shadow-lg p-2 z-50">
 								<button
-									onClick={handleAuthAction}
+									onClick={(e) => {
+										e.stopPropagation();
+										handleAuthAction();
+									}}
 									className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-mono-800 rounded-md w-full text-left cursor-pointer"
 								>
 									{user ? (

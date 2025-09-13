@@ -7,10 +7,7 @@ type FormProps = React.FormHTMLAttributes<HTMLFormElement> & {
 
 export default function Form({ children, className = "", ...props }: FormProps) {
 	return (
-		<form
-			{...props}
-			className={`bg-zinc-900 p-6 rounded-lg shadow-md w-full max-w-md space-y-6 ${className}`}
-		>
+		<form {...props} className={`md:p-6 w-full max-w-md space-y-6 ${className}`}>
 			{children}
 		</form>
 	);

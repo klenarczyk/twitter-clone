@@ -7,6 +7,4 @@ public interface StorageService {
 
     String uploadProfileImage(MultipartFile file, User user);
 
-    String uploadPostImage(MultipartFile file, Long postId);
-
 }

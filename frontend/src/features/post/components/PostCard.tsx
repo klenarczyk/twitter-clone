@@ -99,6 +99,7 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 							height={50}
 							width={50}
 							className="rounded-full"
+							priority
 						/>
 					</Link>
 				</div>

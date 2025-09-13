@@ -86,63 +86,82 @@ export default function LoginForm() {
 	};
 
 	return (
-		<Form onSubmit={handleLogin} noValidate>
-			<div className="mb-8 flex justify-between items-center">
-				<h1 className="text-3xl sm:text-4xl font-bold text-mono-50 text-center">Login</h1>
-				<Image
-					src="/images/logo.png"
-					alt="Logo"
-					width={50}
-					height={50}
-					priority
-					className="invert"
-				/>
-			</div>
+		<div className="flex justify-center w-full py-12 px-4 sm:px-6 lg:px-8">
+			<div className="w-full max-w-md sm:max-w-lg bg-zinc-900 p-6 sm:p-8 rounded-2xl shadow-lg">
+				<Form onSubmit={handleLogin} noValidate>
+					<div className="mb-6 flex flex-row items-center justify-between gap-4">
+						<h1 className="text-3xl sm:text-4xl font-bold text-mono-50 text-center sm:text-left">
+							Login
+						</h1>
+						<Image
+							src="/images/logo.png"
+							alt="Logo"
+							width={50}
+							height={50}
+							priority
+							className="invert"
+						/>
+					</div>
 
-			<FormItem label="Email" error={formErrors.email}>
-				<InputField
-					name="email"
-					type="email"
-					value={formData.email}
-					onChange={onChange}
-					error={formErrors.email}
-					required
-				/>
-			</FormItem>
+					<FormItem label="Email" error={formErrors.email}>
+						<InputField
+							name="email"
+							type="email"
+							value={formData.email}
+							onChange={onChange}
+							error={formErrors.email}
+							required
+						/>
+					</FormItem>
 
-			<FormItem label="Password" error={formErrors.password}>
-				<InputField
-					name="password"
-					type={showPassword ? "text" : "password"}
-					value={formData.password}
-					onChange={onChange}
-					error={formErrors.password}
-					required
-					suffix={
+					<FormItem label="Password" error={formErrors.password}>
+						<InputField
+							name="password"
+							type={showPassword ? "text" : "password"}
+							value={formData.password}
+							onChange={onChange}
+							error={formErrors.password}
+							required
+							suffix={
+								<button
+									type="button"
+									onClick={() => setShowPassword(!showPassword)}
+									className="text-mono-50 focus:outline-none cursor-pointer"
+									tabIndex={-1}
+									aria-label={showPassword ? "Hide password" : "Show password"}
+								>
+									{showPassword ? (
+										<EyeOff className="h-5 w-5" />
+									) : (
+										<Eye className="h-5 w-5" />
+									)}
+								</button>
+							}
+						/>
+					</FormItem>
+
+					{formErrors.global && (
+						<div className="text-red-500 text-sm mb-4 text-center">
+							{formErrors.global}
+						</div>
+					)}
+
+					<Button type="submit" disabled={loading} className="w-full">
+						{loading ? "Logging in..." : "Login"}
+					</Button>
+
+					<div className="text-center mt-4 text-sm text-gray-400">
+						Don&apos;t have an account?{" "}
 						<button
 							type="button"
-							onClick={() => setShowPassword(!showPassword)}
-							className="text-mono-50 focus:outline-none"
-							tabIndex={-1}
-							aria-label={showPassword ? "Hide password" : "Show password"}
+							onClick={() => router.push("/register")}
+							className="text-blue-500 hover:underline cursor-pointer"
 						>
-							{showPassword ? (
-								<EyeOff className="h-5 w-5" />
-							) : (
-								<Eye className="h-5 w-5" />
-							)}
+							Register
 						</button>
-					}
-				/>
-			</FormItem>
-
-			{formErrors.global && (
-				<div className="text-red-500 text-sm mb-4 text-center">{formErrors.global}</div>
-			)}
-
-			<Button type="submit" disabled={loading} className="w-full">
-				{loading ? "Logging in..." : "Login"}
-			</Button>
-		</Form>
+					</div>
+				</Form>
+			</div>
+		</div>
 	);
 }

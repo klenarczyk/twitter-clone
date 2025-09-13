@@ -129,15 +129,7 @@ export default function Composer({ parent, onClose }: ComposerProps) {
 			</div>
 
 			{/* Footer */}
-			<div className="flex items-center justify-between px-4 py-3 sm:px-6 border-t border-[var(--color-700)]">
-				<div className="flex gap-4 text-sm text-mono-300 items-center">
-					<button className="hover:text-mono-100" disabled>
-						Image
-					</button>
-					<button className="hover:text-mono-100" disabled>
-						GIF
-					</button>
-				</div>
+			<div className="flex items-center justify-end px-4 py-3 sm:px-6 border-t border-[var(--color-700)]">
 				<div className="flex gap-4 text-sm text-mono-300 items-center">
 					{overflowCount > 0 && (
 						<span className="text-red-500 font-semibold text-sm">-{overflowCount}</span>

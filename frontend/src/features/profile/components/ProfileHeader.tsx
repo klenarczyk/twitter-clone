@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { followUser, unfollowUser } from "@/features/profile/api/profileApi";
+import EditProfileModal from "@/features/profile/components/EditProfileModal";
 import type { Profile } from "@/features/profile/types/user";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { ApiError } from "@/lib/api/httpTypes";
@@ -15,8 +16,20 @@ import { formatNumber } from "@/shared/utils/formatNumber";
 export default function ProfileHeader({ profile }: { profile: Profile }) {
 	const { user } = useAuth();
 	const { addToast } = useToast();
+
 	const [isFollowing, setIsFollowing] = useState(profile.isFollowed || false);
 	const [followerCount, setFollowerCount] = useState(profile.followerCount || 0);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isOverflowing, setIsOverflowing] = useState(false);
+	const [expanded, setExpanded] = useState(false);
+
+	const bioRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (bioRef.current) {
+			setIsOverflowing(bioRef.current.scrollHeight > bioRef.current.clientHeight);
+		}
+	}, [profile.bio]);
 
 	useEffect(() => {
 		setFollowerCount(profile.followerCount || 0);
@@ -35,27 +48,9 @@ export default function ProfileHeader({ profile }: { profile: Profile }) {
 			}
 		} catch (err) {
 			if (err instanceof ApiError) {
-				switch (err.status) {
-					case 409: {
-						addToast({
-							type: "error",
-							text: err.details!.issue,
-						});
-						break;
-					}
-					default: {
-						addToast({
-							type: "error",
-							text: "An unknown error occurred. Please try again.",
-						});
-						break;
-					}
-				}
+				addToast({ type: "error", text: err.details?.issue || "Error" });
 			} else {
-				addToast({
-					type: "error",
-					text: "An unknown error occurred. Please try again.",
-				});
+				addToast({ type: "error", text: "An unknown error occurred. Please try again." });
 			}
 		}
 	};
@@ -94,7 +89,10 @@ export default function ProfileHeader({ profile }: { profile: Profile }) {
 
 					<div className="mt-4">
 						{isCurrentUser ? (
-							<button className="px-4 py-2 rounded-xl bg-zinc-800 text-white hover:bg-zinc-700 transition cursor-pointer">
+							<button
+								onClick={() => setIsModalOpen(true)}
+								className="px-4 py-2 rounded-xl bg-zinc-800 text-white hover:bg-zinc-700 transition cursor-pointer"
+							>
 								Edit Profile
 							</button>
 						) : (
@@ -112,7 +110,31 @@ export default function ProfileHeader({ profile }: { profile: Profile }) {
 					</div>
 				</div>
 			</div>
-			<p className="mt-4 text-zinc-200">{profile.bio}</p>
+
+			<p
+				id={profile.id.toString()}
+				ref={bioRef}
+				className={`mt-4 text-sm text-mono-100 leading-6 whitespace-pre-wrap ${
+					!expanded ? "line-clamp-4 overflow-hidden" : ""
+				}`}
+			>
+				{profile.bio}
+			</p>
+
+			{isOverflowing && (
+				<button
+					className="text-sm text-[var(--color-500)] mt-1 cursor-pointer"
+					onClick={() => setExpanded(!expanded)}
+				>
+					{expanded ? "Show less" : "Show more"}
+				</button>
+			)}
+
+			<EditProfileModal
+				profile={profile}
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+			/>
 		</Container>
 	);
 }

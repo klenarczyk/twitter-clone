@@ -46,10 +46,4 @@ public class StorageServiceImpl implements StorageService {
         }
     }
 
-    @Override
-    @Transactional
-    public String uploadPostImage(MultipartFile file, Long postId) {
-        return "post-image-url"; // Placeholder return value
-    }
-
 }

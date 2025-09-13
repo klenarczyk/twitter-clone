@@ -10,7 +10,10 @@ import com.klenarczyk.backend.repository.FollowRepository;
 import com.klenarczyk.backend.repository.UserRepository;
 import com.klenarczyk.backend.service.UserService;
 import com.klenarczyk.backend.common.util.Util;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -30,6 +33,9 @@ public class UserServiceImpl implements UserService {
     private final FollowRepository followRepository;
 
     private final StorageServiceImpl storageService;
+
+    @Value("${app.cookie.secure}")
+    private boolean cookieSecure;
 
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
                            FollowRepository followRepository, StorageServiceImpl storageService) {
@@ -60,6 +66,19 @@ public class UserServiceImpl implements UserService {
         newUser.setBio("");
 
         return userRepository.save(newUser);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(UserDetails currentUser, HttpServletResponse response) {
+        User user = getAuthenticatedUser(currentUser);
+        userRepository.delete(user);
+        Cookie cookie = new Cookie("token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(cookieSecure);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
     @Override

@@ -1,3 +1,4 @@
+import { User } from "@/features/auth/types/auth";
 import { Profile } from "@/features/profile/types/user";
 import { apiClient } from "@/lib/api/apiClient";
 
@@ -35,3 +36,13 @@ export const followUser = async (userId: number) =>
 
 export const unfollowUser = async (userId: number) =>
 	apiClient<void>(`/users/unfollow/${userId}`, "DELETE");
+
+export const uploadProfileImage = async (image: File) => {
+	const formData = new FormData();
+	formData.append("file", image);
+
+	return apiClient("/users/me/profile-image", "POST", formData);
+};
+
+export const updateProfile = async (body: { fullName?: string; bio?: string }) =>
+	apiClient<User>("/users/me", "PATCH", body);
