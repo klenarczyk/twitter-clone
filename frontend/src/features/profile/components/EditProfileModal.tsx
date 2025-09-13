@@ -18,8 +18,8 @@ export default function EditProfileModal({
 }) {
 	const { addToast } = useToast();
 
-	const [fullName, setFullName] = useState(profile.fullName);
-	const [bio, setBio] = useState(profile.bio);
+	const [fullName, setFullName] = useState(profile.fullName || "");
+	const [bio, setBio] = useState(profile.bio || "");
 	const [imageUrl, setImageUrl] = useState(profile.imageUrl || "");
 	const [imageFile, setImageFile] = useState<File | null>(null);
 
