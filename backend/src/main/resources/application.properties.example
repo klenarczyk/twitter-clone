@@ -1,7 +1,7 @@
-spring.application.name=TwitterCloneBackend
+spring.application.name=LoopBackend
 
 # Database configuration
-spring.datasource.url=jdbc:postgresql://localhost:5432/twitter_clone_db
+spring.datasource.url=jdbc:postgresql://localhost:5432/
 spring.datasource.username=
 spring.datasource.password=
 
