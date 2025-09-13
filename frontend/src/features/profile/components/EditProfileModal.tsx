@@ -2,18 +2,12 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import {
-	deleteAccount,
-	updateProfile,
-	uploadProfileImage,
-} from "@/features/profile/api/profileApi";
+import { updateProfile, uploadProfileImage } from "@/features/profile/api/profileApi";
 import type { Profile } from "@/features/profile/types/user";
 import { getProfileImage } from "@/features/profile/utils/getProfileImage";
 import { useToast } from "@/shared/toast/ToastContext";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/features/auth/context/AuthContext";
 
 export default function EditProfileModal({
 	profile,
@@ -25,8 +19,6 @@ export default function EditProfileModal({
 	onClose: () => void;
 }) {
 	const { addToast } = useToast();
-	const { logout } = useAuth();
-	const router = useRouter();
 
 	const [fullName, setFullName] = useState(profile.fullName || "");
 	const [bio, setBio] = useState(profile.bio || "");
@@ -76,12 +68,6 @@ export default function EditProfileModal({
 		} catch {
 			addToast({ type: "error", text: "Failed to update profile." });
 		}
-	};
-
-	const handleDelete = async () => {
-		await deleteAccount();
-		logout();
-		router.replace("/");
 	};
 
 	const profileImageUrl = getProfileImage(imageUrl);
@@ -136,13 +122,7 @@ export default function EditProfileModal({
 							className="w-full mb-4 px-3 py-2 rounded bg-zinc-800"
 						/>
 
-						<div className="flex justify-between mt-6">
-							<button
-								onClick={handleDelete}
-								className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 cursor-pointer"
-							>
-								Delete Profile
-							</button>
+						<div className="flex justify-end mt-6">
 							<div className="flex gap-2">
 								<button
 									onClick={onClose}

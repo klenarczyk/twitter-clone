@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState, } from "react";
+import {
+	createContext,
+	ReactNode,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 
 import { fetchCurrentUser, fetchLogout } from "@/features/auth/api/authApi";
 import { AuthContextType, User } from "@/features/auth/types/auth";
@@ -35,8 +43,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	}, []);
 
 	const login = useCallback((user: User) => setUser(user), []);
-	const logout = useCallback(async (deleted: boolean = false) => {
-		if (!deleted) await fetchLogout();
+	const logout = useCallback(async () => {
+		await fetchLogout();
 		setUser(null);
 	}, []);
 

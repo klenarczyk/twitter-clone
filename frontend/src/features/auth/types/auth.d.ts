@@ -23,5 +23,5 @@ export type AuthContextType = {
 	user: User | null;
 	loading: boolean;
 	login: (user: User) => void;
-	logout: (deleted: boolean) => void;
+	logout: () => void;
 };
