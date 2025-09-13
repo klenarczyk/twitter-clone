@@ -8,12 +8,20 @@ export async function apiClient<T>(
 	options: RequestOptions = {}
 ): Promise<T> {
 	const headers = new Headers(options.headers);
-	headers.set("Content-Type", "application/json");
+
+	let requestBody: BodyInit | undefined = undefined;
+
+	if (body instanceof FormData) {
+		requestBody = body;
+	} else if (body !== undefined) {
+		headers.set("Content-Type", "application/json");
+		requestBody = JSON.stringify(body);
+	}
 
 	const res = await fetch(`${API_URL}${endpoint}`, {
 		method,
 		headers,
-		body: body ? JSON.stringify(body) : undefined,
+		body: requestBody,
 		...options,
 		credentials: "include",
 	});
