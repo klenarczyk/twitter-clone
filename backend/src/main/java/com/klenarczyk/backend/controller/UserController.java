@@ -117,6 +117,17 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.fromEntity(updatedUser));
     }
 
+    @DeleteMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Deletes the currently authenticated user")
+    @ApiResponse(responseCode = "204", description = "User deleted successfully")
+    @UnauthorizedResponse
+    @NotFoundResponse
+    public ResponseEntity<Void> deleteCurrentUser(@AuthenticationPrincipal UserDetails currentUser) {
+        userService.deleteUser(currentUser);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/me/profile-image")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Uploads a profile image")

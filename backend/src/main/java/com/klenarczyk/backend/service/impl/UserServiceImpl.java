@@ -64,6 +64,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public void deleteUser(UserDetails currentUser) {
+        User user = getAuthenticatedUser(currentUser);
+        userRepository.delete(user);
+    }
+
+    @Override
+    @Transactional
     public User updateUser(UserDetails currentUser, @Valid UpdateUserRequest req) {
         User user = getAuthenticatedUser(currentUser);
         boolean changed = false;

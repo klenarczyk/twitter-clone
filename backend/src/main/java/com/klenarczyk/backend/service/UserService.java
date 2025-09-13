@@ -17,6 +17,8 @@ public interface UserService {
 
     User createUser(@Valid RegisterRequest req);
 
+    void deleteUser(UserDetails currentUser);
+
     User updateUser(UserDetails currentUser, @Valid UpdateUserRequest req);
 
     User getAuthenticatedUser(UserDetails principal);
