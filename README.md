@@ -2,12 +2,8 @@
 
 ![Java](https://img.shields.io/badge/Java-24-blue?logo=java) ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-brightgreen?logo=spring) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql) ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js) ![React](https://img.shields.io/badge/React-19-blue?logo=react) ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-blue?logo=tailwind-css)
 
----
-
 **Description:**
 A full-stack social media platform with a Spring Boot backend and Next.js frontend. Users can create posts, reply, like, follow/unfollow, and browse feeds. The backend uses PostgreSQL for persistence and demonstrates service-layer design and DTO mapping.
-
----
 
 ## Features
 
@@ -19,8 +15,6 @@ A full-stack social media platform with a Spring Boot backend and Next.js fronte
 -   Clean separation between backend services, DTOs, and frontend components.
 -   Backend documentation via SpringDocs
 
----
-
 ## Technologies
 
 -   **Backend:** Java, Spring Boot, Spring Data JPA, Spring Security
@@ -28,8 +22,6 @@ A full-stack social media platform with a Spring Boot backend and Next.js fronte
 -   **Database:** PostgreSQL
 -   **Authentication:** JWT tokens, HttpOnly cookies
 -   **Build Tools:** Gradle (backend), Node.js/NPM (frontend)
-
----
 
 ## Setup Instructions
 
@@ -106,13 +98,9 @@ npm run dev
 
 The frontend will be accessible at `http://localhost:3000`.
 
----
-
 ## Known Issues
 
 -   Deleting a user may leave follower/following counts and like/reply counts temporarily inconsistent. A future refactor will compute counts dynamically in the service layer.
-
----
 
 ## Usage
 
@@ -121,3 +109,29 @@ The frontend will be accessible at `http://localhost:3000`.
 -   Like posts and follow other users.
 -   Search for users to follow
 -   Browse feeds with pagination.
+
+## Screenshots
+
+### Feed Page
+
+![Feed Page](screenshots/feed.png)
+
+### Profile Page
+
+![Profile Page](screenshots/profile.png)
+
+### Post Repies
+
+![Post Replies](screenshots/replies.png)
+
+### Reply Composer
+
+![Reply Composer](screenshots/reply.png)
+
+### Search Page
+
+![Search Page](screenshots/search.png)
+
+### Backend Documentation
+
+![Swagger Docs](screenshots/swagger.png)

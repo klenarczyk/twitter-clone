@@ -24,9 +24,9 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Twitter Clone API")
+                        .title("Loop API")
                         .version("1.0")
-                        .description("Twitter Clone API Documentation with Swagger / OpenAPI")
+                        .description("Loop API Documentation with Swagger / OpenAPI")
                 )
                 .servers(List.of(
                         new Server().url("http://localhost:8080").description("Local server")
