@@ -47,4 +47,6 @@ export const uploadProfileImage = async (image: File) => {
 export const updateProfile = async (body: { fullName?: string; bio?: string }) =>
 	apiClient<User>("/users/me", "PATCH", body);
 
-export const deleteAccount = async () => apiClient("/users/me", "DELETE");
+export const deleteAccount = async () => {
+	await apiClient("/users/me", "DELETE");
+};

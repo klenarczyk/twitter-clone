@@ -32,7 +32,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // Methods
-
     @Override
     public User register(RegisterRequest req) {
         return userService.createUser(req);
@@ -51,6 +50,16 @@ public class AuthServiceImpl implements AuthService {
         cookie.setSecure(cookieSecure);
         cookie.setPath("/");
         cookie.setMaxAge(Constants.COOKIE_MAX_AGE);
+        response.addCookie(cookie);
+    }
+
+    @Override
+    public void logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(cookieSecure);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
         response.addCookie(cookie);
     }
 

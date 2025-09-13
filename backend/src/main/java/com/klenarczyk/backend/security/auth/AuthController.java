@@ -63,4 +63,13 @@ public class AuthController {
         return ResponseEntity.ok(UserResponse.fromEntity(userService.getUserByEmail(req.getEmail())));
     }
 
+    @PostMapping("/logout")
+    @Operation(summary = "Logs out user by clearing JWT cookie")
+    @ApiResponse(responseCode = "204", description = "User logged out successfully")
+    @UnauthorizedResponse
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        authService.logout(response);
+        return ResponseEntity.noContent().build();
+    }
+
 }

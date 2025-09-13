@@ -87,7 +87,8 @@ export default function Navigation({ children }: { children: React.ReactNode }) 
 
 	const handleAuthAction = () => {
 		if (user) {
-			logout();
+			logout(true);
+			window.location.reload();
 		} else {
 			router.push("/login");
 		}

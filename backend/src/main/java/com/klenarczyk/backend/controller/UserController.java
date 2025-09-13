@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -123,8 +124,9 @@ public class UserController {
     @ApiResponse(responseCode = "204", description = "User deleted successfully")
     @UnauthorizedResponse
     @NotFoundResponse
-    public ResponseEntity<Void> deleteCurrentUser(@AuthenticationPrincipal UserDetails currentUser) {
-        userService.deleteUser(currentUser);
+    public ResponseEntity<Void> deleteCurrentUser(@AuthenticationPrincipal UserDetails currentUser,
+                                                  HttpServletResponse response) {
+        userService.deleteUser(currentUser, response);
         return ResponseEntity.noContent().build();
     }
 
